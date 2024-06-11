@@ -2,6 +2,7 @@
 
 
 /client/node_modules
+/client/backend/node_modules
 
 /food-del/admin/node_modules
 /food-del/backend/node_modules

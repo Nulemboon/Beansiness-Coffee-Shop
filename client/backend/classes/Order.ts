@@ -8,7 +8,8 @@ class Order {
     private _shippingFee: Number;
     private _status: String;
 
-    constructor(cart: Cart, deliveryInfo: DeliveryInfo, shippingFee: Number, status: String) {
+    constructor(orderID: Number, cart: Cart, deliveryInfo: DeliveryInfo, shippingFee: Number, status: String) {
+        this._orderID = orderID;
         this._cart = cart;
         this._deliveryInfo = deliveryInfo;
         this._shippingFee = shippingFee;

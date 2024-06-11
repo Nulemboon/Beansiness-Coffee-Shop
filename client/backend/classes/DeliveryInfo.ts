@@ -5,7 +5,8 @@ class DeliveryInfo {
     private _phoneNumber: String;
     private _instruction: String;
 
-    constructor(receiverName: String, address: String, phoneNumber: String, instruction: String) {
+    constructor(deliveryID: Number, receiverName: String, address: String, phoneNumber: String, instruction: String) {
+        this._deliveryID = deliveryID;
         this._receiverName = receiverName;
         this._address = address;
         this._phoneNumber = phoneNumber;
