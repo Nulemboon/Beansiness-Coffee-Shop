@@ -1,5 +1,5 @@
 const AccountModel = require('../models/accountModel');
-const Account = require('../classes/Account.ts');
+const Account = require('../dist/classes/Account.js');
 
 const getAllAccounts = async (req, res) => {
   try {
@@ -15,7 +15,7 @@ const getAccountById = async (req, res) => {
   try {
     const account = await AccountModel.findById(req.params.id);
     if (account) {
-      const accountObj = new Account(account.id, account.name, account.email);
+      const accountObj = new Account(account.name, account.email, account.password);
       res.json(accountObj);
     } else {
       res.status(404).json({ error: 'Account not found.' });
