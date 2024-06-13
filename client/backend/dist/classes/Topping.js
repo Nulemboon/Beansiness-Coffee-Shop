@@ -2,16 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Topping {
     constructor(toppingID, name, price, description) {
-        this._toppingID = toppingID;
-        this._name = name;
-        this._price = price;
-        this._description = description;
+        this.toppingID = toppingID;
+        this.name = name;
+        this.price = price;
+        this.description = description;
     }
-    get toppingID() {
-        return this._toppingID;
-    }
+
     equals(topping) {
-        return this._toppingID == topping.toppingID;
+        return this.toppingID == topping.toppingID;
     }
 }
 exports.default = Topping;
