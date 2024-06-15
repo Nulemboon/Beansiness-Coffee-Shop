@@ -1,23 +1,23 @@
-const DeliveryInfo = require('../dist/classes/DeliveryInfo');
+const DeliveryInfo = require('../classes/DeliveryInfo');
 
 const getDeliveryInfo = async(req, res) => {
-    let deliveryInfo = req.cookies.deliveryInfo;
-    if (!deliveryInfo) {
+    let deliveryInfoJson = req.cookies.delivery;
+    if (!deliveryInfoJson) {
         // If not exit then create empty delivery info
         const emptyInfo = new DeliveryInfo('', '', '', '');
         saveDeliveryInfo(req, res, emptyInfo);
-        deliveryInfo = JSON.stringify(emptyInfo);
+        deliveryInfoJson = JSON.stringify(emptyInfo);
     }
 
-    const deliveryInfoObj = JSON.parse(deliveryInfo);
+    const deliveryInfoObj = JSON.parse(deliveryInfoJson);
     return deliveryInfoObj;
 }
 
 const saveDeliveryInfo = async(req, res, deliveryInfo) => {
-    res.cookie('deliveryInfo', JSON.stringify(deliveryInfo))
+    res.cookie('delivery', JSON.stringify(deliveryInfo))
 }
 
-const submitDeliveryInfo = (req, res) => {
+const submitDeliveryInfo = async(req, res) => {
     try {
         const { receiverName, address, phoneNumber, instruction } = req.body;
         const deliveryInfo = new DeliveryInfo(receiverName, address, phoneNumber, instruction);

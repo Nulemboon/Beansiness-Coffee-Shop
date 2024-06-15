@@ -1,9 +1,10 @@
-const express = require('express');
 const { getAllAccounts, getAccountById } = require('../controllers/accountController');
 
-const router = express.Router();
+function routes(app) {
+    app.get('/account', getAllAccounts);
+    app.get('/account/:id', getAccountById);
+}
 
-router.get('/account', getAllAccounts);
-router.get('/account/:id', getAccountById);
-
-module.exports = router;
+module.exports = {
+    routes
+};

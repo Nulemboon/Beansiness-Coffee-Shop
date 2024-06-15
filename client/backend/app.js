@@ -3,8 +3,11 @@ const cookieParser = require('cookie-parser');
 
 const connectDB = require('./config/db');
 const cors = require('cors');
+
 const accountRoutes = require('./routes/accountRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const deliveryFormRoutes = require('./routes/deliveryFormRoutes');
+const productRoutes = require('./routes/productRoutes.js');
 
 const app = express();
 
@@ -18,7 +21,12 @@ app.use(cors())
 
 
 // Routes
-app.use('/api', accountRoutes);
+// app.use('/api', accountRoutes);
+
 cartRoutes.routes(app);
+accountRoutes.routes(app);
+deliveryFormRoutes.routes(app);
+productRoutes.routes(app);
+
 
 module.exports = app;

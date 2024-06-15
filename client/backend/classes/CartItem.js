@@ -6,14 +6,13 @@ class CartItem {
         this.size = size;
     }
 
-    increase(quantity) {
+    updateQuantity(quantity) {
+        if (this.quantity + quantity <= 0)
+            throw new Error("ERROR: Can not decrease item quantity by: " + quantity);
+
         this.quantity += quantity;
     }
-    decrease(quantity) {
-        if (quantity >= this.quantity)
-            throw new Error("ERROR: Can not decrease item quantity by: " + quantity);
-        this.quantity -= quantity;
-    }
+
     equals(cartItem) {
         // Check if item has equal size
         if (this.size != cartItem.size)

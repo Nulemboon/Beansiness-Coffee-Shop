@@ -6,7 +6,8 @@ function routes(app) {
         res.json(cart);
     });
 
-    app.post('/cart/add', cartController.addToCart);
+    app.post('/cart', cartController.addToCart);
+    app.delete('/cart', cartController.removeFromCart);
 }
 
 module.exports = {

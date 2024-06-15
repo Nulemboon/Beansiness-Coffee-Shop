@@ -6,7 +6,7 @@ function routes(app) {
         res.json(deliveryInfo);
     })
 
-    app.post('/delivery_from/submit', deliveryFromControler.submitDeliveryInfo);
+    app.post('/delivery_from', deliveryFromControler.submitDeliveryInfo);
 }
 
 module.exports = {
