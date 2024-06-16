@@ -81,7 +81,7 @@ const getDailyRevenue = async (req, res) => {
             },
             {
                 $lookup: {
-                    from: 'orderitems',
+                    from: 'OrderItem',
                     localField: 'order_items',
                     foreignField: '_id',
                     as: 'order_items'
@@ -90,7 +90,7 @@ const getDailyRevenue = async (req, res) => {
             { $unwind: "$order_items" },
             {
                 $lookup: {
-                    from: 'products',
+                    from: 'Product',
                     localField: 'order_items.product_id',
                     foreignField: '_id',
                     as: 'product'
@@ -132,25 +132,30 @@ const getDailyRevenue = async (req, res) => {
 
 const getSalesPerDay = async (req, res) => {
     try {
-        const { dateFrom, dateTo } = req.query;
+        const { dateFrom, dateTo, prodId } = req.query;
         const result = await Order.aggregate([
             {
                 $match: {
                     completed_at: {
-                        $gte: new Date(startDate),
-                        $lte: new Date(endDate)
+                        $gte: new Date(dateFrom),
+                        $lte: new Date(dateTo)
                     }
                 }
             },
             {
                 $lookup: {
-                    from: 'orderitems',
+                    from: 'OrderItem',
                     localField: 'order_items',
                     foreignField: '_id',
                     as: 'order_items'
                 }
             },
             { $unwind: "$order_items" },
+            {
+                $match: {
+                    'order_items.product_id': mongoose.Types.ObjectId(prodId)
+                }
+            },
             {
                 $group: {
                     _id: { $dateToString: { format: "%Y-%m-%d", date: "$completed_at" } },
