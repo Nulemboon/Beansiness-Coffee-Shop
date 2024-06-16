@@ -4,6 +4,7 @@ class Order {
         this.deliveryInfo = deliveryInfo;
         this.shippingFee = shippingFee;
         this.status = status;
+        this.date = ""
     }
 }
 

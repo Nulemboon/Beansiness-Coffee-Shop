@@ -1,4 +1,4 @@
-const AccountModel = require('../models/accountModel');
+const AccountModel = require('../models/AccountModel.js');
 const Account = require('../classes/Account.js');
 
 const getAllAccounts = async (req, res) => {

@@ -8,11 +8,12 @@ const accountRoutes = require('./routes/accountRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const deliveryFormRoutes = require('./routes/deliveryFormRoutes');
 const productRoutes = require('./routes/productRoutes.js');
+const managerRoutes = require('./routes/managerRoutes.js');
 
 const app = express();
 
-// // Connect to the database
-// connectDB();
+// Connect to the database
+connectDB();
 
 // Middleware
 app.use(express.json());
@@ -27,6 +28,7 @@ cartRoutes.routes(app);
 accountRoutes.routes(app);
 deliveryFormRoutes.routes(app);
 productRoutes.routes(app);
+managerRoutes.routes(app);
 
 
 module.exports = app;

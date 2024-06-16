@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class Product {
     constructor(productID, name, description, price) {
         this.productID = productID;
@@ -12,4 +10,5 @@ class Product {
         return this.productID == product.productID;
     }
 }
-exports.default = Product;
+
+module.exports = Product;
