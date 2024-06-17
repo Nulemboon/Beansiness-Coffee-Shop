@@ -6,6 +6,7 @@ const orderRouter = require('./orderRoutes');
 const paymentRouter = require('./paymentRoutes');
 const productRouter = require('./productRoutes');
 const voucherRouter = require('./voucherRoutes');
+const vnpayRouter = require('../subsystem/vnpayRoutes');
 
 function route(app) {
     //Account
@@ -34,6 +35,9 @@ function route(app) {
 
     //Voucher
     app.use('/voucher', voucherRouter);
+
+    //VNPAY
+    app.use('/', vnpayRouter);
 
 }
 
