@@ -5,6 +5,7 @@ const reportRouter = require('./reportRoutes');
 const orderRouter = require('./orderRoutes');
 const paymentRouter = require('./paymentRoutes');
 const productRouter = require('./productRoutes');
+const voucherRouter = require('./voucherRoutes');
 
 function route(app) {
     //Account
@@ -30,6 +31,9 @@ function route(app) {
 
     //Product
     app.use('/product', productRouter);
+
+    //Voucher
+    app.use('/voucher', voucherRouter);
 
 }
 
