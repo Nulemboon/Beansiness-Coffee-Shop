@@ -1,31 +1,31 @@
 const AccountModel = require('../models/AccountModel.js');
 const Account = require('../classes/Account.js');
 
-const getAllAccounts = async (req, res) => {
-    try {
-        const accounts = await AccountModel.find();
-        const accountList = accounts.map(account => new Account(account.name, account.email, account.password));
-        res.json(accountList);
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while fetching accounts.' });
-    }
-};
-
-const getAccountById = async (req, res) => {
-    try {
-        const account = await AccountModel.findById(req.params.id);
-        if (account) {
-            const accountObj = new Account(account.name, account.email, account.password);
-            res.json(accountObj);
-        } else {
-            res.status(404).json({ error: 'Account not found.' });
+class AccountController {
+    getAllAccounts = async (req, res) => {
+        try {
+            const accounts = await AccountModel.find();
+            const accountList = accounts.map(account => new Account(account.name, account.email, account.password));
+            res.json(accountList);
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while fetching accounts.' });
         }
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while fetching the account.' });
-    }
-};
+    };
+    
+    getAccountById = async (req, res) => {
+        try {
+            const account = await AccountModel.findById(req.params.id);
+            if (account) {
+                const accountObj = new Account(account.name, account.email, account.password);
+                res.json(accountObj);
+            } else {
+                res.status(404).json({ error: 'Account not found.' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while fetching the account.' });
+        }
+    };
+}
 
-module.exports = {
-    getAllAccounts,
-    getAccountById,
-};
+
+module.exports = new AccountController();

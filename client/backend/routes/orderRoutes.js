@@ -1,9 +1,9 @@
+const express = require('express');
 const orderController = require('../controllers/orderController');
 
-function routes(app) {
-    app.get('/vieworder', orderController.getCurrentOrders);
-}
+const router = express.Router();
 
-module.exports = {
-    routes,
-}
+router.get('/', orderController.getCurrentOrders);
+
+
+module.exports = router;

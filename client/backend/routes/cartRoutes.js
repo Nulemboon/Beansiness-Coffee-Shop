@@ -1,15 +1,15 @@
+const express = require('express');
 const cartController = require('../controllers/cartController');
 
-function routes(app) {
-    app.get('/cart', async (req, res) => {
-        const cart = await cartController.getCartFromCookies(req, res);
-        res.json(cart);
-    });
+const router = express.Router();
 
-    app.post('/cart', cartController.addToCart);
-    app.delete('/cart', cartController.removeFromCart);
-}
+router.get('/', async (req, res) => {
+    const cart = await cartController.getCartFromCookies(req, res);
+    res.json(cart);
+});
 
-module.exports = {
-    routes
-};
+router.post('/', cartController.updateCart);
+router.delete('/', cartController.removeFromCart);
+
+
+module.exports = router;

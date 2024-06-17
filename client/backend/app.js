@@ -4,12 +4,12 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const cors = require('cors');
 
-const accountRoutes = require('./routes/accountRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const deliveryFormRoutes = require('./routes/deliveryFormRoutes');
-const productRoutes = require('./routes/productRoutes.js');
-const managerRoutes = require('./routes/managerRoutes.js');
-
+// const accountRoutes = require('./routes/accountRoutes');
+// const cartRoutes = require('./routes/cartRoutes');
+// const deliveryFormRoutes = require('./routes/deliveryFormRoutes');
+// const productRoutes = require('./routes/productRoutes.js');
+// const managerRoutes = require('./routes/managerRoutes.js');
+const route = require('./routes/index');
 const app = express();
 
 // Connect to the database
@@ -24,11 +24,12 @@ app.use(cors())
 // Routes
 // app.use('/api', accountRoutes);
 
-cartRoutes.routes(app);
-accountRoutes.routes(app);
-deliveryFormRoutes.routes(app);
-productRoutes.routes(app);
-managerRoutes.routes(app);
+// cartRoutes.routes(app);
+// accountRoutes.routes(app);
+// deliveryFormRoutes.routes(app);
+// productRoutes.routes(app);
+// managerRoutes.routes(app);
 
+route(app);
 
 module.exports = app;
