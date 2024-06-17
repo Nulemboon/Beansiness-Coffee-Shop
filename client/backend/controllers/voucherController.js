@@ -2,7 +2,7 @@ const VoucherModel = require('../models/VoucherModel.js');
 const AccountModel = require('../models/AccountModel.js');
 const { default: mongoose } = require('mongoose');
 
-class voucherController {
+class VoucherController {
     getVoucher = async (req, res) => {
         try {
             const voucher = await VoucherModel.find();
