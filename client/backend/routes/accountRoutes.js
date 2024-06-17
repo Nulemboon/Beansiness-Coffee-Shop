@@ -10,6 +10,8 @@ router.get('/', accountController.getAllAccounts);
 
 router.post('/:id/vouchers', voucherController.updateUserVoucher);
 
+router.post('/add', accountController.addAccount);
 
+router.delete('/:id', accountController.removeAccount);
 
 module.exports = router;

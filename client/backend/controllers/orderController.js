@@ -1,39 +1,9 @@
 const OrderModel = require('../models/OrderModel.js');
 const Order = require('../classes/Order.js');
-const Cart = require('../classes/Cart.js');
-const DeliveryInfo = require('../classes/DeliveryInfo.js');
+const CartController = require('./cartController.js');
+
 
 class OrderController {
-    getCurrentOrders = async (req, res) => {
-        try {
-            const cartJson = req.cookies.cart;
-            const deliveryInfoJson = req.cookies.delivery;
-    
-            if (!cartJson || !deliveryInfoJson) {
-                // If cart and delivery information are not available ?
-            }
-    
-            const cartObj = JSON.parse(cartJson);
-            const deliveryInfoObj = JSON.parse(deliveryInfoJson);
-    
-            // Create Cart and DeliveryInfo Class
-            const cartClass = new Cart(cartObj.productList);
-    
-            const deliveryInfoClass = new DeliveryInfo(
-                deliveryInfoObj.receiverName, deliveryInfoObj.address, 
-                deliveryInfoObj.phoneNumber, deliveryInfoObj.instruction
-            );
-    
-            const orderClass = new Order(cartClass, deliveryInfoClass, 10000, 'not paid');
-            // If user sign in -> can save order.
-            res.json(orderClass);
-    
-        } catch (error) {
-            res.status(500).json({ error: error.message});
-        }
-    }
-    
-    
     getAllOrders = async (req, res) => {
         try {
             const orders = await OrderModel.find();
@@ -57,6 +27,22 @@ class OrderController {
             res.status(500).json({ error: 'An error occurred while fetching the order.' });
         }
     };
+
+    placeOrder = async (req, res) => {
+        try {
+            const cart = await CartController.getCartFromCookies;
+            
+            for (cartItem in cart) {
+                
+            }
+            
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while fetching the order.' });
+        }
+    };
+
+
+
 }
 
 

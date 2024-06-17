@@ -8,12 +8,12 @@ const OrderSchema = new mongoose.Schema({
         required: true,
     },
 
-    // // Delivery form
-    // delivery_info: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'DeliveryInfo',
-    //     required: true
-    // },
+    // Delivery form
+    delivery_info: {
+        type: Schema.Types.ObjectId,
+        ref: 'DeliveryInfo',
+        required: true
+    },
 
     // Cart
     order_items: [{
