@@ -53,7 +53,7 @@ create Table Product (
 create Table Review (
   UID integer,
   PID integer,
-  review varchar(255),
+  review varchar(1024),
   rating int,
   primary key(UID, PID),
   foreign key (UID) references users(UID),

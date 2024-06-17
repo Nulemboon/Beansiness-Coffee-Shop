@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const OrderSchema = new mongoose.Schema({
+    account_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Account',
+        required: true,
+    },
+
     // Delivery form
     delivery_info: {
         type: Schema.Types.ObjectId,
