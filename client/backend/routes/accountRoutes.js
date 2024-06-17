@@ -9,7 +9,7 @@ router.get('/:id', accountController.getAccountById);
 router.get('/', accountController.getAllAccounts);
 
 router.post('/:id/vouchers/add', voucherController.addUserVoucher);
-router.pose('/:id/vouchers/remove', voucherController.removeUserVoucher);
+router.post('/:id/vouchers/remove', voucherController.removeUserVoucher);
 
 
 
