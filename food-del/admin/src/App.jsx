@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import UserList from './pages/User/User'
 import Voucher from './pages/Voucher/Voucher'
 import FinancialReport from './pages/FinancialReport/FinancialReport'
+import Staff from './pages/Staff/Staff'
 const App = () => {
   return (
     <div className='app'>
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/users" element={<UserList/>} />
           <Route path="/vouchers" element={<Voucher />} />
           <Route path="/report" element={<FinancialReport />} />
+          <Route path="/staff" element={<Staff />} />
         </Routes>
       </div>
     </div>
