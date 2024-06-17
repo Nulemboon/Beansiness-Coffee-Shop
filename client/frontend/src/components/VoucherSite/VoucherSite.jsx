@@ -1,5 +1,5 @@
 import React from 'react';
-import vouchers from '../../../../backend/Fake_Data(to_be_deleted)/voucher.js';
+import vouchers from '../../../../backend/Fake_Data(to_be_deleted)/voucher.js';//tmp
 import './VoucherSite.css';
 
 const VoucherSite = () => {

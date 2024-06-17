@@ -1,8 +1,11 @@
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import './ChangePassword.css';
+import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
+import { StoreContext } from '../../Context/StoreContext'; // Adjust the path based on your project structure
 
 const ChangePassword = ({ isOpen, onClose }) => {
+    const { url, setToken } = useContext(StoreContext); 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,24 +21,30 @@ const ChangePassword = ({ isOpen, onClose }) => {
             setError('New passwords do not match.');
             return;
         }
+
         try {
-            const response = await fakeApiChangePassword(currentPassword, newPassword);
-            if (response.success) {
+            const response = await axios.post(`${url}/user/change-password`, {
+                currentPassword,
+                newPassword
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.data.success) {
                 setSuccess('Password changed successfully.');
+                toast.success('Password changed successfully.');
+                setToken(response.data.token); 
             } else {
-                setError(response.message);
+                setError(response.data.message || 'Failed to change password.');
+                toast.error(response.data.message || 'Failed to change password.');
             }
         } catch (err) {
             setError('Failed to change password. Please try again.');
+            toast.error('Failed to change password. Please try again.');
         }
-    };
-
-    const fakeApiChangePassword = (currentPassword, newPassword) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({ success: true });
-            }, 1000);
-        });
     };
 
     if (!isOpen) {
