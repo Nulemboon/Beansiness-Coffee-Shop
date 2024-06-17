@@ -31,12 +31,15 @@ class AccountController {
     addAccount = async (req, res) => {
         try {
             const { name, phone, email, password } = req.body;
-    
+            
+            const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
+            const hashedPassword = await bcrypt.hash(password, salt);
+
             const newAccount = AccountModel({
                 name: name,
                 phone: phone,
                 email: email,
-                password: password,
+                password: hashedPassword,
                 point: 0,
                 order_id: [],
                 isBlock: false,
