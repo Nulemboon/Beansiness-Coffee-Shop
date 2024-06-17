@@ -7,7 +7,7 @@ const getVoucher = async (req, res) => {
         const voucher = await VoucherModel.find();
         res.status(200).json(voucher);
     } catch (error) {
-        res.status(500).json({ message: 'Unable to get Vouchers', error: error.message});
+        res.status(500).json({ message: 'Unable to get Vouchers', error: error.message });
     }
 }
 
@@ -25,7 +25,7 @@ const addVoucher = async (req, res) => {
         const savedVoucher = await newVoucher.save();
         res.status(200).json(savedVoucher);
     } catch (error) {
-        res.status(500).json({ message: 'Unable to add voucher', error: error.message});
+        res.status(500).json({ message: 'Unable to add voucher', error: error.message });
     }
 }
 
@@ -39,7 +39,7 @@ const removeVoucher = async (req, res) => {
         }
 
         // Delete the voucher by ID
-        const deletedVoucher = await Voucher.findByIdAndDelete(voucherId);
+        const deletedVoucher = await VoucherModel.findByIdAndDelete(voucherId);
 
         if (!deletedVoucher) {
             return res.status(404).json({ message: 'Voucher not found' });
@@ -52,10 +52,10 @@ const removeVoucher = async (req, res) => {
     }
 }
 
-const updateUserVoucher = async (req, res) => {
+const addUserVoucher = async (req, res) => {
     try {
         const { accountId } = req.params.id;
-        const { method, voucherId } = req.body;
+        const { voucherId } = req.body;
 
         // Validate voucherId
         if (!mongoose.Types.ObjectId.isValid(voucherId)) {
@@ -63,45 +63,72 @@ const updateUserVoucher = async (req, res) => {
         }
 
         // Find the account by ID
-        const account = await Account.findById(accountId);
+        const account = await AccountModel.findById(accountId);
 
         if (!account) {
             return res.status(404).json({ message: 'Account not found' });
         }
 
-        const voucher = account.vouchers.find(v => v.voucher_id.equals(voucherId));
+        // Check if the voucher already exists in the account's vouchers list
+        const existingVoucher = account.vouchers.find(v => v.voucher_id.equals(voucherId));
 
-        if (method == "add") {
-            if (voucher) {
-                // If the voucher exists, increase the quantity
-                voucher.quantity += 1;
-            } else {
-                // If the voucher does not exist, add a new one with quantity 1
-                account.vouchers.push({ voucher_id: voucherId, quantity: 1 });
-            }
-        } else if (method == "remove") {
-            if (!voucher) {
-                return res.status(404).json({ message: 'Voucher not found in account' });
-            }
-
-            if (voucher.quantity > 1) {
-                // Decrease the quantity if more than one
-                account.vouchers[voucherIndex].quantity -= 1;
-            } else {
-                // Remove the voucher if only one left
-                account.vouchers.splice(voucherIndex, 1);
-            }
+        if (existingVoucher) {
+            // If the voucher exists, increase the quantity
+            existingVoucher.quantity += 1;
         } else {
-            res.status(400).json({message: 'Wrong method in updating User Voucher'});
+            // If the voucher does not exist, add a new one with quantity 1
+            account.vouchers.push({ voucher_id: voucherId, quantity: 1 });
         }
 
         // Save the account with the updated vouchers list
         await account.save();
 
         res.status(200).json(account);
-        
+
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
+    }
+}
+
+const removeUserVoucher = async (req, res) => {
+    try {
+        const { accountId } = req.params.id;
+        const { voucherId } = req.body;
+
+        // Validate voucherId
+        if (!mongoose.Types.ObjectId.isValid(voucherId)) {
+            return res.status(400).json({ message: 'Invalid voucher ID' });
+        }
+
+        // Find the account by ID
+        const account = await AccountModel.findById(accountId);
+
+        if (!account) {
+            return res.status(404).json({ message: 'Account not found' });
+        }
+
+        // Find the voucher in the account's vouchers list
+        const voucherIndex = account.vouchers.findIndex(v => v.voucher_id.equals(voucherId));
+        if (voucherIndex === -1) {
+            return res.status(404).json({ message: 'Voucher not found in account' });
+        }
+
+        const voucher = account.vouchers[voucherIndex];
+
+        if (voucher.quantity > 1) {
+            // Decrease the quantity if more than one
+            account.vouchers[voucherIndex].quantity -= 1;
+        } else {
+            // Remove the voucher if only one left
+            account.vouchers.splice(voucherIndex, 1);
+        }
+
+        // Save the account with the updated vouchers list
+        await account.save();
+        res.status(200).json(account);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
 
@@ -109,5 +136,6 @@ module.exports = {
     getVoucher,
     addVoucher,
     removeVoucher,
-    updateUserVoucher
+    addUserVoucher,
+    removeUserVoucher
 }

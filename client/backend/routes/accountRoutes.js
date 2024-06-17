@@ -8,7 +8,8 @@ router.get('/:id', accountController.getAccountById);
 
 router.get('/', accountController.getAllAccounts);
 
-router.post('/:id/vouchers', voucherController.updateUserVoucher);
+router.post('/:id/vouchers/add', voucherController.addUserVoucher);
+router.pose('/:id/vouchers/remove', voucherController.removeUserVoucher);
 
 
 

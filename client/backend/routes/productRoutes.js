@@ -8,6 +8,11 @@ router.get('/:id', productController.getProductById);
 router.get('/:q', productController.getProductByQuery);
 
 router.get('/', productController.getAllProducts);
+
+router.post('/', productController.createProduct);
+router.patch('/', productController.updateProduct);
+router.delete('/', productController.deleteProduct);
+
 // router.get('/', productController.getAllProducts);
 
 
