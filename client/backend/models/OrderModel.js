@@ -8,12 +8,12 @@ const OrderSchema = new mongoose.Schema({
         required: true,
     },
 
-    // Delivery form
-    delivery_info: {
-        type: Schema.Types.ObjectId,
-        ref: 'DeliveryInfo',
-        required: true
-    },
+    // // Delivery form
+    // delivery_info: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'DeliveryInfo',
+    //     required: true
+    // },
 
     // Cart
     order_items: [{
@@ -37,7 +37,12 @@ const OrderSchema = new mongoose.Schema({
     completed_at: {
         type: Date,
         default: Date.now
-    },    
+    },
+    
+    transaction_id: {
+        type: String,
+        required: true,
+    },
 })
 
 const OrderModel = mongoose.model('Order', OrderSchema);
