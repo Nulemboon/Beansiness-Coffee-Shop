@@ -7,7 +7,9 @@ import List from './pages/List/List'
 import Orders from './pages/Orders/Orders'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import UserList from './pages/User/User'
+import Voucher from './pages/Voucher/Voucher'
+import FinancialReport from './pages/FinancialReport/FinancialReport'
 const App = () => {
   return (
     <div className='app'>
@@ -20,6 +22,9 @@ const App = () => {
           <Route path="/add" element={<Add/>}/>
           <Route path="/list" element={<List/>}/>
           <Route path="/orders" element={<Orders/>}/>
+          <Route path="/users" element={<UserList/>} />
+          <Route path="/vouchers" element={<Voucher />} />
+          <Route path="/report" element={<FinancialReport />} />
         </Routes>
       </div>
     </div>

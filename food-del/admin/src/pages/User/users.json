@@ -1,0 +1,20 @@
+[
+    {
+      "id": 1,
+      "name": "John Doe",
+      "phone": "123-456-7890",
+      "email": "john.doe@example.com",
+      "bankId": "123456789",
+      "point": 100,
+      "isBlock": "active"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "phone": "987-654-3210",
+      "email": "jane.smith@example.com",
+      "bankId": "987654321",
+      "point": 200,
+      "isBlock": "blocked"
+    }
+  ]
