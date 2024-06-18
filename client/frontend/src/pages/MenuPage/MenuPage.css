@@ -1,0 +1,10 @@
+.menu-page {
+    padding: 20px;
+  }
+  
+  .menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
