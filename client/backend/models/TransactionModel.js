@@ -20,12 +20,7 @@ const TransactionSchema = new mongoose.Schema({
     transaction_id: {
         type: String,
         required: true,
-    },
-    transaction_num: {
-        type: Number,
-        required: true,
     }
-
 });
 
 const TransactionModel = mongoose.model('Transaction', TransactionSchema);
