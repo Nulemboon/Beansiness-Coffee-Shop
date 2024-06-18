@@ -1,3 +1,5 @@
+const express = require('express');
+
 const accountRouter = require('./accountRoutes');
 const cartRouter = require('./cartRoutes');
 const deliveryInfoRouter = require('./deliveryInfoRoutes');
@@ -5,6 +7,9 @@ const reportRouter = require('./reportRoutes');
 const orderRouter = require('./orderRoutes');
 const paymentRouter = require('./paymentRoutes');
 const productRouter = require('./productRoutes');
+const voucherRouter = require('./voucherRoutes');
+const staffRouter  = require('./staffRoutes');
+const vnpayRouter = require('../subsystem/vnpayRoutes');
 
 function route(app) {
     //Account
@@ -31,6 +36,20 @@ function route(app) {
     //Product
     app.use('/product', productRouter);
 
+    app.use("/images", express.static('uploads'))
+
+    //Voucher
+    app.use('/voucher', voucherRouter);
+
+    //Staff
+    app.use('/staff', staffRouter);
+
+    //VNPAY
+    app.use('/transaction', vnpayRouter);
+
+    app.use('/', (req, res) => {
+        res.send("API Working")
+    });
 }
 
 module.exports = route;

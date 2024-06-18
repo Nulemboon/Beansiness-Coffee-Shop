@@ -37,7 +37,12 @@ const OrderSchema = new mongoose.Schema({
     completed_at: {
         type: Date,
         default: Date.now
-    },    
+    },
+    
+    transaction_id: {
+        type: String,
+        required: true,
+    },
 })
 
 const OrderModel = mongoose.model('Order', OrderSchema);

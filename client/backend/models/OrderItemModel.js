@@ -14,7 +14,6 @@ const OrderItemSchema = new mongoose.Schema({
     order_id: {
         type: Schema.Types.ObjectId,
         ref: 'Order',
-        required: true
     },
     toppings: [{
         type: Schema.Types.ObjectId,

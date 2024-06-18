@@ -1,15 +1,13 @@
 const express = require('express');
 const cartController = require('../controllers/cartController');
-
+const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const cart = await cartController.getCartFromCookies(req, res);
-    res.json(cart);
-});
+router.get('/', authMiddleware, cartController.getCart);
 
-router.post('/', cartController.updateCart);
-router.delete('/', cartController.removeFromCart);
+router.post('/', authMiddleware, cartController.addToCart);
+
+router.delete('/', authMiddleware, cartController.removeFromCart);
 
 
 module.exports = router;
