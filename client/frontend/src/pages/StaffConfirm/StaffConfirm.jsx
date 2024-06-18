@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './StaffConfirm.css';
 import { url } from '../../assets/assets';
 import axios from 'axios';
@@ -57,7 +57,7 @@ const StaffConfirm = () => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${url}/order`);
+      const response = await axios.get(`${url}/order/pending`);
       if (response.data.success) {
         setList(response.data.data);  // Correctly setting the list state
       } else {

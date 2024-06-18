@@ -1,7 +1,6 @@
 import './App.css';
-import React from 'react';
+// import React from 'react';
 import Navbar from './components/navbar/Navbar'
-import Sidebar from './components/Sidebar/Sidebar'
 import StaffOrder from './pages/StaffOrder/StaffOrder'
 import StaffConfirm from './pages/StaffConfirm/StaffConfirm'
 import ShipperConfirm from './pages/ShipperConfirm/ShipperConfirm';

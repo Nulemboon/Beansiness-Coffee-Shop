@@ -1,5 +1,9 @@
 .product-list {
     padding: 20px;
+    max-height: 40vh;
+    overflow-y: auto;
+    /* border: 1px solid #ccc;
+    padding: 10px; */
 }
 .product-list h2 {
     margin-bottom: 10px;
