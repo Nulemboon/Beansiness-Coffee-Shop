@@ -1,5 +1,6 @@
 const moment = require('moment');
 const config = require('./config/default.json');
+const TransactionModel = require('../models/TransactionModel');
 
 function sortObject(obj) {
     let sorted = {};
@@ -100,16 +101,49 @@ class VNPAY {
             let hmac = crypto.createHmac("sha512", secretKey);
             let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
 
-            // if (secureHash === signed) {
-            //     //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+            if (secureHash == signed) {
+                var orderId = vnp_Params['vnp_TxnRef'];
+                var rspCode = vnp_Params['vnp_ResponseCode'];
 
-            //     res.render('success', { code: vnp_Params['vnp_ResponseCode'] })
-            // } else {
-            //     res.render('success', { code: '97' })
-            // }
-            res.status(200).json({message: "success"});
+                var amount = vnp_Params['vnp_Amount'];
+                amount = parseInt(amount) / 100;
+                var content = vnp_Params['vnp_OrderInfo'];
+                var message = '';
+
+                if (rspCode == "00") {
+                    message = 'Payment is completed!';
+                } else if (orderId == "04") {
+                    message = 'Invalid amount';
+                } else if (orderId == "99") {
+                    message = 'Invalid request';
+                } else {
+                    message = 'Order is not completed, please try again!';
+                }
+
+                // Save Transaction
+                const newTransaction = TransactionModel({
+                    amount: amount,
+                    message: message,
+                    transaction_content: content,
+                    transaction_id: orderId,
+                })
+
+                newTransaction.save()
+                    .then((savedTransaction) => {
+                        res.json({ transactionId: savedTransaction._id });
+                    })
+                    .catch((err) => {
+                        console.error('Error saving transaction:', err);
+                        res.status(500).json({ error: 'Failed to save transaction' });
+                    });;
+
+
+                // Error checksum
+            } else {
+                res.status(200).json({message: 'Fail checksum' });
+            }
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({ error: error.message });
         }
 
     }
