@@ -3,6 +3,7 @@ import './MyOrders.css';
 import { StoreContext } from '../../Context/StoreContext'; 
 import { assets } from '../../assets/assets';
 import ConfirmCancelModal from '../../components/ConfirmCancelModal/ConfirmCancelModal'; 
+import ReviewForm from '../../components/WriteReview/ReviewForm';
 
 const mockOrders = [
   {
@@ -111,6 +112,7 @@ const MyOrders = () => {
   const [error, setError] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false); // State to manage confirmation modal visibility
   const [orderToCancel, setOrderToCancel] = useState(null); // State to manage which order to cancel
+  const [showReview, setShowReview] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -169,6 +171,10 @@ const MyOrders = () => {
     }
   };
 
+  const handleReview = (orderId) => {
+    setShowReview(!showReview);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -198,6 +204,12 @@ const MyOrders = () => {
             )}
             {order.status === 'In Delivery' && (
               <button onClick={() => handleOpenConfirm(order.id)}>Cancel</button>
+            )}
+            {order.status === 'Delivered' && (
+                <div>
+                    <button onClick={() => handleReview(order)}>Write Review</button>
+                    {showReview && <ReviewForm onClose={() => setShowReview(false)} />}
+                </div>
             )}
           </div>
         ))}

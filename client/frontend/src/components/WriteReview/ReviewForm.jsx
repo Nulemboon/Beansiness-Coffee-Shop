@@ -19,6 +19,7 @@ const ReviewForm = ({ onClose }) => {
   };
 
   return (
+    <div className='container-review'>
     <div className="review-form-container">
       <button onClick={onClose} className="close-button">×</button>
       <h2>Write a Food Review</h2>
@@ -57,6 +58,7 @@ const ReviewForm = ({ onClose }) => {
         </div>
         <button type="submit" className="submit-button">Submit Review</button>
       </form>
+    </div>
     </div>
   );
 };
