@@ -1,0 +1,56 @@
+/* src/components/ApplyVoucher/ApplyVoucher.css */
+
+.apply-voucher-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5dc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #5a3e36;
+    text-align: center;
+  }
+  
+  .apply-voucher-container h2 {
+    color: #8B4513;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .apply-voucher-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .apply-voucher-form input {
+    padding: 10px;
+    border: 1px solid #8B4513;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #5a3e36;
+    background-color: #FAF0E6;
+  }
+  
+  .apply-voucher-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #A0522D;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .apply-voucher-form button:hover {
+    background-color: #8B4513;
+  }
+  
+  .voucher-message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #5a3e36;
+  }
+  

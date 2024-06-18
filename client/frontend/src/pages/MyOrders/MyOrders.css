@@ -1,0 +1,129 @@
+.my-orders {
+    margin: 50px 0;
+}
+
+.my-orders h2 {
+    text-align: center;
+    color: #8B4513;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.my-orders .container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.my-orders-order {
+    display: grid;
+    grid-template-columns: 0.5fr 2fr 1fr 1fr 2fr 1fr;
+    align-items: center;
+    gap: 30px;
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #5a3e36;
+    border: 1px solid #D2691E;
+    background-color: #FAEBD7;
+}
+
+.my-orders-order img {
+    width: 50px;
+}
+
+.my-orders-order p span {
+    color: #8B4513;
+}
+
+.my-orders-order p b {
+    font-weight: 500;
+    color: #5a3e36;
+}
+
+.my-orders button {
+    border: none;
+    padding: 12px 0;
+    border-radius: 4px;
+    background-color: #D2B48C;
+    cursor: pointer;
+    color: #5a3e36;
+    transition: background-color 0.3s ease;
+}
+
+.my-orders button:hover {
+    background-color: #A0522D;
+    color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .my-orders-order {
+        grid-template-columns: 1fr 2fr 1fr;
+        row-gap: 5px;
+        font-size: 12px;
+    }
+
+    .my-orders-order button {
+        font-size: 10px;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: left;
+    width: 400px;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #8B4513;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.order-item input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.close-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #8B4513;
+    width: 50px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 0 auto;
+}
+
+.close-button:hover {
+    background-color: #5a3e36;
+}
