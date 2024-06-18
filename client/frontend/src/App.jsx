@@ -7,6 +7,7 @@ import ShipperConfirm from './pages/ShipperConfirm/ShipperConfirm';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import RegisterOffline from './pages/RegisterOffline/RegisterOffline';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/staff-order" element={<StaffOrder/>}/>
           <Route path="/confirm-order/staff" element={<StaffConfirm/>}/>
           <Route path="/confirm-order/shipper" element={<ShipperConfirm/>}/>
+          <Route path="/register-offline" element={<RegisterOffline/>}/>
         </Routes>
         </div>
     </BrowserRouter>

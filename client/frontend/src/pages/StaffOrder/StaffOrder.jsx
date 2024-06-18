@@ -116,6 +116,9 @@ const StaffOrder = () => {
       });
       if (response.data.success) {
         toast.success(response.data.message);
+        // Clear the cart after successful order
+        Cookies.remove('cart');
+        setSelectedProductIds([]);
       } else {
         toast.error(response.data.message);
       }

@@ -19,6 +19,10 @@ const Sidebar = () => {
             <img src={assets.order_icon} alt="" />
             <p>Order</p>
         </NavLink>
+        <NavLink to='/register-offline' className="sidebar-option">
+          <img src={assets.profile_icon} alt="" />
+          <p>New Member</p>
+        </NavLink>
       </div>
     </div>
   )
