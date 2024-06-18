@@ -1,0 +1,46 @@
+.chart {
+    margin-left: 10%;
+    margin-top: 40px;
+}
+
+.title {
+    margin-left: 10px;
+}
+.selection{
+    margin-top: 20px;
+    margin-left: 10px;
+
+}
+
+/* CSS */
+.button-63 {
+    align-items: center;
+    background-image: linear-gradient(144deg,#7c4125, #673317 50%,#e97528);
+    border: 0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 100%;
+    padding: 7px 11px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  
+  .button-63:active,
+  .button-63:hover {
+    outline: 0;
+  }
+  
+  @media (min-width: 768px) {
+    .button-63 {
+      font-size: 14px;
+      min-width: 90px;
+    }
+  }
+
