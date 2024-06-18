@@ -4,7 +4,7 @@ import axios from 'axios';
 import './Login.css';
 
 const Login = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/account/login', {
-        phoneNumber,
+        phone,
         password,
       });
       if (response.data.success) {
@@ -34,12 +34,12 @@ const Login = () => {
         <h2>Admin Login</h2>
         {error && <p className="error">{error}</p>}
         <div className="form-group">
-          <label htmlFor="phoneNumber">Phone Number</label>
+          <label htmlFor="phone">Phone Number</label>
           <input
             type="text"
-            id="phoneNumber"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             required
           />
         </div>

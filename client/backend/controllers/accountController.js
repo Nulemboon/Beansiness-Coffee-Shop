@@ -83,15 +83,16 @@ class AccountController {
     
     //login user
     loginUser = async (req,res) => {
+        console.log(req.body);
         const {phone, password} = req.body;
         try{
-            const account = await userModel.findOne({phone})
+            const account = await AccountModel.findOne({phone})
     
             if(!account){
                 return res.json({success:false,message: "Account does not exist"})
             }
     
-            const isMatch = await bcrypt.compare(password, user.password)
+            const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
                 return res.json({success:false,message: "Invalid credentials"})
@@ -110,7 +111,7 @@ class AccountController {
         const {name, phone, email, password} = req.body;
         try{
             //check if user already exists
-            const exists = await userModel.findOne({phone});
+            const exists = await AccountModel.findOne({phone});
 
             if(exists){
                 return res.json({success:false,message: "User already exists"});
@@ -148,7 +149,6 @@ class AccountController {
         }
     }
 
-    
 }
 
 

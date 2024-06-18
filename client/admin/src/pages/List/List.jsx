@@ -11,11 +11,11 @@ const List = () => {
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${url}/api/product/list`);
+      const response = await axios.get(`${url}/product`);
       if (response.data.success) {
         setList(response.data.data);
       } else {
-        toast.error("Error fetching the product list.");
+        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error("Error fetching the product list.");

@@ -1,6 +1,6 @@
 const OrderModel = require('../models/OrderModel.js');
 const Order = require('../classes/Order.js');
-const DeliveryInfo = require('../models/DeliveryInfo');
+const DeliveryInfoModel = require('../models/DeliveryInfoModel');
 
 
 class OrderController {

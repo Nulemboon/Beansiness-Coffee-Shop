@@ -7,29 +7,35 @@ const OrderItemModel = require('../models/OrderItemModel');
 const TransactionModel = require('../models/TransactionModel');
 const VoucherModel = require('../models/VoucherModel');
 const ReviewModel = require('../models/ReviewModel');
-
-const sampleData = require('./sampleData.json');
+const StaffModel = require('../models/StaffModel');
+const bcrypt = require('bcrypt');
+// const sampleData = require('./sample.json');
 
 async function insertSampleData() {
-    await mongoose.connect('mongodb://localhost:27017/your_database_name', { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect('mongodb+srv://tri2003714:8825529tT@cluster0.tq9x0ib.mongodb.net/').then(()=>console.log("DB Connected"))
+    const password = 'abc123';
+    const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    await AccountModel.deleteMany({});
-    await ProductModel.deleteMany({});
-    await ToppingModel.deleteMany({});
-    await OrderModel.deleteMany({});
-    await OrderItemModel.deleteMany({});
-    await TransactionModel.deleteMany({});
-    await VoucherModel.deleteMany({});
-    await ReviewModel.deleteMany({});
+    const newAccount = AccountModel({
+        name: 'admin',
+        phone: '1234567890',
+        email: 'tri2003714@gmail.com',
+        password: hashedPassword,
+        point: 0,
+        order_id: [],
+        isBlock: false,
+        vouchers: []
+    });
 
-    await AccountModel.insertMany(sampleData.accounts);
-    await ProductModel.insertMany(sampleData.products);
-    await ToppingModel.insertMany(sampleData.toppings);
-    await OrderModel.insertMany(sampleData.orders);
-    await OrderItemModel.insertMany(sampleData.order_items);
-    await TransactionModel.insertMany(sampleData.transactions);
-    await VoucherModel.insertMany(sampleData.vouchers);
-    await ReviewModel.insertMany(sampleData.reviews);
+    const savedAccount = await newAccount.save();
+
+    const newStaff = StaffModel({
+        account_id: savedAccount._id,
+        role: 'admin'
+    });
+
+    const savedStaff = await newStaff.save();
 
     console.log('Sample data inserted successfully!');
     mongoose.connection.close();

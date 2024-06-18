@@ -3,36 +3,14 @@ import { toast } from 'react-toastify';
 
 import './User.css';
 
-const userData = [
-  {
-    "id": 1,
-    "name": "John Doe",
-    "phone": "123-456-7890",
-    "email": "john.doe@example.com",
-    "bankId": "123456789",
-    "point": 100,
-    "isBlock": "active"
-  },
-  {
-    "id": 2,
-    "name": "Jane Smith",
-    "phone": "987-654-3210",
-    "email": "jane.smith@example.com",
-    "bankId": "987654321",
-    "point": 200,
-    "isBlock": "blocked"
-  }
-];
-
 const UserList = () => {
-  const [list, setList] = useState(userData);
+  const [list, setList] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [newIsBlock, setNewIsBlock] = useState('');
   const [newUser, setNewUser] = useState({
     name: '',
     phone: '',
     email: '',
-    bankId: '',
     point: '',
     isBlock: ''
   });
@@ -43,7 +21,7 @@ const UserList = () => {
       { ...newUser, id: list.length ? list[list.length - 1].id + 1 : 1 }
     ];
     setList(updatedList);
-    setNewUser({ name: '', phone: '', email: '', bankId: '', point: '', isBlock: '' });
+    setNewUser({ name: '', phone: '', email: '', point: '', isBlock: '' });
     toast.success("User added successfully.");
   };
 
