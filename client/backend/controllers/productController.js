@@ -47,27 +47,41 @@ class ProductController {
 
     createProduct = async (req, res) => {
         try {
-            const newData = req.body();
-            const newProduct = ProductModel(newData)
+            const image_file = req.file ? req.file.filename : null;
+
+            const { name, description, price, category, toppings } = req.body;
+            const newProduct = new ProductModel({
+                name,
+                description,
+                price,
+                category,
+                imageURL: image_file,
+                available_toppings: toppings,
+            });
 
             const saveProduct = await newProduct.save();
             res.status(200).json(saveProduct);
         } catch (error) {
             res.status(500).json({ message: 'Unable to create product', error: error.message });
         }
-    }
+    };
 
+    // Update Product with Optional Image Upload
     updateProduct = async (req, res) => {
         try {
-            const { productId } = req.params;
-            const updateData = req.body;
+            const { productId, ...updateData } = req.body;
 
-            // Validate accountId
+            // Check if an image is uploaded
+            if (req.file) {
+                updateData.imageURL = req.file.filename;
+            }
+
+            // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
                 return res.status(400).json({ message: 'Invalid product ID' });
             }
 
-            // Find and update the account by ID with only the specified fields
+            // Find and update the product by ID with only the specified fields
             const updatedProduct = await ProductModel.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
 
             if (!updatedProduct) {
@@ -75,33 +89,33 @@ class ProductController {
             }
 
             res.status(200).json(updatedProduct);
-
         } catch (error) {
             res.status(500).json({ message: 'Unable to update product', error: error.message });
         }
-    }
+    };
 
+    // Delete Product
     deleteProduct = async (req, res) => {
         try {
-            const { productId } = req.params;
+            const { productId } = req.body;
 
-            // Validate voucherId
-            if (!mongoose.Types.ObjectId.isValid(voucherId)) {
-                return res.status(400).json({ message: 'Invalid voucher ID' });
+            // Validate productId
+            if (!mongoose.Types.ObjectId.isValid(productId)) {
+                return res.status(400).json({ message: 'Invalid product ID' });
             }
 
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
 
             if (!deletedProduct) {
-                return res.status(404).json({ message: 'Voucher not found' });
+                return res.status(404).json({ message: 'Product not found' });
             }
 
-            res.status(200).json({ message: 'Voucher deleted successfully', product: deletedProduct });
+            res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
         } catch (error) {
-            res.status(500).json({ message: 'Unable to update product', error: error.message })
+            res.status(500).json({ message: 'Unable to delete product', error: error.message });
         }
-    }
+    };
 }
 
 

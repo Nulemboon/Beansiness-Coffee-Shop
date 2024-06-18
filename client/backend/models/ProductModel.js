@@ -10,6 +10,11 @@ const ProductSchema = new mongoose.Schema({
     availale_toppings: [{
         type: mongoose.Schema.ObjectId,
         ref: "Topping"
+    }],
+
+    reviews: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Review"
     }]
 })
 

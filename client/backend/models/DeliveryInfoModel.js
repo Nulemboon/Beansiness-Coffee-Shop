@@ -18,7 +18,6 @@ const DeliveryInfoSchema = new mongoose.Schema({
 
     instruction: {
         type: String,
-        required: false
     },
 });
 

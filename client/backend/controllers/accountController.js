@@ -70,7 +70,7 @@ class AccountController {
                 return res.status(404).json({ message: 'Account not found' });
             }
     
-            res.status(200).json({ message: 'Account deleted successfully', voucher: deletedAccount });
+            res.status(200).json({ message: 'Account deleted successfully', account: deletedAccount });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Server error' });

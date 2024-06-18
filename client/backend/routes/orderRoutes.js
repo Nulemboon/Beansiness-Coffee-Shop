@@ -3,7 +3,7 @@ const orderController = require('../controllers/orderController');
 
 const router = express.Router();
 
-router.get('/', authMiddleware, orderController.getAllOrders);
+router.get('/', orderController.getAllOrders);
 
 router.post('/offline', orderController.offlineOrder);
 

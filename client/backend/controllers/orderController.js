@@ -1,6 +1,6 @@
 const OrderModel = require('../models/OrderModel.js');
 const Order = require('../classes/Order.js');
-const CartController = require('./cartController.js');
+const DeliveryInfo = require('../models/DeliveryInfo');
 
 
 class OrderController {
@@ -30,7 +30,7 @@ class OrderController {
 
     async placeOrder(req, res) {
         try {
-            const { delivery_info, shipping_fee, transaction_id, payment_method } = req.body;
+            const { delivery_info, shipping_fee, transaction_id } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -62,9 +62,17 @@ class OrderController {
                 totalAmount += product.price * item.quantity;
             }
 
+            const delivery = new DeliveryInfoModel({
+                receiver_name: delivery_info.receiver_name,
+                address: delivery_info.address,
+                phone_number: delivery_info.phone_number,
+                instruction: delivery_info.instruction
+            });
+            await delivery.save();
+
             const order = new OrderModel({
                 account_id: accountId,
-                delivery_info,
+                delivery_info: delivery._id,
                 order_items: orderItems,
                 shipping_fee,
                 status: 'Pending', // Initial order status
@@ -82,7 +90,7 @@ class OrderController {
                 { $push: { order_id: order._id } }
             );
 
-            // Optionally clear the cart
+            
             res.clearCookie('cart');
 
             res.status(201).json({ message: 'Order placed successfully', order });
