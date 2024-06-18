@@ -3,10 +3,10 @@ import axios from 'axios';
 import FoodDetailModal from '../../components/FoodDetailModal/FoodDetailModal';
 import MenuListItem from '../../components/MenuList/MenuListItem';
 import './MenuPage.css';
-import { StoreContext } from '../../Context/StoreContext'; 
+import { StoreContext } from '../../Context/StoreContext'; // Adjust the path based on your project structure
 
 const MenuPage = () => {
-  const { url } = useContext(StoreContext); 
+  const { url } = useContext(StoreContext); // Access url from StoreContext
   const [foodItems, setFoodItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ const MenuPage = () => {
     };
 
     fetchFoodItems();
-  }, [url]); 
+  }, [url]); // Dependency array includes url to ensure it updates if url changes
 
   const handleItemClick = (id) => {
     const item = foodItems.find((item) => item.id === id);
