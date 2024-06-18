@@ -147,6 +147,8 @@ class AccountController {
             res.json({success:false,message:"Error"})
         }
     }
+
+    
 }
 
 
