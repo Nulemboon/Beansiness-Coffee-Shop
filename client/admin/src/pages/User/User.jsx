@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-
+import React, { useState, useEffect } from 'react';
 import './User.css';
+import { url } from '../../assets/assets';
 
 const UserList = () => {
   const [list, setList] = useState([]);
@@ -15,6 +15,23 @@ const UserList = () => {
     isBlock: ''
   });
 
+  const fetchList = async () => {
+    try {
+      const response = await axios.get(`${url}/account`);
+      if (response.data.success) {
+        setList(response.data.data);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error fetching the account list.");
+    }
+  };
+
+  useEffect(() => {
+    fetchList();
+  }, []);
+
   const addUser = () => {
     const updatedList = [
       ...list,
@@ -24,6 +41,7 @@ const UserList = () => {
     setNewUser({ name: '', phone: '', email: '', point: '', isBlock: '' });
     toast.success("User added successfully.");
   };
+
 
   const removeUser = (userId) => {
     const updatedList = list.filter((user) => user.id !== userId);
@@ -73,7 +91,8 @@ const UserList = () => {
       <h1 style={{ marginLeft: '10px' }}>User Management</h1>
       <form onSubmit={handleNewUserSubmit} className="new-user-form">
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -87,7 +106,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
           type="text"
           name="name"
           placeholder="Name"
@@ -96,7 +116,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -110,7 +131,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="text"
           name="phone"
@@ -120,7 +142,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -134,7 +157,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="email"
           name="email"
@@ -144,7 +168,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             width: '180px',
@@ -158,7 +183,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="text"
           name="bankId"
@@ -168,7 +194,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -182,7 +209,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="number"
           name="point"
@@ -192,7 +220,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -206,7 +235,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="text"
           name="isBlock"

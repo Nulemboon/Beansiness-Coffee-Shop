@@ -7,8 +7,12 @@ class AccountController {
     getAllAccounts = async (req, res) => {
         try {
             const accounts = await AccountModel.find();
-            // const accountList = accounts.map(account => new Account(account.name, account.email, account.password));
-            res.json(accounts);
+
+            if (!accounts || accounts.length === 0) {
+                res.json({success: false, message: 'No account available'})
+            }
+
+            res.json({success: true, data: accounts});
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching accounts.' });
         }
