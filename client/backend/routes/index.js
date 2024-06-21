@@ -47,6 +47,10 @@ function route(app) {
     //VNPAY
     app.use('/transaction', vnpayRouter);
 
+    app.use('/:slug', (req, res) => {
+        res.send('Path not found');
+    })
+    
     app.use('/', (req, res) => {
         res.send("API Working")
     });
