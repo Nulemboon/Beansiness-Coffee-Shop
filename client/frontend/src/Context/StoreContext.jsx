@@ -10,39 +10,43 @@ const StoreContextProvider = (props) => {
   const [token, setToken] = useState("");
 
   // Function to add item to the cart
-  const addToCart = async (itemId, quantity = 1, size = 'M', toppings = []) => {
-    console.log(`Attempting to add item with ID: ${itemId} to cart`);
-  
-    // Update local state
-    setCartItems((prev) => {
-      const updatedCart = { ...prev };
-      if (!updatedCart[itemId]) {
-        updatedCart[itemId] = { quantity, size, toppings };
-      } else {
-        updatedCart[itemId].quantity += quantity;
-      }
-      console.log("Updated Cart Items after add:", updatedCart); // Log updated state immediately
-      return updatedCart;
-    });
-  
-    // Update cart on server if user is logged in
-    if (token) {
-      try {
-        const response = await axios.post(
-          `${url}/cart`,
-          { product_id: itemId, quantity, size, toppings },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        console.log("Add to cart response:", response.data);
-  
-        // Optionally, you can update the local state with the server response if necessary
-        // Example: Assuming the server response contains the updated cart state
-        // setCartItems(response.data.cart);
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-      }
+// Context/StoreContext.js or wherever your addToCart function is defined
+const addToCart = async (itemId, quantity, size, toppings) => {
+  console.log(`Attempting to add item with ID: ${itemId} to cart`);
+
+  // Update local state
+  setCartItems((prev) => {
+    const updatedCart = { ...prev };
+    if (!updatedCart[itemId]) {
+      updatedCart[itemId] = { quantity, size, toppings };
+    } else {
+      updatedCart[itemId].quantity += quantity;
+      updatedCart[itemId].size = size; // Optionally update size and toppings if required
+      updatedCart[itemId].toppings = toppings;
     }
-  };
+    console.log("Updated Cart Items after add:", updatedCart); // Log updated state immediately
+    return updatedCart;
+  });
+
+  // Update cart on server if user is logged in
+  if (token) {
+    try {
+      const response = await axios.post(
+        `${url}/cart`,
+        { product_id: itemId, quantity, size, toppings },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("Add to cart response:", response.data);
+
+      // Optionally, you can update the local state with the server response if necessary
+      // Example: Assuming the server response contains the updated cart state
+      // setCartItems(response.data.cart);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  }
+};
+
   
 
   // Function to remove item from the cart

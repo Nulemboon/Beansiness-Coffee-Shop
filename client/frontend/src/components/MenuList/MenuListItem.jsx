@@ -10,7 +10,7 @@ const MenuListItem = ({ item, onClick }) => {
       <div className="menu-list-item-details">
         <h3>{item.name}</h3>
         <p>{item.description}</p>
-        <p>${item.price.toFixed(2)}</p>
+        <p>{item.price  + ' VND'}</p>
       </div>
     </div>
   );

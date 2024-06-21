@@ -21,7 +21,7 @@ const FoodDetailModal = ({ item, onClose }) => {
         <h2>{name}</h2>
         {image && <img src={image} alt={name} />} {/* Only render the image if it exists */}
         <p><strong>Description:</strong> {description}</p>
-        <p><strong>Price:</strong> ${price / 100} {/* Assuming price is in cents */}</p>
+        <p><strong>Price:</strong> {price + ' VND'} {/* Assuming price is in cents */}</p>
         <p><strong>Category:</strong> {category}</p>
         <p><strong>Available Toppings:</strong> {available_toppings.length > 0 ? available_toppings.join(', ') : 'No toppings available'}</p>
         <h3>Reviews</h3>
