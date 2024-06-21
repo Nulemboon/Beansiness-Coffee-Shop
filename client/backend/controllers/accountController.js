@@ -53,8 +53,8 @@ class AccountController {
             });
     
             const savedAccount = await newAccount.save();
-            const token = createToken(savedAccount._id)
-            res.status(200).json(token);
+            // const token = createToken(savedAccount._id)
+            res.status(200).json(savedAccount);
         } catch (error) {
             res.status(500).json({ error: 'Unable to add account: ' + error.message});
         }
