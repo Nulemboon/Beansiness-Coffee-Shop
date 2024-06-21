@@ -1,5 +1,4 @@
 const ProductModel = require('../models/ProductModel');
-const { isBlock } = require('typescript');
 const mongoose = require('mongoose');
 
 class ProductController {
@@ -7,26 +6,26 @@ class ProductController {
         try {
             const products = await ProductModel.find();
             if (!products || products.length === 0) {
-                res.json({success: false, message: "No product Available"});
-                return;
+                res.status(204).json({message: "No product Available"});
             }
+            // const productList = products.map(product => new Product(product.id, product.name, product.description, product.price));
             res.json({success: true, data: products});
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching products.' });
+            res.status(500).json({error: 'An error occurred while fetching products:' + error.message});
         }
     };
     
     getProductById = async (req, res) => {
         try {
             const product = await ProductModel.findById(req.params.id);
-            if (product) {
-                // const productObj = new Product(product.id, product.name, product.description, product.price);
-                res.json(productObj);
-            } else {
-                res.status(404).json({ error: 'Product not found.' });
+            if (!product) {
+                res.status(204).json({message: 'Product not found.' });
             }
+
+            res.status(200).json(product);
+
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching the product.' });
+            res.status(500).json({ error: 'An error occurred while fetching the product: ' + error.message });
         }
     };
     
@@ -35,16 +34,16 @@ class ProductController {
             const query = req.params.q;
             const product = await ProductModel.find({
                 name: { $regex: '.*' + query + '.*'}
-            })
+            });
     
-            if (product) {
-                // const productObj = new Product(product.id, product.name, product.description, product.price);
-                res.json(productObj);
-            } else {
-                res.status(404).json({ error: 'Product not found.' });
+            if (!product) {
+                res.status(204).json({ error: 'Product not found.' });
             }
+
+            res.status(200).json(product);
+
         } catch (error) {
-            res.status(500).json({ error: error.message })
+            res.status(500).json({ error: "An error occurred while fetching the product: " + error.message});
         }
     };
 
@@ -65,7 +64,7 @@ class ProductController {
             const saveProduct = await newProduct.save();
             res.status(200).json(saveProduct);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to create product', error: error.message });
+            res.status(500).json({ error: 'Unable to create product: ' + error.message });
         }
     };
 
@@ -81,42 +80,42 @@ class ProductController {
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                return res.status(400).json({ message: 'Invalid product ID' });
+                throw new Error("In validate productId");
             }
 
             // Find and update the product by ID with only the specified fields
             const updatedProduct = await ProductModel.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
 
             if (!updatedProduct) {
-                return res.status(404).json({ message: 'Product not found' });
+                res.status(204).json({ message: 'Product not found' });
             }
 
             res.status(200).json(updatedProduct);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to update product', error: error.message });
+            res.status(500).json({ error: 'Unable to update product: ' + error.message });
         }
     };
 
     // Delete Product
     deleteProduct = async (req, res) => {
         try {
-            const { productId } = req.body;
+            const { productId } = req.params.id;
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                return res.status(400).json({ message: 'Invalid product ID' });
+                throw new Error("In validate productId");
             }
 
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
 
             if (!deletedProduct) {
-                return res.status(404).json({ message: 'Product not found' });
+                res.status(204).json({ message: 'Product not found' });
             }
 
-            res.status(200).json({ message: 'Product deleted successfully', product: deletedProduct });
+            res.status(200).json(deletedProduct);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to delete product', error: error.message });
+            res.status(500).json({ error: 'Unable to delete product: ' + error.message });
         }
     };
 }
