@@ -24,18 +24,16 @@ const LoginPopup = ({ setShowLogin }) => {
 
     const onLogin = async (e) => {
         e.preventDefault();
-
+    
         try {
             let response;
             if (currState === "Login") {
-                // Update to POST request and correct endpoint
                 const new_url = `${url}/account/login`;
                 response = await axios.post(new_url, {
                     phone: data.phone,
                     password: data.password
                 });
             } else {
-                // Update to POST request and correct endpoint for sign up
                 const new_url = `${url}/account/register`;
                 response = await axios.post(new_url, {
                     name: data.userName,
@@ -44,23 +42,26 @@ const LoginPopup = ({ setShowLogin }) => {
                     password: data.password
                 });
             }
-
-            if (response.data.success) { 
-                if (currState === "Login") {
-                    const token = response.data.token; 
-                    setToken(token);
-                    localStorage.setItem("token", token);
-                    loadCartData({ token: token });
-                }
+    
+            // Check if the response is a token
+            const token = response.data.token || response.data; // Assuming response.data directly holds the token
+    
+            if (token) {
+                setToken(token);
+                localStorage.setItem("token", token);
+                loadCartData({ token: token });
                 toast.success('Operation successful.');
                 setShowLogin(false);
             } else {
+                console.warn('Server response indicates failure:', response.data);
                 toast.error(response.data.message || 'Operation failed. Please check your details and try again.');
             }
         } catch (err) {
+            console.error('Error during login/register:', err.response ? err.response.data : err.message);
             toast.error('An error occurred. Please try again.');
         }
     };
+    
 
     return (
         <div className='login-popup'>
