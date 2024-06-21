@@ -3,11 +3,10 @@ import axios from 'axios';
 import FoodDetailModal from '../../components/FoodDetailModal/FoodDetailModal';
 import MenuListItem from '../../components/MenuList/MenuListItem';
 import './MenuPage.css';
-import { StoreContext } from '../../Context/StoreContext'; // Adjust the path based on your project structure
-
+import { StoreContext } from '../../Context/StoreContext'; 
 const MenuPage = () => {
   const { url } = useContext(StoreContext); // Access url from StoreContext
-  const [foodItems, setFoodItems] = useState([]);
+  const [foodItems, setFoodItems] = useState([]); // Initialize as an empty array
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,9 +14,18 @@ const MenuPage = () => {
   useEffect(() => {
     const fetchFoodItems = async () => {
       try {
-        const response = await axios.get(`${url}/product/all`);
-        setFoodItems(response.data); // Assuming the API returns an array of food items
+        const response = await axios.get(`${url}/product`);
+        console.log('API response:', response.data); // Debugging log
+
+        if (Array.isArray(response.data)) {
+          setFoodItems(response.data);
+        } else if (response.data && Array.isArray(response.data.data)) {
+          setFoodItems(response.data.data);
+        } else {
+          throw new Error('API did not return an array');
+        }
       } catch (err) {
+        console.error('Error fetching food items:', err); // Debugging log
         setError('Failed to load food items. Please try again.');
       } finally {
         setLoading(false);
@@ -28,7 +36,7 @@ const MenuPage = () => {
   }, [url]); // Dependency array includes url to ensure it updates if url changes
 
   const handleItemClick = (id) => {
-    const item = foodItems.find((item) => item.id === id);
+    const item = foodItems.find((item) => item._id === id); // Use `_id` instead of `id`
     setSelectedItem(item);
   };
 
@@ -50,9 +58,9 @@ const MenuPage = () => {
       <div className="menu-list">
         {foodItems.map((item) => (
           <MenuListItem
-            key={item.id}
+            key={item._id}
             item={item}
-            onClick={() => handleItemClick(item.id)}
+            onClick={() => handleItemClick(item._id)} 
           />
         ))}
       </div>

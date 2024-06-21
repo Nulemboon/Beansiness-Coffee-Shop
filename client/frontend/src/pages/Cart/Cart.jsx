@@ -1,39 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getTotalCartAmount, loadCartData, url } = useContext(StoreContext);
+  const { cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
   const [voucherCode, setVoucherCode] = useState('');
-  const [cartDetails, setCartDetails] = useState([]);
-
-  useEffect(() => {
-    async function fetchCartData() {
-      await loadCartData(); 
-    }
-    fetchCartData();
-  }, [loadCartData]);
-
-  useEffect(() => {
-    async function fetchCartDetails() {
-      try {
-        const response = await axios.get(`${url}/cart`);
-        setCartDetails(response.data.cartItems); 
-      } catch (error) {
-        console.error('Error fetching cart details:', error);
-      }
-    }
-    fetchCartDetails();
-  }, [url, cartItems]);
 
   return (
     <div className='cart'>
       <div className="cart-items">
         <div className="cart-items-title">
           <p>Title</p>
+          <p>Size</p>
           <p>Topping</p>
           <p>Price</p>
           <p>Quantity</p>
@@ -42,15 +22,17 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {cartDetails.map((item, index) => (
+        {Object.keys(cartItems).map((itemId, index) => (
           <div key={index}>
             <div className="cart-items-title cart-items-item">
-              <p>{item.name}</p>
-              <p>{item.topping}</p>
-              <p>${item.price}</p>
-              <div>{item.quantity}</div>
-              <p>${item.price * item.quantity}</p>
-              <p className='cart-items-remove-icon' onClick={() => removeFromCart(item.id)}>x</p>
+              {/* Assuming you have a function to get item details by ID */}
+              <p>{cartItems[itemId].name}</p>
+              <p>{cartItems[itemId].size}</p>
+              <p>{cartItems[itemId].topping}</p>
+              <p>${cartItems[itemId].price}</p>
+              <div>{cartItems[itemId].quantity}</div>
+              <p>${cartItems[itemId].price * cartItems[itemId].quantity}</p>
+              <p className='cart-items-remove-icon' onClick={() => removeFromCart(itemId)}>x</p>
             </div>
             <hr />
           </div>

@@ -10,9 +10,10 @@ const LoginPopup = ({ setShowLogin }) => {
     const [currState, setCurrState] = useState("Sign Up");
 
     const [data, setData] = useState({
-        userName: "",
-        password: "",
-        phone: "" // only used for sign-up
+        userName: "",  // This will map to 'name' during registration
+        phone: "",     // Used for both login and registration
+        email: "",     // Only used for sign-up
+        password: ""
     });
 
     const onChangeHandler = (event) => {
@@ -27,16 +28,26 @@ const LoginPopup = ({ setShowLogin }) => {
         try {
             let response;
             if (currState === "Login") {
-                const new_url = `${url}/signin/?userName=${data.userName}&password=${data.password}`;
-                response = await axios.get(new_url);
+                // Update to POST request and correct endpoint
+                const new_url = `${url}/account/login`;
+                response = await axios.post(new_url, {
+                    phone: data.phone,
+                    password: data.password
+                });
             } else {
-                const new_url = `${url}/signup/userName=${data.userName}&password=${data.password}&phone=${data.phone}`;
-                response = await axios.post(new_url);
+                // Update to POST request and correct endpoint for sign up
+                const new_url = `${url}/account/register`;
+                response = await axios.post(new_url, {
+                    name: data.userName,
+                    phone: data.phone,
+                    email: data.email,
+                    password: data.password
+                });
             }
 
-            if (response.data === 1) { 
+            if (response.data.success) { 
                 if (currState === "Login") {
-                    const token = response.headers['auth-token'] || response.data.token; 
+                    const token = response.data.token; 
                     setToken(token);
                     localStorage.setItem("token", token);
                     loadCartData({ token: token });
@@ -44,7 +55,7 @@ const LoginPopup = ({ setShowLogin }) => {
                 toast.success('Operation successful.');
                 setShowLogin(false);
             } else {
-                toast.error('Operation failed. Please check your details and try again.');
+                toast.error(response.data.message || 'Operation failed. Please check your details and try again.');
             }
         } catch (err) {
             toast.error('An error occurred. Please try again.');
@@ -68,13 +79,23 @@ const LoginPopup = ({ setShowLogin }) => {
                             required
                         />
                     )}
+                    {currState === "Sign Up" && (
+                        <input
+                            name='email'
+                            onChange={onChangeHandler}
+                            value={data.email}
+                            type="email"
+                            placeholder='Your email'
+                            required
+                        />
+                    )}
                     <input
                         name="phone"
                         onChange={onChangeHandler}
                         value={data.phone}
                         type="tel"
                         placeholder="Your phone number"
-                        required={currState === "Sign Up"}
+                        required
                     />
                     <input
                         name='password'
