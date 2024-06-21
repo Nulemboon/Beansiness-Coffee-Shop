@@ -1,6 +1,6 @@
 const OrderModel = require('../models/OrderModel.js');
 const DeliveryInfoModel = require('../models/DeliveryInfoModel');
-const AccountModel = require('../models/accountModel.js');
+const AccountModel = require('../models/AccountModel.js');
 const OrderItemModel = require('../models/OrderItemModel.js');
 
 
