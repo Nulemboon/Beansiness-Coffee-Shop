@@ -9,10 +9,11 @@ class AccountController {
             const accounts = await AccountModel.find();
 
             if (!accounts || accounts.length === 0) {
-                res.json({success: false, message: 'No account available'})
+                res.status(204).json({message: 'No account available'});
+                return;
             }
 
-            res.json({success: true, data: accounts});
+            res.status(200).json({success: true, data: accounts});
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching accounts.' });
         }
@@ -21,12 +22,13 @@ class AccountController {
     getAccountById = async (req, res) => {
         try {
             const account = await AccountModel.findById(req.params.id);
-            if (account) {
-                // const accountObj = new Account(account.name, account.email, account.password);
-                res.json(account);
-            } else {
-                res.status(404).json({ error: 'Account not found.' });
-            }
+
+            if (!account) {
+                res.status(204).json({ message: 'Account not found.' });  
+                return;
+            } 
+
+            res.status(200).json(account);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching the account.' });
         }
@@ -51,10 +53,10 @@ class AccountController {
             });
     
             const savedAccount = await newAccount.save();
-            const token = createToken(savedAccount._id)
-            res.json({success:true,token})
+            // const token = createToken(savedAccount._id)
+            res.status(200).json(savedAccount);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to add account', error: error.message});
+            res.status(500).json({ error: 'Unable to add account: ' + error.message});
         }
     }
 
@@ -62,22 +64,23 @@ class AccountController {
         try {
             const { accountId } = req.params.id;
     
-            // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                return res.status(400).json({ message: 'Invalid account ID' });
+                throw new Error("Invalid account id");
+                res.status(204).json({ message: 'Invalid account ID' });
+                return;
             }
     
             // Delete the voucher by ID
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                return res.status(404).json({ message: 'Account not found' });
+                res.status(204).json({ message: 'Account not found' });
+                return;
             }
     
-            res.status(200).json({ message: 'Account deleted successfully', account: deletedAccount });
+            res.status(200).json(deletedAccount);
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error' });
+            res.status(500).json({ message: 'Unable to remove account' + error.message});
         }
     }
 
@@ -93,21 +96,24 @@ class AccountController {
             const account = await AccountModel.findOne({phone})
     
             if(!account){
-                return res.json({success:false,message: "Account does not exist"})
+                res.status(204).json({message: "Account does not exist"});
+                return;
             }
     
             const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
-                return res.json({success:false,message: "Invalid credentials"})
+                res.status(401).json({message: "Invalid credentials"});
+                return;
             }
             
             if (account.isBlock) {
-                return res.json({success:false,message: "Account Blocked"});
+                res.json({message: "Account Blocked"});
+                return;
             }
             
             const token = this.createToken(account._id)
-            res.json({success:true,token})
+            res.status(200).json(token)
         } catch (error) {
             console.log(error);
             res.json({success:false,message:"Error"})
@@ -122,17 +128,23 @@ class AccountController {
             const exists = await AccountModel.findOne({phone});
 
             if(exists){
-                return res.json({success:false,message: "User already exists"});
+                res.status(409).json({message: "User already exists"});
+                return;
             }
+
             // validating email format & strong password
             if(!validator.isEmail(email)){
-                return res.json({success:false,message: "Please enter a valid email"});
+                res.status(409).json({message: "Please enter a valid email"});
+                return;
             }
+
             if(password.length < 8){
-                return res.json({success:false,message: "Please enter a strong password"});
+                res.status(409).json({message: "Please enter a strong password"});
+                return;
             }
             if(phone.length != 10) {
-                return res.json({success:false,message: "Please enter a valid phone number"});
+                res.status(409).json({message: "Please enter a valid phone number"});
+                return;
             }
     
             // hashing user password
@@ -148,12 +160,12 @@ class AccountController {
                 voucher: [],
                 isBlock: false
             });
-            const account = await newAccount.save()
-            const token = createToken(account._id)
-            res.json({success:true,token})
+
+            const account = await newAccount.save();
+            const token = createToken(account._id);
+            res.status(200).json(token);
         } catch(error){
-            console.log(error);
-            res.json({success:false,message:"Error"})
+            res.status(500).json({error: "Error when register account" + error.message});
         }
     }
 
