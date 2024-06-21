@@ -6,7 +6,7 @@ class ToppingController {
         try {
             const toppings = await ToppingModel.find();
             if (!toppings || toppings.length === 0) {
-                res.json({success: false, message: "No Topping Available"});
+                res.status(204).json({ message: "No Topping Available"});
                 return;
             }
             res.json(toppings);
@@ -50,8 +50,9 @@ class ToppingController {
             const { updateData } = req.body;
 
             // Validate toppingId
-            if (!mongoose.Types.ObjectId.isValid(productId)) {
-                throw new Error("Invalidate toppingId");
+            if (!mongoose.Types.ObjectId.isValid(toppingId)) {
+                res.status(204).json({message: 'Invalid topping Id.' });
+                return;
             }
 
             // Find and update the product by ID with only the specified fields
@@ -75,7 +76,8 @@ class ToppingController {
 
             // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
-                throw new Error("In validate toppingId");
+                res.status(204).json({message: 'Invalid topping Id.' });
+                return;
             }
 
             // Delete product

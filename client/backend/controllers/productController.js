@@ -20,7 +20,7 @@ class ProductController {
         try {
             const product = await ProductModel.findById(req.params.id).populate('available_toppings');
             if (!product) {
-                res.status(204).json({message: 'Product not found.' });
+                res.status(204).json({message: `Product not found` });
                 return;
             }
 
@@ -34,16 +34,16 @@ class ProductController {
     getProductByQuery = async (req, res) => {
         try {
             const query = req.params.q;
-            const product = await ProductModel.find({
+            const products = await ProductModel.find({
                 name: { $regex: '.*' + query + '.*'}
             });
     
-            if (!product) {
-                res.status(204).json({ error: 'Product not found.' });
+            if (!products) {
+                res.status(204).json({ error: `Product not found` });
                 return;
             }
 
-            res.status(200).json(product);
+            res.status(200).json(products);
 
         } catch (error) {
             res.status(500).json({ error: "An error occurred while fetching the product: " + error.message});
@@ -65,7 +65,7 @@ class ProductController {
             });
 
             const saveProduct = await newProduct.save();
-            res.status(200).json(saveProduct);
+            res.status(200).json({ message: 'Product has been created.'});
         } catch (error) {
             res.status(500).json({ error: 'Unable to create product: ' + error.message });
         }
@@ -94,7 +94,7 @@ class ProductController {
                 return;
             }
 
-            res.status(200).json(updatedProduct);
+            res.status(200).json({ message: `Product has been updated: ${productId}`});
         } catch (error) {
             res.status(500).json({ error: 'Unable to update product: ' + error.message });
         }
@@ -107,18 +107,18 @@ class ProductController {
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                res.status(404).json({ message: 'Product not found' });
+                res.status(204).json({ message: 'Product not found' });
             }
 
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
 
             if (!deletedProduct) {
-                res.status(204).json({ message: 'Product not found' });
+                res.status(204).json({ message: `Product not found: ${productId}` });
                 return;
             }
 
-            res.status(200).json(deletedProduct);
+            res.status(200).json({ message: `Product has been deleted: ${productId}`});
         } catch (error) {
             res.status(500).json({ error: 'Unable to delete product: ' + error.message });
         }
@@ -133,7 +133,7 @@ class ProductController {
             const product = await ProductModel.findById(productId);
     
             if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
+                return res.status(204).json({ message: 'Product not found' });
             }
     
             // Create a new review
@@ -150,9 +150,9 @@ class ProductController {
             // Save the updated product
             const updatedProduct = await product.save();
     
-            res.status(200).json(updatedProduct);
+            res.status(200).json({message: 'Review has been added.'});
         } catch (error) {
-            res.status(500).json({ message: 'Unable to add review', error: error.message });
+            res.status(500).json({ error: 'Unable to add review' + error.message });
         }
     };
 
@@ -164,7 +164,7 @@ class ProductController {
             const product = await ProductModel.findById(productId);
     
             if (!product) {
-                return res.status(404).json({ message: 'Product not found' });
+                return res.status(204).json({ message: 'Product not found' });
             }
     
             // Find the index of the review to be removed
@@ -180,9 +180,9 @@ class ProductController {
             // Save the updated product
             const updatedProduct = await product.save();
     
-            res.status(200).json(updatedProduct);
+            res.status(200).json({message: 'Review has been removed.'});
         } catch (error) {
-            res.status(500).json({ message: 'Unable to remove review', error: error.message });
+            res.status(500).json({ error: 'Unable to remove review' + error.message });
         }
     };
 }
