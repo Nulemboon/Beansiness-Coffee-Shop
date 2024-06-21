@@ -1,0 +1,91 @@
+[
+    {
+      "id": "1",
+      "name": "Cappuccino",
+      "description": "A classic Italian coffee with a rich and creamy texture.",
+      "price": 5,
+      "category": "Coffee",
+      "availableToppings": ["Extra Foam", "Cinnamon", "Chocolate Sprinkles"],
+      "rating": 4.8,
+      "image_url": "food_1.png", 
+      "reviews": [
+        {
+          "user": "Phạm Tuấn Tài",
+          "comment": "Uống như nước tiểu!",
+          "rating": 5
+        },
+        {
+          "user": "Nguyễn Nam Anh",
+          "comment": "Nhạt vl",
+          "rating": 4
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Latte",
+      "description": "Smooth and creamy latte with a hint of vanilla.",
+      "price": 4.5,
+      "category": "Coffee",
+      "availableToppings": ["Vanilla Syrup", "Caramel Drizzle", "Extra Milk"],
+      "rating": 4.7,
+      "image_url": "frontend/src/assets/food_4.png", 
+      "reviews": [
+        {
+          "user": "Dương Quang Trí",
+          "comment": "Nghiện cmnr",
+          "rating": 5
+        },
+        {
+          "user": "Phạm Tuấn Tài",
+          "comment": "Uống như nước tiểu!",
+          "rating": 4.5
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Iced Americano",
+      "description": "A refreshing cold drink with a strong coffee flavor.",
+      "price": 3,
+      "category": "Coffee",
+      "availableToppings": ["Ice", "Lemon Slice", "Mint Leaves"],
+      "rating": 4.3,
+      "image_url": "frontend/src/assets/food_3.png", 
+      "reviews": [
+        {
+          "user": "Hoàng Văn E",
+          "comment": "Americano mát lạnh và sảng khoái, rất thích hợp cho ngày hè.",
+          "rating": 4.5
+        },
+        {
+          "user": "Nguyễn Thị F",
+          "comment": "Cà phê hơi nhạt so với khẩu vị của mình.",
+          "rating": 3.5
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Green Tea Latte",
+      "description": "A blend of matcha and steamed milk with a touch of sweetness.",
+      "price": 4,
+      "category": "Drink",
+      "availableToppings": ["Whipped Cream", "Honey Drizzle", "Matcha Powder"],
+      "rating": 4.6,
+      "image_url": "frontend/src/assets/food_4.png",  
+      "reviews": [
+        {
+          "user": "Trần Văn G",
+          "comment": "Vị matcha rất thơm và dịu nhẹ, rất thích hợp cho buổi sáng.",
+          "rating": 5
+        },
+        {
+          "user": "Phạm Thị H",
+          "comment": "Cảm giác hơi ngọt, nhưng vẫn rất ngon.",
+          "rating": 4
+        }
+      ]
+    }
+  ]
+  

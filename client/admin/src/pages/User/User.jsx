@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-
+import React, { useState, useEffect } from 'react';
 import './User.css';
 import { url } from '../../assets/assets';
 import axios from 'axios';
 const UserList = () => {
-  const [list, setList] = useState(userData);
+  const [list, setList] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [newIsBlock, setNewIsBlock] = useState('');
   const [newUser, setNewUser] = useState({
@@ -29,7 +28,6 @@ const UserList = () => {
   };
 
 
-
   const addUser = () => {
     const updatedList = [
       ...list,
@@ -39,6 +37,7 @@ const UserList = () => {
     setNewUser({ name: '', phone: '', email: '', password:'123456789'});
     toast.success("User added successfully.");
   };
+
 
   const removeUser = (userId) => {
     const updatedList = list.filter((user) => user.id !== userId);
@@ -93,7 +92,8 @@ const UserList = () => {
       <h1 style={{ marginLeft: '10px' }}>User Management</h1>
       <form onSubmit={handleNewUserSubmit} className="new-user-form">
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -107,7 +107,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
           type="text"
           name="name"
           placeholder="Name"
@@ -116,7 +117,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -130,7 +132,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="text"
           name="phone"
@@ -140,7 +143,8 @@ const UserList = () => {
           required
         />
         <input
-          style={{ marginRight: '10px',
+          style={{
+            marginRight: '10px',
             padding: '8px 12px',
             border: '1px solid #ccc',
             borderRadius: '4px',
@@ -154,7 +158,8 @@ const UserList = () => {
               outline: 'none',
               borderColor: '#6c63ff',
               boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
+            },
+          }}
 
           type="email"
           name="email"

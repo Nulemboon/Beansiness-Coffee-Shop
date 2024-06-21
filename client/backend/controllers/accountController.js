@@ -7,8 +7,12 @@ class AccountController {
     getAllAccounts = async (req, res) => {
         try {
             const accounts = await AccountModel.find();
-            // const accountList = accounts.map(account => new Account(account.name, account.email, account.password));
-            res.json(accounts);
+
+            if (!accounts || accounts.length === 0) {
+                res.json({success: false, message: 'No account available'})
+            }
+
+            res.json({success: true, data: accounts});
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching accounts.' });
         }
@@ -83,20 +87,25 @@ class AccountController {
     
     //login user
     loginUser = async (req,res) => {
+        console.log(req.body);
         const {phone, password} = req.body;
         try{
-            const account = await userModel.findOne({phone})
+            const account = await AccountModel.findOne({phone})
     
             if(!account){
                 return res.json({success:false,message: "Account does not exist"})
             }
     
-            const isMatch = await bcrypt.compare(password, user.password)
+            const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
                 return res.json({success:false,message: "Invalid credentials"})
             }
-    
+            
+            if (account.isBlock) {
+                return res.json({success:false,message: "Account Blocked"});
+            }
+            
             const token = this.createToken(account._id)
             res.json({success:true,token})
         } catch (error) {
@@ -110,7 +119,7 @@ class AccountController {
         const {name, phone, email, password} = req.body;
         try{
             //check if user already exists
-            const exists = await userModel.findOne({phone});
+            const exists = await AccountModel.findOne({phone});
 
             if(exists){
                 return res.json({success:false,message: "User already exists"});
@@ -147,6 +156,7 @@ class AccountController {
             res.json({success:false,message:"Error"})
         }
     }
+
 }
 
 

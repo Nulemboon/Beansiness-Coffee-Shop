@@ -1,6 +1,6 @@
 const OrderModel = require('../models/OrderModel.js');
 const Order = require('../classes/Order.js');
-const DeliveryInfo = require('../models/DeliveryInfo');
+const DeliveryInfoModel = require('../models/DeliveryInfoModel');
 
 
 class OrderController {
@@ -133,6 +133,15 @@ class OrderController {
 
                 totalAmount += product.price * item.quantity;
             }
+
+            const delivery = new DeliveryInfoModel({
+                receiver_name: delivery_info.receiver_name,
+                address: delivery_info.address,
+                phone_number: delivery_info.phone_number,
+                instruction: delivery_info.instruction
+            });
+            
+            await delivery.save();
 
             const order = new OrderModel({
                 account_id: accountId,
