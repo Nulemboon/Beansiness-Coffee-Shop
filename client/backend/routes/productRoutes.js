@@ -19,14 +19,16 @@ router.get('/:q', productController.getProductByQuery);
 
 router.get('/', productController.getAllProducts);
 
+router.post('/add-review/:id', productController.addReview);
+
 router.post('/', upload.single('image'), productController.createProduct);
 
 router.put('/', upload.single('image'), productController.updateProduct);
 
+router.delete('/delete-review/:id', productController.removeReview);
+
 router.delete('/:id', productController.deleteProduct);
 
 // router.get('/', productController.getAllProducts);
-
-
 
 module.exports = router;

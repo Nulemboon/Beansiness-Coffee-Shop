@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 class ProductController {
     getAllProducts = async (req, res) => {
         try {
-            const products = await ProductModel.find();
+            const products = await ProductModel.find().populate('available_toppings');
             if (!products || products.length === 0) {
                 res.status(204).json({message: "No product Available"});
                 return;
@@ -18,7 +18,7 @@ class ProductController {
     
     getProductById = async (req, res) => {
         try {
-            const product = await ProductModel.findById(req.params.id);
+            const product = await ProductModel.findById(req.params.id).populate('available_toppings');
             if (!product) {
                 res.status(204).json({message: 'Product not found.' });
                 return;
@@ -107,7 +107,7 @@ class ProductController {
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                throw new Error("In validate productId");
+                res.status(404).json({ message: 'Product not found' });
             }
 
             // Delete product
@@ -121,6 +121,68 @@ class ProductController {
             res.status(200).json(deletedProduct);
         } catch (error) {
             res.status(500).json({ error: 'Unable to delete product: ' + error.message });
+        }
+    };
+
+    addReview = async (req, res) => {
+        try {
+            const { productId } = req.params;
+            const { review, rating, accountId } = req.body;
+    
+            // Find the product by ID
+            const product = await ProductModel.findById(productId);
+    
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+    
+            // Create a new review
+            const newReview = {
+                review,
+                rating,
+                account_id: accountId,
+                created_at: new Date()
+            };
+    
+            // Add the review to the product's reviews array
+            product.reviews.push(newReview);
+    
+            // Save the updated product
+            const updatedProduct = await product.save();
+    
+            res.status(200).json(updatedProduct);
+        } catch (error) {
+            res.status(500).json({ message: 'Unable to add review', error: error.message });
+        }
+    };
+
+    removeReview = async (req, res) => {
+        try {
+            const { productId, reviewId } = req.params;
+    
+            // Find the product by ID
+            const product = await ProductModel.findById(productId);
+    
+            if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+            }
+    
+            // Find the index of the review to be removed
+            const reviewIndex = product.reviews.findIndex(review => review._id.toString() === reviewId);
+    
+            if (reviewIndex === -1) {
+                return res.status(404).json({ message: 'Review not found' });
+            }
+    
+            // Remove the review from the reviews array
+            product.reviews.splice(reviewIndex, 1);
+    
+            // Save the updated product
+            const updatedProduct = await product.save();
+    
+            res.status(200).json(updatedProduct);
+        } catch (error) {
+            res.status(500).json({ message: 'Unable to remove review', error: error.message });
         }
     };
 }
