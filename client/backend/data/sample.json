@@ -1,0 +1,191 @@
+{
+  "accounts": [
+    {
+      "name": "admin",
+      "phone": "0912345678",
+      "password": "abc123",
+      "email": "admin@example.com",
+      "point": 10000,
+      "isBlock": false
+    },
+    {
+      "name": "onsite",
+      "phone": "0912345679",
+      "password": "abc123",
+      "email": "onsite@example.com",
+      "point": 10000,
+      "isBlock": false
+    },
+    {
+      "name": "shipping",
+      "phone": "0912345670",
+      "password": "abc123",
+      "email": "shipping@example.com",
+      "point": 10000,
+      "isBlock": false
+    },
+    {
+      "name": "John Doe",
+      "phone": "1234567890",
+      "email": "john@example.com",
+      "password": "password123",
+      "point": 150,
+      "isBlock": false
+    },
+    {
+      "name": "dummy",
+      "phone": "1234560987",
+      "email": "dummy@example.com",
+      "password": "123456",
+      "point": 0,
+      "isBlock": false
+    },
+    {
+      "name": "blocked_test",
+      "phone": "1111111111", 
+      "email": "test@example.com",
+      "password": "abc123",
+      "point": 0,
+      "isBlock": true
+    }
+  ],
+  "vouchers": [
+    {
+      "name": "BCS1",
+      "description": "5K off",
+      "required_points": 5,
+      "discount": 5000
+    },
+    {
+      "name": "BCS2",
+      "description": "10K off",
+      "required_points": 10,
+      "discount": 10000
+    },
+    {
+      "name": "BCS3",
+      "description": "20K off",
+      "required_points": 20,
+      "discount": 20000
+    },
+    {
+      "name": "BCS4",
+      "description": "50K off",
+      "required_points": 50,
+      "discount": 50000
+    },
+    {
+      "name": "BCS5",
+      "description": "100K off",
+      "required_points": 100,
+      "discount": 100000
+    }
+  ],
+
+  "delivery_info": [
+    {
+      "receiver_name": "John Doe",
+      "address": "1 Dai Co Viet",
+      "phone_number": "0912345678"
+    },
+    {
+      "receiver_name": "dummy",
+      "address": "10 Tran Dai Nghia",
+      "phone_number": "1234567890"
+    },
+    {
+      "receiver_name": "John",
+      "address": "10 Dai Co Viet",
+      "phone_number": "0912345678"
+    },
+    {
+      "receiver_name": "dummy2",
+      "address": "20 Tran Dai Nghia",
+      "phone_number": "1234567899"
+    }
+  ],
+  
+  "toppings": [
+    {
+      "name": "extra sugar",
+      "price": 1000
+    },
+    {
+      "name": "black boba",
+      "price": 5000
+    },
+    {
+      "name": "white boba",
+      "price": 5000
+    },
+    {
+      "name": "aloe",
+      "price": 5000
+    },
+    {
+      "name": "jelly",
+      "price": 5000
+    },
+    {
+      "name": "pudding",
+      "price": 10000
+    }
+  ],
+
+  "products": [
+    {
+      "name": "Latte",
+      "description": "A delicious latte with milk",
+      "price": "39000",
+      "category": "coffee"
+    },
+    {
+      "name": "Cappuccino",
+      "description": "The Best Cappuccino in the world",
+      "price": "39000",
+      "category": "coffee"
+    },
+    {
+      "name": "Americano",
+      "description": "The Best Americano in the world",
+      "price": "39000",
+      "category": "coffee"
+    },
+    {
+      "name": "Expresso",
+      "description": "The Best Expresso in the world",
+      "price": "39000",
+      "category": "coffee"
+    },
+    {
+      "name": "Lemon Tea",
+      "description": "Refresh for the summer",
+      "price": "20000",
+      "category": "tea"
+    },
+    {
+      "name": "Jasmine Tea",
+      "description": "Experience the exquisite taste of premium jasmine tea",
+      "price": "25000",
+      "category": "tea"
+    },
+    {
+      "name": "Peach Tea",
+      "description": "Indulge in the delightful flavor of our premium peach tea",
+      "price": "20000",
+      "category": "tea"
+    },
+    {
+      "name": "Original Milktea",
+      "description": "Rich and Creamy",
+      "price": "45000",
+      "category": "milktea"
+    },
+    {
+      "name": "Special Milktea",
+      "description": "Even MORE Rich and Creamy",
+      "price": "55000",
+      "category": "milktea"
+    }
+  ]
+}
