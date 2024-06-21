@@ -1,53 +1,33 @@
-const ProductModel = require('../models/ProductModel');
+const ToppingModel = require('../models/ToppingModel');
 const mongoose = require('mongoose');
 
-class ProductController {
-    getAllProducts = async (req, res) => {
+class ToppingController {
+    getAllTopping = async (req, res) => {
         try {
-            const products = await ProductModel.find();
-            if (!products || products.length === 0) {
-                res.status(204).json({message: "No product Available"});
+            const toppings = await ToppingModel.find();
+            if (!toppings || toppings.length === 0) {
+                res.json({success: false, message: "No Topping Available"});
             }
-
-            res.status(200).json(products);
+            res.json(toppings);
         } catch (error) {
-            res.status(500).json({error: 'An error occurred while fetching products:' + error.message});
+            res.status(500).json({ error: 'An error occurred while fetching toppings.' });
         }
     };
     
-    getProductById = async (req, res) => {
+    getToppingById = async (req, res) => {
         try {
-            const product = await ProductModel.findById(req.params.id);
-            if (!product) {
-                res.status(204).json({message: 'Product not found.' });
+            const topping = await ToppingModel.findById(req.params.id);
+            if (!topping) {
+                res.status(204).json({message: 'Topping not found.' });
             }
 
-            res.status(200).json(product);
-
+            res.status(200).json(topping);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching the product: ' + error.message });
-        }
-    };
-    
-    getProductByQuery = async (req, res) => {
-        try {
-            const query = req.params.q;
-            const product = await ProductModel.find({
-                name: { $regex: '.*' + query + '.*'}
-            });
-    
-            if (!product) {
-                res.status(204).json({ error: 'Product not found.' });
-            }
-
-            res.status(200).json(product);
-
-        } catch (error) {
-            res.status(500).json({ error: "An error occurred while fetching the product: " + error.message});
+            res.status(500).json({ error: 'An error occurred while fetching the topping.' });
         }
     };
 
-    createProduct = async (req, res) => {
+    createTopping = async (req, res) => {
         try {
             const image_file = req.file ? req.file.filename : null;
 
@@ -119,6 +99,3 @@ class ProductController {
         }
     };
 }
-
-
-module.exports = new ProductController();

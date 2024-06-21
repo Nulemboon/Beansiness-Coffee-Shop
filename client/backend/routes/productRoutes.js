@@ -23,7 +23,7 @@ router.post('/', upload.single('image'), productController.createProduct);
 
 router.put('/', upload.single('image'), productController.updateProduct);
 
-router.delete('/', productController.deleteProduct);
+router.delete('/:id', productController.deleteProduct);
 
 // router.get('/', productController.getAllProducts);
 
