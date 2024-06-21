@@ -138,10 +138,10 @@ class AccountController {
                 return;
             }
 
-            if(password.length < 8){
-                res.status(409).json({message: "Please enter a strong password"});
-                return;
-            }
+            // if(password.length < 8){
+            //     res.status(409).json({message: "Please enter a strong password"});
+            //     return;
+            // }
             if(phone.length != 10) {
                 res.status(409).json({message: "Please enter a valid phone number"});
                 return;
@@ -151,18 +151,20 @@ class AccountController {
             const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
             const hashedPassword = await bcrypt.hash(password, salt);
     
+
             const newAccount = new AccountModel({
                 name: name,
                 phone: phone, 
                 email: email, 
                 password: hashedPassword,
+                point: 0,
                 order_id: [],
                 voucher: [],
                 isBlock: false
             });
 
             const account = await newAccount.save();
-            const token = createToken(account._id);
+            const token = this.createToken(account._id);
             res.status(200).json(token);
         } catch(error){
             res.status(500).json({error: "Error when register account" + error.message});
