@@ -99,7 +99,7 @@ class ProductController {
     // Delete Product
     deleteProduct = async (req, res) => {
         try {
-            const { productId } = req.params;
+            const { productId } = req.params.id;
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {

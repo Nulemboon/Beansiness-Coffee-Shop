@@ -19,6 +19,7 @@ class ToppingController {
             const topping = await ToppingModel.findById(req.params.id);
             if (!topping) {
                 res.status(204).json({message: 'Topping not found.' });
+                return;
             }
 
             res.status(200).json(topping);
@@ -29,73 +30,66 @@ class ToppingController {
 
     createTopping = async (req, res) => {
         try {
-            const image_file = req.file ? req.file.filename : null;
-
-            const { name, description, price, category, toppings } = req.body;
-            const newProduct = new ProductModel({
+            const { name, price } = req.body;
+            const newTopping = new ProductModel({
                 name,
-                description,
-                price,
-                category,
-                imageURL: image_file,
-                available_toppings: toppings,
+                price
             });
 
-            const saveProduct = await newProduct.save();
-            res.status(200).json(saveProduct);
+            const saveTopping = await newTopping.save();
+            res.status(200).json(saveTopping);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to create product: ' + error.message });
+            res.status(500).json({ error: 'Unable to create topping: ' + error.message });
         }
     };
 
-    // Update Product with Optional Image Upload
-    updateProduct = async (req, res) => {
+    updateTopping = async (req, res) => {
         try {
-            const { productId, ...updateData } = req.body;
+            const toppingId = req.params.id;
+            const { updateData } = req.body;
 
-            // Check if an image is uploaded
-            if (req.file) {
-                updateData.imageURL = req.file.filename;
-            }
-
-            // Validate productId
+            // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                throw new Error("In validate productId");
+                throw new Error("Invalidate toppingId");
             }
 
             // Find and update the product by ID with only the specified fields
-            const updatedProduct = await ProductModel.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
+            const updateTopping = await ToppingModel.findByIdAndUpdate(toppingId, updateData, { new: true, runValidators: true });
 
-            if (!updatedProduct) {
-                res.status(204).json({ message: 'Product not found' });
+            if (!updateTopping) {
+                res.status(204).json({ message: 'Topping not found' });
+                return;
             }
 
-            res.status(200).json(updatedProduct);
+            res.status(200).json(updateTopping);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to update product: ' + error.message });
+            res.status(500).json({ error: 'Unable to update topping: ' + error.message });
         }
     };
 
     // Delete Product
-    deleteProduct = async (req, res) => {
+    deleteTopping = async (req, res) => {
         try {
-            const { productId } = req.params;
+            const { toppingId } = req.params.id;
 
-            // Validate productId
-            if (!mongoose.Types.ObjectId.isValid(productId)) {
-                throw new Error("In validate productId");
+            // Validate toppingId
+            if (!mongoose.Types.ObjectId.isValid(toppingId)) {
+                throw new Error("In validate toppingId");
             }
 
             // Delete product
-            const deletedProduct = await ProductModel.findByIdAndDelete(productId);
+            const deletedTopping = await ToppingModel.findByIdAndDelete(toppingId);
 
-            if (!deletedProduct) {
-                res.status(204).json({ message: 'Product not found' });
+            if (!deletedTopping) {
+                res.status(204).json({ message: 'Topping not found' });
+                return;
             }
 
-            res.status(200).json(deletedProduct);
+            res.status(200).json(deletedTopping);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to delete product: ' + error.message });
+            res.status(500).json({ error: 'Unable to delete Topping: ' + error.message });
         }
     };
 }
+
+module.exports = new ToppingController();
