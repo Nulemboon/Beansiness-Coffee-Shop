@@ -18,17 +18,22 @@ const AccountSchema = new mongoose.Schema({
         required: true,
     },
 
-    vouchers: [
-        {
-            voucher_id: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'Voucher', 
-                required: true 
-            },
-            quantity: { type: Number, required: true }
-        }
-    ]
+    vouchers: [{
+        voucher_id: { 
+            type: Schema.Types.ObjectId, 
+            ref: 'Voucher', 
+            required: true 
+        },
+        quantity: { type: Number, required: true }
+    }],
 
+    delivery_info: [{
+        delivery_id: {
+            type: Schema.Types.ObjectId,
+            ref: 'DeliveryInfo',
+            required: true
+        }
+    }]
 });
 
 const AccountModel = mongoose.model('Account', AccountSchema);

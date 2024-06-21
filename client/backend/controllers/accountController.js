@@ -101,7 +101,11 @@ class AccountController {
             if(!isMatch){
                 return res.json({success:false,message: "Invalid credentials"})
             }
-    
+            
+            if (account.isBlock) {
+                return res.json({success:false,message: "Account Blocked"});
+            }
+            
             const token = this.createToken(account._id)
             res.json({success:true,token})
         } catch (error) {
