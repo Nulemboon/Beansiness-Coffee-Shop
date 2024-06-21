@@ -8,8 +8,8 @@ class ProductController {
             const products = await ProductModel.find();
             if (!products || products.length === 0) {
                 res.json({success: false, message: "No product Available"});
+                return;
             }
-            // const productList = products.map(product => new Product(product.id, product.name, product.description, product.price));
             res.json({success: true, data: products});
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching products.' });

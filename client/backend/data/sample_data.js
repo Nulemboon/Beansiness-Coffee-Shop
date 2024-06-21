@@ -40,19 +40,19 @@ async function insertSampleData() {
         const newAccounts = [];
         for (account in accounts) {
             const hashedPassword = await bcrypt.hash("abc123", salt);
-            newAccounts.push({
+            newAccounts.push(AccountModel({
                 name: account.name,
                 phone: account.phone,
                 email: account.email,
                 password: hashedPassword,
                 point: account.points,
                 isBlock: account.isBlock
-            });
+            }));
         }
 
-        const savedAccounts = await AccountModel.insertMany(newAccounts);
-        await savedAccounts.save();
-        
+        // const savedAccounts = await AccountModel.insertMany(newAccounts);
+        const savedAccounts = await AccountModel.save(newAccounts);
+
         savedAccounts[4].vouchers.push({
             voucher_id: savedVouchers[0]._id,
             quantity: 10
