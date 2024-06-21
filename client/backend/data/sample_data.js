@@ -122,25 +122,25 @@ async function insertSampleData() {
         const products = sampleData.products;
         const savedProducts = await ProductModel.insertMany(products);
 
-        savedProducts[0].availale_toppings.push(savedToppings[0]);
+        savedProducts[0].available_toppings.push(savedToppings[0]);
         await savedProducts[0].save();
 
-        savedProducts[1].availale_toppings.push(savedToppings[0]);
+        savedProducts[1].available_toppings.push(savedToppings[0]);
         await savedProducts[1].save();
 
-        savedProducts[2].availale_toppings.push(savedToppings[0]);
+        savedProducts[2].available_toppings.push(savedToppings[0]);
         await savedProducts[2].save();
-        savedProducts[3].availale_toppings.push(savedToppings[0]);
+        savedProducts[3].available_toppings.push(savedToppings[0]);
         await savedProducts[3].save();
-        savedProducts[4].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[4].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[4].save();
-        savedProducts[5].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[5].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[5].save();
-        savedProducts[6].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[6].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[6].save();
-        savedProducts[7].availale_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[7].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[7].save();
-        savedProducts[8].availale_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[8].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[8].save();
     } catch (error) {
         console.error('Error inserting sample data:', error);
