@@ -38,21 +38,20 @@ async function insertSampleData() {
 
         const accounts = sampleData.accounts;
         const newAccounts = [];
-        for (account in accounts) {
+        for (const account of accounts) {
             const hashedPassword = await bcrypt.hash("abc123", salt);
-            newAccounts.push(AccountModel({
+            newAccounts.push({
                 name: account.name,
                 phone: account.phone,
                 email: account.email,
                 password: hashedPassword,
-                point: account.points,
+                point: account.point,
                 isBlock: account.isBlock
-            }));
+            });
         }
 
-        // const savedAccounts = await AccountModel.insertMany(newAccounts);
-        const savedAccounts = await AccountModel.save(newAccounts);
-
+        const savedAccounts = await AccountModel.insertMany(newAccounts);
+        
         savedAccounts[4].vouchers.push({
             voucher_id: savedVouchers[0]._id,
             quantity: 10
@@ -123,25 +122,25 @@ async function insertSampleData() {
         const products = sampleData.products;
         const savedProducts = await ProductModel.insertMany(products);
 
-        savedProducts[0].availale_toppings.push(savedToppings[0]);
+        savedProducts[0].available_toppings.push(savedToppings[0]);
         await savedProducts[0].save();
 
-        savedProducts[1].availale_toppings.push(savedToppings[0]);
+        savedProducts[1].available_toppings.push(savedToppings[0]);
         await savedProducts[1].save();
 
-        savedProducts[2].availale_toppings.push(savedToppings[0]);
+        savedProducts[2].available_toppings.push(savedToppings[0]);
         await savedProducts[2].save();
-        savedProducts[3].availale_toppings.push(savedToppings[0]);
+        savedProducts[3].available_toppings.push(savedToppings[0]);
         await savedProducts[3].save();
-        savedProducts[4].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[4].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[4].save();
-        savedProducts[5].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[5].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[5].save();
-        savedProducts[6].availale_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[6].available_toppings.push(savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[6].save();
-        savedProducts[7].availale_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[7].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[7].save();
-        savedProducts[8].availale_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
+        savedProducts[8].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[8].save();
     } catch (error) {
         console.error('Error inserting sample data:', error);

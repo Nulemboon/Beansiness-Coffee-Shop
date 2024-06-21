@@ -2,6 +2,7 @@ const AccountModel = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const mongoose = require('mongoose');
 
 class AccountController {
     getAllAccounts = async (req, res) => {
@@ -9,26 +10,28 @@ class AccountController {
             const accounts = await AccountModel.find();
 
             if (!accounts || accounts.length === 0) {
-                res.json({success: false, message: 'No account available'})
+                res.status(204).json({message: 'No account available'});
+                return;
             }
 
-            res.json({success: true, data: accounts});
+            res.status(200).json(accounts);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching accounts.' });
+            res.status(500).json({ error: 'An error occurred while fetching accounts: ' + error.message });
         }
     };
     
     getAccountById = async (req, res) => {
         try {
             const account = await AccountModel.findById(req.params.id);
-            if (account) {
-                // const accountObj = new Account(account.name, account.email, account.password);
-                res.json(account);
-            } else {
-                res.status(404).json({ error: 'Account not found.' });
-            }
+
+            if (!account) {
+                res.status(204).json({ message: 'Account not found.' });  
+                return;
+            } 
+
+            res.status(200).json(account);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching the account.' });
+            res.status(500).json({ error: 'An error occurred while fetching the account: ' + error.message });
         }
     };
 
@@ -51,10 +54,10 @@ class AccountController {
             });
     
             const savedAccount = await newAccount.save();
-            const token = createToken(savedAccount._id)
-            res.json({success:true,token})
+            // const token = createToken(savedAccount._id)
+            res.status(200).json(savedAccount);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to add account', error: error.message});
+            res.status(500).json({ error: 'Unable to add account: ' + error.message});
         }
     }
 
@@ -62,22 +65,22 @@ class AccountController {
         try {
             const { accountId } = req.params.id;
     
-            // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                return res.status(400).json({ message: 'Invalid account ID' });
+                res.status(204).json({ message: 'Account Id is invalid' });
+                return;
             }
     
             // Delete the voucher by ID
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                return res.status(404).json({ message: 'Account not found' });
+                res.status(204).json({ message: 'Account not found' });
+                return;
             }
     
-            res.status(200).json({ message: 'Account deleted successfully', account: deletedAccount });
+            res.status(200).json({ message: 'Account has been removed successfully.'});
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error' });
+            res.status(500).json({ message: 'Unable to remove account: ' + error.message});
         }
     }
 
@@ -87,30 +90,31 @@ class AccountController {
     
     //login user
     loginUser = async (req,res) => {
-        console.log(req.body);
         const {phone, password} = req.body;
         try{
             const account = await AccountModel.findOne({phone})
     
             if(!account){
-                return res.json({success:false,message: "Account does not exist"})
+                res.status(204).json({message: "Account does not exist"});
+                return;
             }
     
             const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
-                return res.json({success:false,message: "Invalid credentials"})
+                res.status(204).json({message: "Invalid credentials"});
+                return;
             }
             
             if (account.isBlock) {
-                return res.json({success:false,message: "Account Blocked"});
+                res.status(204).json({message: "Account Blocked"});
+                return;
             }
             
-            const token = this.createToken(account._id)
-            res.json({success:true,token})
+            const token = this.createToken(account._id);
+            res.status(200).json(token);
         } catch (error) {
-            console.log(error);
-            res.json({success:false,message:"Error"})
+            res.status(500).json({error: 'Login failed: ' + error.message});
         }
     }
     
@@ -122,38 +126,47 @@ class AccountController {
             const exists = await AccountModel.findOne({phone});
 
             if(exists){
-                return res.json({success:false,message: "User already exists"});
+                res.status(409).json({message: "User already exists"});
+                return;
             }
+
             // validating email format & strong password
             if(!validator.isEmail(email)){
-                return res.json({success:false,message: "Please enter a valid email"});
+                res.status(409).json({message: "Please enter a valid email"});
+                return;
             }
-            if(password.length < 8){
-                return res.json({success:false,message: "Please enter a strong password"});
-            }
+
+            // if(password.length < 8){
+            //     res.status(409).json({message: "Please enter a strong password"});
+            //     return;
+            // }
             if(phone.length != 10) {
-                return res.json({success:false,message: "Please enter a valid phone number"});
+                res.status(409).json({message: "Please enter a valid phone number"});
+                return;
             }
     
             // hashing user password
             const salt = await bcrypt.genSalt(10); // the more no. round the more time it will take
             const hashedPassword = await bcrypt.hash(password, salt);
     
+
             const newAccount = new AccountModel({
                 name: name,
                 phone: phone, 
                 email: email, 
                 password: hashedPassword,
+                point: 0,
                 order_id: [],
                 voucher: [],
                 isBlock: false
             });
-            const account = await newAccount.save()
-            const token = createToken(account._id)
-            res.json({success:true,token})
+
+            const account = await newAccount.save();
+            const token = this.createToken(account._id);
+            res.status(200).json(token);
+
         } catch(error){
-            console.log(error);
-            res.json({success:false,message:"Error"})
+            res.status(500).json({error: "Error when register account: " + error.message});
         }
     }
 

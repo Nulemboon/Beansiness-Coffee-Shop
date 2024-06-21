@@ -15,7 +15,7 @@ const ProductSchema = new Schema({
     category: {type: String, required: true},
     imageURL: {type: String},
 
-    availale_toppings: [{
+    available_toppings: [{
         type: Schema.ObjectId,
         ref: "Topping"
     }],
