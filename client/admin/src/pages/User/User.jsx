@@ -2,28 +2,8 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import './User.css';
-
-const userData = [
-  {
-    "id": 1,
-    "name": "John Doe",
-    "phone": "123-456-7890",
-    "email": "john.doe@example.com",
-    "bankId": "123456789",
-    "point": 100,
-    "isBlock": "active"
-  },
-  {
-    "id": 2,
-    "name": "Jane Smith",
-    "phone": "987-654-3210",
-    "email": "jane.smith@example.com",
-    "bankId": "987654321",
-    "point": 200,
-    "isBlock": "blocked"
-  }
-];
-
+import { url } from '../../assets/assets';
+import axios from 'axios';
 const UserList = () => {
   const [list, setList] = useState(userData);
   const [editingUser, setEditingUser] = useState(null);
@@ -32,10 +12,23 @@ const UserList = () => {
     name: '',
     phone: '',
     email: '',
-    bankId: '',
-    point: '',
-    isBlock: ''
+    password: '123456789'
   });
+
+  const fetchList = async () => {
+    try {
+      const response = await axios.get(`${url}/account`);
+      if (response.status == 200) {
+        setList(response.data.data);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Error fetching the account list.");
+    }
+  };
+
+
 
   const addUser = () => {
     const updatedList = [
@@ -43,7 +36,7 @@ const UserList = () => {
       { ...newUser, id: list.length ? list[list.length - 1].id + 1 : 1 }
     ];
     setList(updatedList);
-    setNewUser({ name: '', phone: '', email: '', bankId: '', point: '', isBlock: '' });
+    setNewUser({ name: '', phone: '', email: '', password:'123456789'});
     toast.success("User added successfully.");
   };
 
@@ -89,6 +82,11 @@ const UserList = () => {
     e.preventDefault();
     addUser();
   };
+
+  useEffect(() => {
+    fetchList();
+  }, []);
+
 
   return (
     <div>
@@ -165,78 +163,7 @@ const UserList = () => {
           onChange={handleNewUserChange}
           required
         />
-        <input
-          style={{ marginRight: '10px',
-            padding: '8px 12px',
-            border: '1px solid #ccc',
-            width: '180px',
-            borderRadius: '4px',
-            fontSize: '14px',
-            fontFamily: 'inherit',
-            color: '#333',
-            backgroundColor: '#fff',
-            transition: 'border-color 0.3s ease',
-            '&:focus': {
-              outline: 'none',
-              borderColor: '#6c63ff',
-              boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
-
-          type="text"
-          name="bankId"
-          placeholder="Bank ID"
-          value={newUser.bankId}
-          onChange={handleNewUserChange}
-          required
-        />
-        <input
-          style={{ marginRight: '10px',
-            padding: '8px 12px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            width: '180px',
-            fontSize: '14px',
-            fontFamily: 'inherit',
-            color: '#333',
-            backgroundColor: '#fff',
-            transition: 'border-color 0.3s ease',
-            '&:focus': {
-              outline: 'none',
-              borderColor: '#6c63ff',
-              boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
-
-          type="number"
-          name="point"
-          placeholder="Point"
-          value={newUser.point}
-          onChange={handleNewUserChange}
-          required
-        />
-        <input
-          style={{ marginRight: '10px',
-            padding: '8px 12px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            width: '180px',
-            fontSize: '14px',
-            fontFamily: 'inherit',
-            color: '#333',
-            backgroundColor: '#fff',
-            transition: 'border-color 0.3s ease',
-            '&:focus': {
-              outline: 'none',
-              borderColor: '#6c63ff',
-              boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-            }, }}
-
-          type="text"
-          name="isBlock"
-          placeholder="Status"
-          value={newUser.isBlock}
-          onChange={handleNewUserChange}
-          required
-        />
+        
         <button type="submit" className='button-63'>Add User</button>
       </form>
       <div className='list-table'>
@@ -244,7 +171,6 @@ const UserList = () => {
           <b>User name</b>
           <b>Phone</b>
           <b>Email</b>
-          <b>Bank ID</b>
           <b>Point</b>
           <b>Status</b>
         </div>
@@ -253,7 +179,6 @@ const UserList = () => {
             <p>{item.name}</p>
             <p>{item.phone}</p>
             <p>{item.email}</p>
-            <p>{item.bankId}</p>
             <p>{item.point}</p>
             {editingUser === item.id ? (
               <input

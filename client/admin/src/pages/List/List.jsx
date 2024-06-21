@@ -7,7 +7,14 @@ import { toast } from 'react-toastify';
 const List = () => {
   const [list, setList] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [newPrice, setNewPrice] = useState('');
+  const [newDetails, setNewDetails] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    imageURL: '',
+    available_toppings: ''
+  });
 
   const fetchList = async () => {
     try {
@@ -24,12 +31,10 @@ const List = () => {
 
   const removeProduct = async (productId) => {
     try {
-      const response = await axios.post(`${url}/api/product/remove`, {
-        id: productId
-      });
+      const response = await axios.delete(`${url}/product/${productId}`)
       await fetchList();
-      if (response.data.success) {
-        toast.success(response.data.message);
+      if (response.status == 200) {
+        toast.success("Successfully remove the product");
       } else {
         toast.error("Error removing the product.");
       }
@@ -38,23 +43,35 @@ const List = () => {
     }
   };
 
-  const startEditing = (productId, currentPrice) => {
-    setEditingProduct(productId);
-    setNewPrice(currentPrice);
+  const startEditing = (product) => {
+    setEditingProduct(product._id);
+    setNewDetails({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      category: product.category,
+      imageURL: product.imageURL,
+      available_toppings: (product.available_toppings || []).join(', ')
+    });
   };
 
   const handleEditChange = (e) => {
-    setNewPrice(e.target.value);
+    const { name, value } = e.target;
+    setNewDetails(prevDetails => ({
+      ...prevDetails,
+      [name]: value
+    }));
   };
 
   const saveEdit = async (productId) => {
     try {
-      const response = await axios.put(`${url}/api/product/edit`, {
-        id: productId,
-        price: newPrice
+      const response = await axios.put(`${url}/product`, {
+        productId, // Update the key to productId
+        ...newDetails,
+        available_toppings: newDetails.available_toppings.split(',').map(topping => topping.trim())
       });
-      if (response.data.success) {
-        toast.success(response.data.message);
+      if (response.status === 200) {
+        toast.success("Sucessful roi neeee");
         await fetchList();
         setEditingProduct(null);
       } else {
@@ -65,14 +82,8 @@ const List = () => {
     }
   };
 
-  const handleBlur = (productId) => {
-    saveEdit(productId);
-  };
-
-  const handleKeyPress = (e, productId) => {
-    if (e.key === 'Enter') {
-      saveEdit(productId);
-    }
+  const cancelEdit = () => {
+    setEditingProduct(null);
   };
 
   useEffect(() => {
@@ -86,32 +97,77 @@ const List = () => {
         <div className="list-table-format title">
           <b>Image</b>
           <b>Name</b>
+          <b>Description</b>
           <b>Category</b>
           <b>Price</b>
-          <b>Action</b>
+          <b>Available Toppings</b>
         </div>
         {list.map((item, index) => (
           <div key={index} className='list-table-format'>
-            <img src={`${url}/images/` + item.image} alt="" />
-            <p>{item.name}</p>
-            <p>{item.category}</p>
-            <p>
-              {editingProduct === item._id ? (
+            {editingProduct === item._id ? (
+              <>
                 <input
                   type="text"
-                  value={newPrice}
+                  name="imageURL"
+                  value={newDetails.imageURL}
                   onChange={handleEditChange}
-                  onBlur={() => handleBlur(item._id)}
-                  onKeyPress={(e) => handleKeyPress(e, item._id)}
+                  placeholder="Image URL"
                   autoFocus
                 />
-              ) : (
-                <span onClick={() => startEditing(item._id, item.price)}>
-                  ${item.price}
-                </span>
-              )}
-            </p>
-            <p className='cursor' onClick={() => removeProduct(item._id)}>x</p>
+                <input
+                  type="text"
+                  name="name"
+                  value={newDetails.name}
+                  onChange={handleEditChange}
+                  placeholder="Product Name"
+                />
+                <input
+                  type="text"
+                  name="description"
+                  value={newDetails.description}
+                  onChange={handleEditChange}
+                  placeholder="Description"
+                />
+                <input
+                  type="text"
+                  name="category"
+                  value={newDetails.category}
+                  onChange={handleEditChange}
+                  placeholder="Category"
+                />
+                <input
+                  type="text"
+                  name="price"
+                  value={newDetails.price}
+                  onChange={handleEditChange}
+                  placeholder="Price"
+                />
+                <input
+                  type="text"
+                  name="available_toppings"
+                  value={newDetails.available_toppings}
+                  onChange={handleEditChange}
+                  placeholder="Available Toppings (comma separated)"
+                />
+                <button onClick={() => saveEdit(item._id)}>Save</button>
+                <button onClick={cancelEdit}>Cancel</button>
+              </>
+            ) : (
+              <>
+                <img src={item.imageURL} alt="" />
+                <p>{item.name}</p>
+                <p>{item.description}</p>
+                <p>{item.category}</p>
+                <p>${item.price}</p>
+                <p>{(item.available_toppings || []).join(', ')}</p>
+                <p onClick={() => startEditing(item)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+  </svg></p>
+                <p className='cursor' onClick={() => removeProduct(item._id)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+  </svg></p>
+              </>
+            )}
           </div>
         ))}
       </div>
