@@ -1,5 +1,6 @@
 const AccountModel = require('../models/AccountModel');
 const StaffModel = require('../models/StaffModel');
+const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -8,7 +9,6 @@ class StaffController {
         try {
             const staff = await StaffModel.findById(req.params.id);
             if (staff) {
-                // const accountObj = new Account(account.name, account.email, account.password);
                 res.json(staff);
             } else {
                 res.status(404).json({ error: 'Account not found.' });
@@ -46,9 +46,9 @@ class StaffController {
 
             await newStaff.save();
 
-            res.json({success:true,token})
+            res.status(200).json(token)
         } catch (error) {
-            res.status(500).json({ message: 'Unable to add account', error: error.message});
+            res.status(500).json({ error: 'Unable to add account' + error.message});
         }
     }
 
@@ -58,26 +58,26 @@ class StaffController {
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                return res.status(400).json({ message: 'Invalid account ID' });
+                return res.status(204).json({ message: 'Invalid account ID' });
             }
     
             // Delete the voucher by ID
             const deletedStaff = await StaffModel.findByIdAndDelete(accountId);
  
             if (!deletedStaff) {
-                return res.status(404).json({ message: 'Staff not found' });
+                return res.status(204).json({ message: 'Staff not found' });
             }
     
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                return res.status(404).json({ message: 'Account not found' });
+                return res.status(204).json({ message: 'Account not found' });
             }
     
-            res.status(200).json({ message: 'Account deleted successfully', acccount: deletedAccount });
+            res.status(200).json({ message: 'Account deleted successfully'});
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: 'Server error' });
+            res.status(500).json({ error: 'Unable to remove staff: ' + error.message});
         }
     }
 

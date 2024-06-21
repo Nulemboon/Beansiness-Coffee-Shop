@@ -2,6 +2,7 @@ const AccountModel = require('../models/AccountModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
+const mongoose = require('mongoose');
 
 class AccountController {
     getAllAccounts = async (req, res) => {
@@ -13,9 +14,9 @@ class AccountController {
                 return;
             }
 
-            res.status(200).json({success: true, data: accounts});
+            res.status(200).json(accounts);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching accounts.' });
+            res.status(500).json({ error: 'An error occurred while fetching accounts: ' + error.message });
         }
     };
     
@@ -30,7 +31,7 @@ class AccountController {
 
             res.status(200).json(account);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching the account.' });
+            res.status(500).json({ error: 'An error occurred while fetching the account: ' + error.message });
         }
     };
 
@@ -65,8 +66,7 @@ class AccountController {
             const { accountId } = req.params.id;
     
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                throw new Error("Invalid account id");
-                res.status(204).json({ message: 'Invalid account ID' });
+                res.status(204).json({ message: 'Account Id is invalid' });
                 return;
             }
     
@@ -78,9 +78,9 @@ class AccountController {
                 return;
             }
     
-            res.status(200).json(deletedAccount);
+            res.status(200).json({ message: 'Account has been removed successfully.'});
         } catch (error) {
-            res.status(500).json({ message: 'Unable to remove account' + error.message});
+            res.status(500).json({ message: 'Unable to remove account: ' + error.message});
         }
     }
 
@@ -90,7 +90,6 @@ class AccountController {
     
     //login user
     loginUser = async (req,res) => {
-        console.log(req.body);
         const {phone, password} = req.body;
         try{
             const account = await AccountModel.findOne({phone})
@@ -103,20 +102,19 @@ class AccountController {
             const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
-                res.status(401).json({message: "Invalid credentials"});
+                res.status(204).json({message: "Invalid credentials"});
                 return;
             }
             
             if (account.isBlock) {
-                res.json({message: "Account Blocked"});
+                res.status(204).json({message: "Account Blocked"});
                 return;
             }
             
-            const token = this.createToken(account._id)
-            res.status(200).json(token)
+            const token = this.createToken(account._id);
+            res.status(200).json(token);
         } catch (error) {
-            console.log(error);
-            res.json({success:false,message:"Error"})
+            res.status(500).json({error: 'Login failed: ' + error.message});
         }
     }
     
@@ -164,8 +162,9 @@ class AccountController {
             const account = await newAccount.save();
             const token = createToken(account._id);
             res.status(200).json(token);
+
         } catch(error){
-            res.status(500).json({error: "Error when register account" + error.message});
+            res.status(500).json({error: "Error when register account: " + error.message});
         }
     }
 

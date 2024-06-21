@@ -38,6 +38,11 @@ const OrderSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+
+    voucher_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Voucher'
+    },
     
     transaction_id: {
         type: String,

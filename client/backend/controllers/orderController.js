@@ -1,30 +1,30 @@
 const OrderModel = require('../models/OrderModel.js');
-const Order = require('../classes/Order.js');
 const DeliveryInfoModel = require('../models/DeliveryInfoModel');
+const AccountModel = require('../models/accountModel.js');
+const OrderItemModel = require('../models/OrderItemModel.js');
 
 
 class OrderController {
     getAllOrders = async (req, res) => {
         try {
             const orders = await OrderModel.find();
-            const orderList = orders.map(order => new Order(order.id, order.name, order.description, order.price));
-            res.json(orderList);
+            res.status(200).json(orders);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching orders.' });
+            res.status(500).json({ error: 'An error occurred while fetching orders: ' + error.message});
         }
     };
 
     getOrderById = async (req, res) => {
         try {
             const order = await OrderModel.findById(req.params.id);
-            if (order) {
-                const orderObj = new Order(order.id, order.name, order.description, order.price);
-                res.json(orderObj);
-            } else {
-                res.status(404).json({ error: 'Order not found.' });
+            if (!order) {
+                res.status(204).json({ message: 'Order not found.' });
+                return;
             }
+
+            res.status(200).json(order);
         } catch (error) {
-            res.status(500).json({ error: 'An error occurred while fetching the order.' });
+            res.status(500).json({ error: 'An error occurred while fetching the order: ' + error.message});
         }
     };
 
@@ -34,7 +34,8 @@ class OrderController {
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty' });
+                res.status(204).json({ message: 'Cart is empty' });
+                return;
             }
 
             const accountId = req.user.id; // Assuming you have user authentication middleware
@@ -93,10 +94,9 @@ class OrderController {
             
             res.clearCookie('cart');
 
-            res.status(201).json({ message: 'Order placed successfully', order });
+            res.status(200).json(order);
         } catch (error) {
-            console.error('Error placing order:', error);
-            res.status(500).json({ message: 'An error occurred while placing the order' });
+            res.status(500).json({ error: 'An error occurred while placing the order: ' + error.message});
         }
     }
 
@@ -106,7 +106,8 @@ class OrderController {
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
-                return res.status(400).json({ message: 'Cart is empty' });
+                res.status(204).json({ message: 'Cart is empty' });
+                return;
             }
 
             const accountId = req.user.id; // Assuming you have user authentication middleware
@@ -118,7 +119,8 @@ class OrderController {
                 const product = await ProductModel.findById(item.product_id);
 
                 if (!product) {
-                    return res.status(400).json({ message: `Product not found: ${item.product_id}` });
+                    res.status(204).json({ message: `Product not found: ${item.product_id}` });
+                    return;
                 }
 
                 const orderItem = new OrderItemModel({
@@ -166,10 +168,9 @@ class OrderController {
             // Optionally clear the cart
             res.clearCookie('cart');
 
-            res.status(201).json({ message: 'Order placed successfully', order });
+            res.status(200).json({ message: 'Order placed successfully', order });
         } catch (error) {
-            console.error('Error placing order:', error);
-            res.status(500).json({ message: 'An error occurred while placing the order' });
+            res.status(500).json({ error: 'An error occurred while placing the order: ' + error.message});
         }
     }
 
@@ -178,16 +179,16 @@ class OrderController {
             const pendingOrders = await OrderModel.find({ status: 'Pending' }).populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
             res.status(200).json(pendingOrders);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to fetch pending orders', error: error.message });
+            res.status(500).json({ error: 'Unable to fetch pending orders: ' + error.message });
         }
     };
 
     getApprovedOrders = async (req, res) => {
         try {
-            const pendingOrders = await OrderModel.find({ status: 'Approved' }).populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
-            res.status(200).json(pendingOrders);
+            const approveOrders = await OrderModel.find({ status: 'Approved' }).populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
+            res.status(200).json(approveOrders);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to fetch pending orders', error: error.message });
+            res.status(500).json({ error: 'Unable to fetch pending orders: ' + error.message });
         }
     }
 
@@ -197,7 +198,8 @@ class OrderController {
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
-                return res.status(400).json({ message: 'Invalid order ID' });
+                res.status(204).json({ message: 'Invalid order ID' });
+                return;
             }
 
             // Find and update the order's status to "Approved"
@@ -208,12 +210,13 @@ class OrderController {
             );
 
             if (!updatedOrder) {
-                return res.status(404).json({ message: 'Order not found' });
+                res.status(204).json({ message: 'Order not found' });
+                return;
             }
 
             res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to approve order', error: error.message });
+            res.status(500).json({ error: 'Unable to approve order: ' + error.message });
         }
     };
 
@@ -223,7 +226,8 @@ class OrderController {
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
-                return res.status(400).json({ message: 'Invalid order ID' });
+                res.status(204).json({ message: 'Invalid order ID'});
+                return;
             }
 
             // Find and update the order's status to "Approved"
@@ -234,12 +238,13 @@ class OrderController {
             );
 
             if (!updatedOrder) {
-                return res.status(404).json({ message: 'Order not found' });
+                res.status(204).json({ message: 'Order not found' });
+                return;
             }
 
             res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ message: 'Unable to approve order', error: error.message });
+            res.status(500).json({ error: 'Unable to approve order: ' + error.message });
         }
     }
 }
