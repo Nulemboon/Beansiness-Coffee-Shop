@@ -21,6 +21,7 @@ class ProductController {
             const product = await ProductModel.findById(req.params.id);
             if (!product) {
                 res.status(204).json({message: 'Product not found.' });
+                return;
             }
 
             res.status(200).json(product);
@@ -39,6 +40,7 @@ class ProductController {
     
             if (!product) {
                 res.status(204).json({ error: 'Product not found.' });
+                return;
             }
 
             res.status(200).json(product);
@@ -89,6 +91,7 @@ class ProductController {
 
             if (!updatedProduct) {
                 res.status(204).json({ message: 'Product not found' });
+                return;
             }
 
             res.status(200).json(updatedProduct);
@@ -112,6 +115,7 @@ class ProductController {
 
             if (!deletedProduct) {
                 res.status(204).json({ message: 'Product not found' });
+                return;
             }
 
             res.status(200).json(deletedProduct);

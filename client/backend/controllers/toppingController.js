@@ -7,6 +7,7 @@ class ToppingController {
             const toppings = await ToppingModel.find();
             if (!toppings || toppings.length === 0) {
                 res.json({success: false, message: "No Topping Available"});
+                return;
             }
             res.json(toppings);
         } catch (error) {
