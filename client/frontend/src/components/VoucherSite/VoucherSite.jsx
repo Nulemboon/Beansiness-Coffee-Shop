@@ -26,7 +26,7 @@ const VoucherSite = () => {
     };
 
     fetchVouchers();
-  }, [url]); // Dependency array includes url to refetch when it changes
+  }, [url]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

@@ -4,7 +4,8 @@ import { StoreContext } from '../../Context/StoreContext';
 import { assets } from '../../assets/assets';
 import ConfirmCancelModal from '../../components/ConfirmCancelModal/ConfirmCancelModal'; 
 import ReviewForm from '../../components/WriteReview/ReviewForm';
-import axios from 'axios';
+import axios from 'axios'; 
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
 const MyOrders = () => {
   const { url } = useContext(StoreContext);
@@ -19,7 +20,7 @@ const MyOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${url}/order`); // Adjust the endpoint as needed
+        const response = await axios.get(`${url}/order`); // Fetching orders from the backend
         setData(response.data);
       } catch (err) {
         console.error('Failed to fetch orders:', err);
@@ -80,6 +81,16 @@ const MyOrders = () => {
     return <div>{error}</div>;
   }
 
+  if (data.length === 0) {
+    return (
+      <div className='my-orders'>
+        <h2>No Orders Yet</h2>
+        <p>You haven't placed any orders yet. Start exploring our delicious menu now!</p>
+        <Link to="/menupage" className="go-to-menu-button">Go to Menu</Link>
+      </div>
+    );
+  }
+
   return (
     <div className='my-orders'>
       <h2>My Orders</h2>
@@ -104,7 +115,7 @@ const MyOrders = () => {
             )}
             {order.status === 'Delivered' && (
               <div>
-                <button onClick={() => handleReview(order)}>Write Review</button>
+                <button onClick={() => handleReview(order.id)}>Write Review</button>
                 {showReview && <ReviewForm onClose={() => setShowReview(false)} />}
               </div>
             )}

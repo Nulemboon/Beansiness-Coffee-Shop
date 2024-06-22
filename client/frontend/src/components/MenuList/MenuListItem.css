@@ -1,39 +1,65 @@
 .menu-list-item {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: box-shadow 0.2s;
-  }
-  
-  .menu-list-item:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .menu-list-item-image {
-    flex: 0 0 100px;
-    margin-right: 15px;
-  }
-  
-  .menu-list-item-image img {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .menu-list-item-details {
-    flex: 1;
-  }
-  
-  .menu-list-item-details h3 {
-    margin: 0;
-    font-size: 1.2em;
-  }
-  
-  .menu-list-item-details p {
-    margin: 5px 0;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensure the add button is on the right */
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+  margin: 10px 0; /* Add some space between items */
+}
+
+.menu-list-item:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.menu-list-item-image {
+  flex: 0 0 100px;
+  margin-right: 15px;
+}
+
+.menu-list-item-image img {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.menu-list-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.menu-list-item-details h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.menu-list-item-details p {
+  margin: 5px 0;
+}
+
+.add-to-cart-btn {
+  background-color: #ffffff;
+  width: 30px;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #356a8e; /* Darker brown on hover */
+}
