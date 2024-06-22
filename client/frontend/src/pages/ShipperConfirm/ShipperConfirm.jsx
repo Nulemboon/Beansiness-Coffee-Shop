@@ -45,7 +45,6 @@ const ShipperConfirm = () => {
 
   return (
     <div className='app-content'>
-      <Sidebar/>
     <div className="order-list-container">
       {list.length > 0 ? (
         list.map((order) => (
