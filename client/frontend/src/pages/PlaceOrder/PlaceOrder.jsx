@@ -4,6 +4,7 @@ import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useCookies } from 'react-cookies';
 
 const PlaceOrder = () => {
   const [data, setData] = useState({
@@ -20,6 +21,8 @@ const PlaceOrder = () => {
 
   const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
   const navigate = useNavigate();
+
+  const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
     console.log("Token on PlaceOrder mount:", token); // Debugging log
@@ -57,13 +60,17 @@ const PlaceOrder = () => {
     console.log("Using token:", token);
 
     try {
-      let response = await axios.post(url + "/order", orderData, {
+      const cart = cookies.cart || [];
+      let response = await axios.post(url + "/order", { orderData, cart }, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       console.log("Order response:", response.data);
       if (response.data.success) {
         const { session_url } = response.data;
         window.location.replace(session_url);
+
+        // Success Order, clear cart
+        removeCookie('cart', { path: '/' });
       } else {
         toast.error("Something went wrong");
       }

@@ -16,29 +16,32 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MenuPage from './pages/MenuPage/MenuPage';
 import UserInformation from './components/UserInformation/UserInformation';
+import { CookiesProvider } from 'react-cookie';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
 
   return (
     <>
-      <ToastContainer />
-      {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
-      <div className='app'>
-        <Navbar setShowLogin={setShowLogin} />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/placeorder' element={<PlaceOrder />} />
-          <Route path='/order/vnpay_return' element={<Result />} />
-          <Route path='/myorders' element={<MyOrders />} />
-          <Route path='/verify' element={<Verify />} />
-          <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
-          <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
-          <Route path='userinfo' element={<UserInformation />} />
-        </Routes>
-      </div>
-      <Footer />
+      <CookiesProvider defaultSetOptions={{ path: '/' }}>
+        <ToastContainer />
+        {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
+        <div className='app'>
+          <Navbar setShowLogin={setShowLogin} />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/cart' element={<Cart />} />
+            <Route path='/placeorder' element={<PlaceOrder />} />
+            <Route path='/order/vnpay_return' element={<Result />} />
+            <Route path='/myorders' element={<MyOrders />} />
+            <Route path='/verify' element={<Verify />} />
+            <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
+            <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
+            <Route path='userinfo' element={<UserInformation />} />
+          </Routes>
+        </div>
+        <Footer />
+      </CookiesProvider>
     </>
   );
 }

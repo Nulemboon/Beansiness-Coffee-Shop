@@ -3,15 +3,30 @@ import './FoodItem.css';
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../../Context/StoreContext';
 import AddToCartModal from '../AddToCartModal/AddToCartModal'; 
+import { useCookies } from 'react-cookie'
+
 
 const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cookies, setCookie] = useCookies(['cart']);
 
   const handleAddToCartClick = (e) => {
     e.stopPropagation(); 
     setIsModalOpen(true);
     console.log('Add to cart button clicked');
+
+    // Add product to cart
+    const currentCart = cookies.cart || [];
+    const product = {
+      _id: id,
+      quantity: 1,
+      toppings: toppings,
+    };
+    const updatedCart = [...currentCart, product];
+    setCookie('cart', updatedCart, { path: '/' });
+    
+    console.log(cookies.get('cart'));
   };
 
   const handleAddToCart = (quantity, size, selectedToppings) => {
