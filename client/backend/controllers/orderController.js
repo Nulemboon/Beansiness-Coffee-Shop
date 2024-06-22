@@ -16,7 +16,7 @@ class OrderController {
 
     getOrderById = async (req, res) => {
         try {
-            const order = await OrderModel.findById(req.params.id);
+            const order = await OrderModel.findById(req.params.id).populate('delivery_info', 'order_items', 'voucher_id');
             if (!order) {
                 res.status(204).json({ message: 'Order not found.' });
                 return;
@@ -47,7 +47,7 @@ class OrderController {
                 const product = await ProductModel.findById(item.product_id);
 
                 if (!product) {
-                    return res.status(400).json({ message: `Product not found: ${item.product_id}` });
+                    return res.status(204).json({ message: `Product not found: ${item.product_id}` });
                 }
 
                 const orderItem = new OrderItemModel({
@@ -67,7 +67,7 @@ class OrderController {
                 receiver_name: delivery_info.receiver_name,
                 address: delivery_info.address,
                 phone_number: delivery_info.phone_number,
-                instruction: delivery_info.instruction
+                instruction: delivery_info.instruction  
             });
             await delivery.save();
 
@@ -88,7 +88,10 @@ class OrderController {
             // Update user's order list
             await AccountModel.updateOne(
                 { _id: accountId },
-                { $push: { order_id: order._id } }
+                { 
+                    $push: { order_id: order._id },
+                    $inc: { point: Math.floor(totalAmount/10000) }
+                }
             );
 
             
@@ -102,7 +105,7 @@ class OrderController {
 
     async offlineOrder(req, res) {
         try {
-            // const { delivery_info, shipping_fee, transaction_id, payment_method } = req.body;
+            const { phoneNumber } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -110,8 +113,8 @@ class OrderController {
                 return;
             }
 
-            const accountId = req.user.id; // Assuming you have user authentication middleware
-
+            const account = await AccountModel.findOne({ phone: phoneNumber });
+            
             const orderItems = [];
             let totalAmount = 0;
 
@@ -136,17 +139,8 @@ class OrderController {
                 totalAmount += product.price * item.quantity;
             }
 
-            const delivery = new DeliveryInfoModel({
-                receiver_name: delivery_info.receiver_name,
-                address: delivery_info.address,
-                phone_number: delivery_info.phone_number,
-                instruction: delivery_info.instruction
-            });
-            
-            await delivery.save();
-
             const order = new OrderModel({
-                account_id: accountId,
+                account_id: account ? account._id : req.user.id,
                 delivery_info: {},
                 order_items: orderItems,
                 shipping_fee: 0,
@@ -161,8 +155,11 @@ class OrderController {
 
             // Update user's order list
             await AccountModel.updateOne(
-                { _id: accountId },
-                { $push: { order_id: order._id } }
+                { _id: account ? account._id : req.user.id},
+                { 
+                    $push: { order_id: order._id },
+                    $inc: { point: Math.floor(totalAmount / 10000) }
+                }
             );
 
             // Optionally clear the cart
@@ -246,7 +243,9 @@ class OrderController {
         } catch (error) {
             res.status(500).json({ error: 'Unable to approve order: ' + error.message });
         }
-    }
+    };
+
+    
 }
 
 
