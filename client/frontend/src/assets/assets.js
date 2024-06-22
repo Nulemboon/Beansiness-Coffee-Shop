@@ -354,3 +354,4 @@ export const food_list = [
     }
 ]
 
+export const url = "http://localhost:5173"

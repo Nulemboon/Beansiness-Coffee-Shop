@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './StaffOrder.css';
-import { assets, url } from '../../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Sidebar from '../../components/Sidebar/Sidebar';
 
-const StaffOrder = () => {
-  const [data, setData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    category: "Salad"
-  });
-
-//   const [image, setImage] = useState(false);
+const StaffOrder = ({ user }) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState([{
     PID: '1',
-    name: 'Product 1',
+    name: 'Product 123',
     description: 'Description 1',
     price: 100,
     category: 'Salad',
     // image: assets.product1
   }, {
     PID: '2',
-    name: 'Product 2',
+    name: 'Product 121',
     description: 'Description 2',
     price: 200,
     category: 'Salad',
@@ -37,11 +29,13 @@ const StaffOrder = () => {
     // image: assets.product3
   }]);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
-  // Fetch products when component mounts
+  const [phone, setPhone] = useState('');
+
+  // Fetch products based on search query
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${url}/product`);
+        const response = await axios.get(`/product/${searchQuery}`);
         if (response.data.success) {
           setProducts(response.data.products);
         } else {
@@ -51,9 +45,14 @@ const StaffOrder = () => {
         toast.error('Error fetching products');
       }
     };
-    
-    fetchProducts();
-  }, []);
+
+    if (searchQuery.trim() !== '') {
+      fetchProducts();
+    } else {
+      // Fetch all products if search query is empty
+      fetchProducts('/product');
+    }
+  }, [searchQuery]);
 
   const addProduct = (productId) => {
     const productToAdd = products.find((product) => product.PID === productId);
@@ -80,6 +79,7 @@ const StaffOrder = () => {
       }
     }
   };
+
   const removeProduct = (PID) => {
     const updatedProducts = selectedProductIds.map(product => {
       if (product.PID === PID) {
@@ -89,30 +89,30 @@ const StaffOrder = () => {
       }
       return product;
     }).filter(Boolean); // Filter out null values (products with quantity 0)
-  
+
     setSelectedProductIds(updatedProducts);
   };
+
   const emptyProduct = (PID) => {
-    const updatedProducts = selectedProductIds.map(product => {
-      if (product.PID === PID) {
-        return null;
-      }
-      return product;
-    }).filter(Boolean); // Filter out null values (products with quantity 0)
-  
+    const updatedProducts = selectedProductIds.filter(product => product.PID !== PID);
     setSelectedProductIds(updatedProducts);
   };
-  
 
   // Submit offline order
   const handleSubmit = async () => {
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone)) {
+      toast.error('Invalid phone number. Please enter a valid 10-digit phone number.');
+      return;
+    }
+
     try {
-      const response = await axios.post(`${url}/offline-order`, {
-        products: selectedProductIds 
+      const response = await axios.post('/order/offline', {
+        products: selectedProductIds,
+        phone: phone,
       });
       if (response.data.success) {
         toast.success(response.data.message);
-
       } else {
         toast.error(response.data.message); // Show error message if adding fails
       }
@@ -121,60 +121,86 @@ const StaffOrder = () => {
       toast.error('Failed to place order');
     }
   };
-  
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
+  };
+
   return (
     <div className='app-content'>
-      <Sidebar/>
+      <Sidebar user={user} />
       <div>
-      <div className='product-list'>
-        <h2>Product List</h2>
-        <ul className='product-container'>
-          {products.map((product) => (
-            <li key={product.PID} className='product-item' onClick={() => addProduct(product.PID)}>
-              {/* Display product details */}
-              <div className='product-details'>
-                <h3>{product.name}</h3>
-                <p>${product.price}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className='selected-products'>
-        <h2>Selected Products</h2>
-        <table className='selected-products-table'>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedProductIds.map((product) => (
-              <tr key={product.PID}>
-                <td>{product.name}</td>
-                <td>${product.price}</td>
-                <td>
-                  {product.quantity}
-                </td>
-                <td>${product.totalPrice}</td>
-                <td>
-                  <button onClick={() => addProduct(product.PID)}>+</button>
-                  <button onClick={() => removeProduct(product.PID)}>-</button>
-                  <button onClick={() => emptyProduct(product.PID)}>x</button>
-                </td>
-              </tr>
+        <div className='product-list'>
+          <h2>Product List</h2>
+          <form onSubmit={handleSearchSubmit} className='search-form'>
+            <input
+              type='text'
+              placeholder='Search Products...'
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className='search-input'
+            />
+            <button type='submit' className='search-button'>Search</button>
+          </form>
+          <ul className='product-container'>
+            {products.map((product) => (
+              <li key={product.PID} className='product-item' onClick={() => addProduct(product.PID)}>
+                <div className='product-details'>
+                  <h3>{product.name}</h3>
+                  <p>${product.price}</p>
+                </div>
+              </li>
             ))}
-          </tbody>
-        </table>
-        <div className='submit-container'>
-        <button className='button-submit' onClick={handleSubmit}>Order</button>
+          </ul>
         </div>
-      </div> 
+
+        <div className='selected-products'>
+          <h2>Selected Products</h2>
+          <table className='selected-products-table'>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedProductIds.map((product) => (
+                <tr key={product.PID}>
+                  <td>{product.name}</td>
+                  <td>${product.price}</td>
+                  <td>{product.quantity}</td>
+                  <td>${product.totalPrice}</td>
+                  <td>
+                    <button onClick={() => addProduct(product.PID)}>+</button>
+                    <button onClick={() => removeProduct(product.PID)}>-</button>
+                    <button onClick={() => emptyProduct(product.PID)}>x</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className='submit-container'>
+            <input 
+              type='text' 
+              className='phone-input' 
+              placeholder='Phone Number' 
+              value={phone}
+              onChange={handlePhoneChange}
+            />
+            <button className='button-submit' onClick={handleSubmit}>Order</button>
+          </div>
+        </div>
       </div>
     </div>
   );

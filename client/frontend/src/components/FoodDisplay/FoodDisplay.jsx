@@ -15,7 +15,7 @@ const FoodDisplay = ({ category }) => {
     const fetchFoodItems = async () => {
       try {
         let new_url = url;
-        new_url += "/product/all";
+        new_url += "/product";
         const response = await axios.get(new_url);
         setFoodItems(response.data); 
       } catch (err) {

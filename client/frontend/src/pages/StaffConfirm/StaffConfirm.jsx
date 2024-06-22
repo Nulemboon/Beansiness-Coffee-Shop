@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Sidebar from '../../components/Sidebar/Sidebar';
 
-const StaffConfirm = () => {
+const StaffConfirm = ({ user }) => {
   const [list, setList] = useState([
     {
       "HID": 1,
@@ -106,7 +106,7 @@ const StaffConfirm = () => {
 
   return (
     <div className='app-content'>
-      <Sidebar/>
+      <Sidebar user={user}/>
     <div className="order-list-container">
       {list.length > 0 ? (
         list.map(order => (
