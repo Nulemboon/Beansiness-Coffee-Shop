@@ -9,6 +9,7 @@ const StaffSchema = new mongoose.Schema({
     },
     role: {
         type: String,
+        enum: ['Admin', 'Onsite', 'Shipper'],
         required: true,
     }
 });
