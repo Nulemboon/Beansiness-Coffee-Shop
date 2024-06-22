@@ -1,4 +1,6 @@
 const AccountModel = require('../models/AccountModel');
+const StaffModel = require('../models/StaffModel');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -84,8 +86,8 @@ class AccountController {
         }
     }
 
-    createToken = (id) => {
-        return jwt.sign({id}, process.env.JWT_SECRET);
+    createToken = (id, role) => {
+        return jwt.sign({id, role}, process.env.JWT_SECRET);
     }
     
     //login user
@@ -110,9 +112,12 @@ class AccountController {
                 res.status(204).json({message: "Account Blocked"});
                 return;
             }
+
+            const staff = await StaffModel.findOne({ account_id: user._id });
+            const role = staff ? staff.role : 'Customer';
             
-            const token = this.createToken(account._id);
-            res.status(200).json(token);
+            const token = this.createToken(account._id, role);
+            res.status(200).json(token, role);
         } catch (error) {
             res.status(500).json({error: 'Login failed: ' + error.message});
         }
@@ -160,10 +165,10 @@ class AccountController {
                 voucher: [],
                 isBlock: false
             });
-
+            const role = 'Customer';
             const account = await newAccount.save();
-            const token = this.createToken(account._id);
-            res.status(200).json(token);
+            const token = this.createToken(account._id, role);
+            res.status(200).json(token, role);
 
         } catch(error){
             res.status(500).json({error: "Error when register account: " + error.message});

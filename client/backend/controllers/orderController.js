@@ -105,7 +105,7 @@ class OrderController {
 
     async offlineOrder(req, res) {
         try {
-            const { phoneNumber } = req.body;
+            const { phone } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -113,7 +113,7 @@ class OrderController {
                 return;
             }
 
-            const account = await AccountModel.findOne({ phone: phoneNumber });
+            const account = await AccountModel.findOne({ phone: phone });
             
             const orderItems = [];
             let totalAmount = 0;
@@ -245,7 +245,7 @@ class OrderController {
         }
     };
 
-    
+
 }
 
 

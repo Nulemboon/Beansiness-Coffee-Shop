@@ -46,9 +46,18 @@ class DeliveryInfoController {
                 res.status(204).json({ message: "Account not found"});
                 return ;
             }
+            
+            const deliveryInfoIndex = account.delivery_info.findIndex(d => d.delivery_info.equals(deliveryInfo_id));
+            if (deliveryInfoIndex === -1) {
+                res.status(204).json({ message: 'Delivery info not found in account' });
+                return;
+            }
+
+            account.delivery_info.splice(deliveryInfoIndex);
+            await account.save();
 
             const deletedDeliveryInfo = await DeliveryInfoModel.findByIdAndDelete(deliveryInfo_id);
-
+            
             if (!deletedDeliveryInfo) {
                 res.status(204).json({ message: 'Delivery Info not found' });
                 return;
