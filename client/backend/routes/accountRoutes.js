@@ -13,7 +13,7 @@ router.post('/register', accountController.registerUser);
 
 router.post('/login', accountController.loginUser)
 
-router.post('/:id/vouchers/add', voucherController.addVoucherUser);
+router.post('/vouchers/add', voucherController.addVoucherUser);
 
 router.post('/:id/vouchers/remove', voucherController.removeVoucherUser);
 
