@@ -10,9 +10,9 @@ const LoginPopup = ({ setShowLogin }) => {
     const [currState, setCurrState] = useState("Sign Up");
 
     const [data, setData] = useState({
-        userName: "",  // This will map to 'name' during registration
-        phone: "",     // Used for both login and registration
-        email: "",     // Only used for sign-up
+        userName: "",  
+        phone: "",     
+        email: "",     
         password: ""
     });
 
@@ -43,13 +43,13 @@ const LoginPopup = ({ setShowLogin }) => {
                 });
             }
     
-            // Check if the response is a token
-            const token = response.data.token || response.data; // Assuming response.data directly holds the token
+            const token = response.data.token || response.data;
     
             if (token) {
+                console.log("Token received:", token); 
                 setToken(token);
                 localStorage.setItem("token", token);
-                loadCartData({ token: token });
+                await loadCartData(); 
                 toast.success('Operation successful.');
                 setShowLogin(false);
             } else {
@@ -61,6 +61,7 @@ const LoginPopup = ({ setShowLogin }) => {
             toast.error('An error occurred. Please try again.');
         }
     };
+    
     
 
     return (

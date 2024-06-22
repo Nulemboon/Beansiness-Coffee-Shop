@@ -5,7 +5,7 @@ import { assets } from '../../assets/assets';
 import ConfirmCancelModal from '../../components/ConfirmCancelModal/ConfirmCancelModal'; 
 import ReviewForm from '../../components/WriteReview/ReviewForm';
 import axios from 'axios'; 
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom'; 
 
 const MyOrders = () => {
   const { url } = useContext(StoreContext);
@@ -13,14 +13,14 @@ const MyOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // State to manage confirmation modal visibility
-  const [orderToCancel, setOrderToCancel] = useState(null); // State to manage which order to cancel
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false); 
+  const [orderToCancel, setOrderToCancel] = useState(null); 
   const [showReview, setShowReview] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${url}/order`); // Fetching orders from the backend
+        const response = await axios.get(`${url}/order`);
         setData(response.data);
       } catch (err) {
         console.error('Failed to fetch orders:', err);
