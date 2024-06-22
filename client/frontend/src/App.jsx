@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
-import { AuthProvider } from './Context/AuthContext';
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
@@ -13,6 +12,7 @@ import Result from './pages/Result/Result';
 import StaffOrder from './pages/StaffOrder/StaffOrder';
 import StaffConfirm from './pages/StaffConfirm/StaffConfirm';
 import ShipperConfirm from './pages/ShipperConfirm/ShipperConfirm';
+import RegisterOffline from './pages/RegisterOffline/RegisterOffline';
 import ChangePassword from './components/ChangePassword/ChangePassword';
 import VoucherSite from './components/VoucherSite/VoucherSite';
 import ReviewForm from './components/WriteReview/ReviewForm';
@@ -29,31 +29,31 @@ const App = () => {
 
   return (
     <>
-      <AuthProvider>
-        <ToastContainer />
-        {showLogin && <LoginPopup setShowLogin={setShowLogin} setUser={setUser} />}
-        <div className='app'>
-          <Navbar setShowLogin={setShowLogin} user={user} />
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/cart' element={<Cart />} />
-            <Route path='/order' element={<PlaceOrder />} />
-            <Route path='/order/vnpay_return' element={<Result />} />
-            <Route path='/myorders' element={<MyOrders />} />
-            <Route path='/verify' element={<Verify />} />
-            <Route path='/vouchersite' element={<VoucherSite />} />
-            <Route path='/menupage' element={<MenuPage />} />
-            <Route path='/staff' element={<StaffRoute user={user} />}>
-              <Route path='/staff/order' element={<StaffOrder user={user} />} />
-              <Route path='/staff/order/confirm' element={<StaffConfirm user={user} />} /> 
-            </Route>
-            <Route path='/ship' element={<ShipRoute user={user} />}>
-              <Route path='/ship/order' element={<ShipperConfirm user={user} />} />
-            </Route>            
-          </Routes>
-        </div>
-        <Footer />
-      </AuthProvider>
+      <ToastContainer />
+      {showLogin && <LoginPopup setShowLogin={setShowLogin} setUser={setUser} />}
+      <div className='app'>
+        <Navbar setShowLogin={setShowLogin} user={user} />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/order' element={<PlaceOrder />} />
+          <Route path='/order/vnpay_return' element={<Result />} />
+          <Route path='/myorders' element={<MyOrders />} />
+          <Route path='/verify' element={<Verify />} />
+          <Route path='/vouchersite' element={<VoucherSite />} />
+          <Route path='/menupage' element={<MenuPage />} />
+          <Route path='/staff' element={<StaffRoute user={user} />}>
+            <Route path='/staff/order' element={<StaffOrder user={user} />} />
+            <Route path='/staff/confirm' element={<StaffConfirm user={user} />} /> 
+            <Route path='/staff/register' element={<RegisterOffline user={user} />} />
+          </Route>
+          <Route path='/ship' element={<ShipRoute user={user} />}>
+            <Route path='/ship/order' element={<ShipperConfirm user={user} />} />
+          </Route>
+          <Route path='*' element={<Navigate to='/' replace />} />      
+        </Routes>
+      </div>
+      <Footer />
     </>
   );
 }
