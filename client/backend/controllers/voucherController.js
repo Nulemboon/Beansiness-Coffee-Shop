@@ -33,7 +33,7 @@ class VoucherController {
     removeVoucher = async (req, res) => {
         try {
             const { voucherId } = req.params;
-    
+            
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(voucherId)) {
                 res.status(204).json({ message: 'Invalid voucher ID' });
@@ -60,7 +60,7 @@ class VoucherController {
     // - Reduce user point after buying
     addVoucherUser = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const { accountId } = req.user.id;
             const { voucherId } = req.body;
     
             // Validate voucherId
@@ -109,8 +109,8 @@ class VoucherController {
 
     removeVoucherUser = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
-            const { voucherId } = req.body;
+            const { accountId } = req.user.id;
+            const { voucherId } = req.params;
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(voucherId)) {

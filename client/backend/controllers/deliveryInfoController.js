@@ -35,7 +35,7 @@ class DeliveryInfoController {
         }
     };
 
-    deleteDeliveryInfo = async (req, res) => {
+    deleteUserDeliveryInfo = async (req, res) => {
         try {
             const { deliveryInfo_id } = req.params;
             const { account_id } = req.user.id;
@@ -55,13 +55,6 @@ class DeliveryInfoController {
 
             account.delivery_info.splice(deliveryInfoIndex);
             await account.save();
-
-            const deletedDeliveryInfo = await DeliveryInfoModel.findByIdAndDelete(deliveryInfo_id);
-            
-            if (!deletedDeliveryInfo) {
-                res.status(204).json({ message: 'Delivery Info not found' });
-                return;
-            }
 
             res.status(200).json({ message: 'Delivery Info has been deleted.'});
         } catch (error) {

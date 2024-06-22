@@ -1,16 +1,16 @@
 const express = require('express');
 const cartController = require('../controllers/cartController');
-const {authMiddleware, roleMiddleware} = require('../middleware/authMiddleware');
+const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authMiddleware, cartController.getCart);
+router.get('/', authenticate, cartController.getCart);
 
-router.get('/total', authMiddleware, cartController.getTotalAmount);
+router.get('/total', authenticate, cartController.getTotalAmount);
 
-router.post('/', authMiddleware, cartController.addToCart);
+router.post('/', authenticate, cartController.addToCart);
 
-router.delete('/', authMiddleware, cartController.removeFromCart);
+router.post('/', authenticate, cartController.removeFromCart);
 
 
 module.exports = router;

@@ -37,7 +37,7 @@ async function insertSampleData() {
         const accounts = sampleData.accounts;
         const newAccounts = [];
         for (const account of accounts) {
-            const hashedPassword = await bcrypt.hash(acccount.password, salt);
+            const hashedPassword = await bcrypt.hash(account.password, salt);
             newAccounts.push({
                 name: account.name,
                 phone: account.phone,
