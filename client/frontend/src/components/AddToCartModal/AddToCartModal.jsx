@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import './AddToCartModal.css';
 
-const AddToCartModal = ({ isOpen, onClose, onAddToCart }) => {
+const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings }) => {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState('M');
-  const [toppings, setToppings] = useState([]);
+  const [selectedToppings, setSelectedToppings] = useState([]);
 
   if (!isOpen) return null;
 
   const handleToppingChange = (topping) => {
-    setToppings((prev) =>
+    setSelectedToppings((prev) =>
       prev.includes(topping)
         ? prev.filter((t) => t !== topping)
         : [...prev, topping]
@@ -17,7 +17,7 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart }) => {
   };
 
   const handleAddToCart = () => {
-    onAddToCart(quantity, size, toppings);
+    onAddToCart(quantity, size, selectedToppings);
     onClose(); 
   };
 
@@ -45,15 +45,15 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart }) => {
         <div className='modal-field'>
           <label>Toppings:</label>
           <div className='toppings-options'>
-            {['Topping1', 'Topping2', 'Topping3'].map((topping) => (
-              <label key={topping}>
+            {toppings.map((topping) => (
+              <label key={topping._id}>
                 <input
                   type='checkbox'
-                  value={topping}
-                  checked={toppings.includes(topping)}
-                  onChange={() => handleToppingChange(topping)}
+                  value={topping.name}
+                  checked={selectedToppings.includes(topping.name)}
+                  onChange={() => handleToppingChange(topping.name)}
                 />
-                {topping}
+                {topping.name} (+{topping.price} VND)
               </label>
             ))}
           </div>

@@ -13,7 +13,7 @@ const MenuPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAddToCartModalOpen, setAddToCartModalOpen] = useState(false);
-  const [isFoodDetailModalOpen, setFoodDetailModalOpen] = useState(false); // New state for FoodDetailModal
+  const [isFoodDetailModalOpen, setFoodDetailModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchFoodItems = async () => {
@@ -37,18 +37,19 @@ const MenuPage = () => {
     };
 
     fetchFoodItems();
-  }, [url]); 
+  }, [url]);
 
   const handleItemClick = (id) => {
     const item = foodItems.find((item) => item._id === id); 
     setSelectedItem(item);
     setFoodDetailModalOpen(true); // Open FoodDetailModal
+    setAddToCartModalOpen(false); // Ensure AddToCartModal is closed
   };
 
   const handleAddToCartClick = (item) => {
     setSelectedItem(item);
     setAddToCartModalOpen(true); // Open AddToCartModal
-    setFoodDetailModalOpen(false); // Close FoodDetailModal if it was open
+    setFoodDetailModalOpen(false); // Ensure FoodDetailModal is closed
   };
 
   const handleCloseModal = () => {
@@ -91,6 +92,7 @@ const MenuPage = () => {
           isOpen={isAddToCartModalOpen}
           onClose={handleCloseModal}
           onAddToCart={handleAddToCart}
+          toppings={selectedItem.available_toppings} // Pass toppings to the AddToCartModal
         />
       )}
     </div>

@@ -15,6 +15,7 @@ import ReviewForm from './components/WriteReview/ReviewForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MenuPage from './pages/MenuPage/MenuPage';
+import UserInformation from './components/UserInformation/UserInformation';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -34,7 +35,7 @@ const App = () => {
           <Route path='/verify' element={<Verify />} />
           <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
           <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
-
+          <Route path='userinfo' element={<UserInformation />} />
         </Routes>
       </div>
       <Footer />

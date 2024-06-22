@@ -1,5 +1,3 @@
-// MenuListItem.js
-
 import React from 'react';
 import './MenuListItem.css';
 import { assets } from '../../assets/assets';
@@ -18,10 +16,10 @@ const MenuListItem = ({ item, onClick, onAddToCartClick }) => {
         </div>
       </div>
       <button className="add-to-cart-btn" onClick={(e) => {
-        e.stopPropagation(); // Prevents triggering the parent div click event
+        e.stopPropagation();
         onAddToCartClick(item);
       }}>
-        <img src={assets.add_icon_green} alt="Add to cart" />
+        <img src={assets.add_icon_white} alt="Add to cart" />
       </button>
     </div>
   );

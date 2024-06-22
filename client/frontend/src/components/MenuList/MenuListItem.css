@@ -1,13 +1,13 @@
 .menu-list-item {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Ensure the add button is on the right */
+  justify-content: space-between; 
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 8px;
   cursor: pointer;
   transition: box-shadow 0.2s;
-  margin: 10px 0; /* Add some space between items */
+  height: 150px;
 }
 
 .menu-list-item:hover {
@@ -56,10 +56,13 @@
 }
 
 .add-to-cart-btn img {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
 }
 
 .add-to-cart-btn:hover {
-  background-color: #356a8e; /* Darker brown on hover */
+  border-radius: 10px;
+  background-color: #356a8e;
+  width: 50px;
+  height: 50px;
 }

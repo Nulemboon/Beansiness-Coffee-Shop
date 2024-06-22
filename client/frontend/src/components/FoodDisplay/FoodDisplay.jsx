@@ -3,11 +3,11 @@ import axios from 'axios';
 import './FoodDisplay.css';
 import FoodItem from '../FoodItem/FoodItem';
 import FoodDetailModal from '../FoodDetailModal/FoodDetailModal';
-import { StoreContext } from '../../Context/StoreContext'; // Ensure correct path to StoreContext
+import { StoreContext } from '../../Context/StoreContext';
 
 const FoodDisplay = () => {
   const { url } = useContext(StoreContext);
-  const [foodItems, setFoodItems] = useState([]); // Initialize as an empty array
+  const [foodItems, setFoodItems] = useState([]); 
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,17 +16,16 @@ const FoodDisplay = () => {
     const fetchFoodItems = async () => {
       try {
         const response = await axios.get(`${url}/product`);
-        console.log('API response:', response.data); // Debugging log
+        console.log('API response:', response.data); 
         if (response.data && Array.isArray(response.data.data)) {
           setFoodItems(response.data.data);
         } else if (Array.isArray(response.data)) {
-          // In case the response is directly an array
           setFoodItems(response.data);
         } else {
           throw new Error('API did not return an array');
         }
       } catch (err) {
-        console.error('Error fetching food items:', err); // Debugging log
+        console.error('Error fetching food items:', err);
         setError('Failed to load food items. Please try again.');
       } finally {
         setLoading(false);
@@ -34,10 +33,11 @@ const FoodDisplay = () => {
     };
 
     fetchFoodItems();
-  }, [url]); // Ensure the URL is passed as a dependency
+  }, [url]);
 
   const handleItemClick = (id) => {
-    const item = foodItems.find((item) => item._id === id); // Use `_id` instead of `id`
+    console.log('Food item clicked:', id);
+    const item = foodItems.find((item) => item._id === id);
     setSelectedItem(item);
   };
 
@@ -65,12 +65,15 @@ const FoodDisplay = () => {
               desc={item.description}
               price={item.price}
               id={item._id}
+              toppings={item.available_toppings} 
               onClick={() => handleItemClick(item._id)}
             />
           </div>
         ))}
       </div>
-      {selectedItem && <FoodDetailModal item={selectedItem} onClose={handleCloseModal} />}
+      {selectedItem && (
+        <FoodDetailModal item={selectedItem} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

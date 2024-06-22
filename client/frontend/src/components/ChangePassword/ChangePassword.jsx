@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import './ChangePassword.css';
-import { toast } from 'react-toastify'; // Assuming you use react-toastify for notifications
-import { StoreContext } from '../../Context/StoreContext'; // Adjust the path based on your project structure
+import { toast } from 'react-toastify';
+import { StoreContext } from '../../Context/StoreContext'; 
 
 const ChangePassword = ({ isOpen, onClose }) => {
     const { url, setToken } = useContext(StoreContext); 
@@ -23,7 +23,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
         }
 
         try {
-            const response = await axios.post(`${url}/user/change-password`, {
+            const response = await axios.post(`${url}/account/change-password`, {
                 currentPassword,
                 newPassword
             }, {
