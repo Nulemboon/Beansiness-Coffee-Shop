@@ -1,5 +1,6 @@
 const express = require('express');
 const orderController = require('../controllers/orderController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -13,6 +14,6 @@ router.post('/approve/:id', orderController.approveOrder);
 
 router.post('/reject/:id', orderController.rejectOrder);
 
-router.post('/', orderController.placeOrder);
+router.post('/', authMiddleware,  orderController.placeOrder);
 
 module.exports = router;

@@ -131,13 +131,13 @@ class AccountController {
             const exists = await AccountModel.findOne({phone});
 
             if(exists){
-                res.status(409).json({message: "User already exists"});
+                res.status(204).json({message: "User already exists"});
                 return;
             }
 
             // validating email format & strong password
             if(!validator.isEmail(email)){
-                res.status(409).json({message: "Please enter a valid email"});
+                res.status(204).json({message: "Please enter a valid email"});
                 return;
             }
 
@@ -146,7 +146,7 @@ class AccountController {
             //     return;
             // }
             if(phone.length != 10) {
-                res.status(409).json({message: "Please enter a valid phone number"});
+                res.status(204).json({message: "Please enter a valid phone number"});
                 return;
             }
     
