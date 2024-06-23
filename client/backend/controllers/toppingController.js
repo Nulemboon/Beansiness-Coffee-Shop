@@ -6,7 +6,7 @@ class ToppingController {
         try {
             const toppings = await ToppingModel.find();
             if (!toppings || toppings.length === 0) {
-                res.status(204).json({ message: "No Topping Available"});
+                res.status(404).json({ message: "No Topping Available"});
                 return;
             }
             res.json(toppings);
@@ -19,7 +19,7 @@ class ToppingController {
         try {
             const topping = await ToppingModel.findById(req.params.id);
             if (!topping) {
-                res.status(204).json({message: 'Topping not found.' });
+                res.status(404).json({message: 'Topping not found.' });
                 return;
             }
 
@@ -51,7 +51,7 @@ class ToppingController {
 
             // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
-                res.status(204).json({message: 'Invalid topping Id.' });
+                res.status(400).json({message: 'Invalid topping Id.' });
                 return;
             }
 
@@ -59,7 +59,7 @@ class ToppingController {
             const updateTopping = await ToppingModel.findByIdAndUpdate(toppingId, updateData, { new: true, runValidators: true });
 
             if (!updateTopping) {
-                res.status(204).json({ message: 'Topping not found' });
+                res.status(404).json({ message: 'Topping not found' });
                 return;
             }
 
@@ -76,7 +76,7 @@ class ToppingController {
 
             // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
-                res.status(204).json({message: 'Invalid topping Id.' });
+                res.status(400).json({message: 'Invalid topping Id.' });
                 return;
             }
 
@@ -84,7 +84,7 @@ class ToppingController {
             const deletedTopping = await ToppingModel.findByIdAndDelete(toppingId);
 
             if (!deletedTopping) {
-                res.status(204).json({ message: 'Topping not found' });
+                res.status(404).json({ message: 'Topping not found' });
                 return;
             }
 
