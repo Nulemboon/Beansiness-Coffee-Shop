@@ -19,9 +19,9 @@ const Add = () => {
   useEffect(() => {
     const fetchToppings = async () => {
       try {
-        const response = await axios.get(`${url}/toppings`);
-        if (response.data.success) {
-          setToppings(response.data.data);
+        const response = await axios.get(`${url}/topping`);
+        if (response.status === 200) {
+          setToppings(response.data);
         } else {
           toast.error("Error fetching toppings.");
         }
@@ -40,11 +40,13 @@ const Add = () => {
     formData.append("price", Number(data.price));
     formData.append("category", data.category);
     formData.append("image", image);
-    formData.append("available_toppings", JSON.stringify(data.available_toppings));
+    data.available_toppings.forEach(topping => {
+      formData.append("toppings[]", topping);
+    });
 
     try {
       const response = await axios.post(`${url}/product`, formData);
-      if (response.status == 200) {
+      if (response.status === 200) {
         toast.success("Successfully added the product");
         setData({
           name: "",
@@ -111,18 +113,18 @@ const Add = () => {
           </div>
           <div className='add-price flex-col'>
             <p>Product Price</p>
-            <input type="Number" name='price' onChange={onChangeHandler} value={data.price} placeholder='$25' required />
+            <input type="number" name='price' onChange={onChangeHandler} value={data.price} placeholder='$25' required />
           </div>
         </div>
         <div className='add-toppings flex-col'>
           <p>Available Toppings</p>
           <div className='toppings-list'>
             {toppings.map(topping => (
-              <label key={topping.id} className='topping-item'>
+              <label key={topping._id} className='topping-item'>
                 <input 
                   type="checkbox" 
-                  value={topping.name} 
-                  checked={data.available_toppings.includes(topping.name)}
+                  value={topping._id} 
+                  checked={data.available_toppings.includes(topping._id)}
                   onChange={onToppingChange} 
                 />
                 {topping.name}

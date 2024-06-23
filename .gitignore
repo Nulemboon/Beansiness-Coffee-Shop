@@ -7,3 +7,5 @@
 /food-del/admin/node_modules
 /food-del/backend/node_modules
 /food-del/frontend/node_modules
+
+/client/backend/uploads
