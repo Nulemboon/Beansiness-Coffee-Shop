@@ -28,11 +28,8 @@ const AccountSchema = new mongoose.Schema({
     }],
 
     delivery_info: [{
-        delivery_id: {
-            type: Schema.Types.ObjectId,
-            ref: 'DeliveryInfo',
-            required: true
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'DeliveryInfo',
     }]
 });
 
