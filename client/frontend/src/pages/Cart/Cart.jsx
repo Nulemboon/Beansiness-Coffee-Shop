@@ -1,12 +1,51 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const { removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
   const [voucherCode, setVoucherCode] = useState('');
+  const [cart, setCart] = useState([]);
+  const [cookies, setCookie] = useCookies(['cart']);
+
+  useEffect(() => {
+    const currentCart = cookies.cart || [];
+    setCart(currentCart);
+  }, [cookies.cart]);
+
+  const handleRemoveFromCart = (itemIndex) => {
+    const updatedCart = cart.filter((_, index) => index !== itemIndex);
+    setCart(updatedCart);
+    setCookie('cart', updatedCart, { path: '/' });
+    if (cart[itemIndex]) {
+      removeFromCart(cart[itemIndex]._id);
+    }
+  };
+
+  const handleCheckout = () => {
+    if (getTotalCartAmount() > 0) {
+      navigate('/delivery_form', { state: { voucherCode } });
+    } else {
+      alert('Your cart is empty!');
+    }
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => {
+      const toppingCost = item.toppings.reduce((sum, toppingName) => {
+        const topping = item.toppings.find(t => t.name === toppingName);
+        return sum + (topping ? topping.price : 0);
+      }, 0);
+      return total + (item.price + toppingCost) * item.quantity;
+    }, 0);
+  };
+
+  if (!cart.length) {
+    return <div>Your cart is empty</div>;
+  }
 
   return (
     <div className='cart'>
@@ -14,7 +53,7 @@ const Cart = () => {
         <div className="cart-items-title">
           <p>Title</p>
           <p>Size</p>
-          <p>Topping</p>
+          <p>Toppings</p>
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
@@ -22,17 +61,16 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {Object.keys(cartItems).map((itemId, index) => (
+        {cart.map((item, index) => (
           <div key={index}>
             <div className="cart-items-title cart-items-item">
-              {/* Assuming you have a function to get item details by ID */}
-              <p>{cartItems[itemId].name}</p>
-              <p>{cartItems[itemId].size}</p>
-              <p>{cartItems[itemId].topping}</p>
-              <p>${cartItems[itemId].price}</p>
-              <div>{cartItems[itemId].quantity}</div>
-              <p>${cartItems[itemId].price * cartItems[itemId].quantity}</p>
-              <p className='cart-items-remove-icon' onClick={() => removeFromCart(itemId)}>x</p>
+              <p>{item.name}</p> 
+              <p>{item.size}</p>
+              <p>{item.toppings.join(', ')}</p> 
+              <p>{item.price + ' VND'}</p>
+              <div>{item.quantity}</div>
+              <p>{(item.price * item.quantity) + ' VND'}</p>
+              <p className='cart-items-remove-icon' onClick={() => handleRemoveFromCart(index)}>x</p>
             </div>
             <hr />
           </div>
@@ -42,13 +80,13 @@ const Cart = () => {
         <div className="cart-total">
           <h2 style={{ color: '#8B4513' }}>Cart Totals</h2>
           <div>
-            <div className="cart-total-details"><p>Subtotal</p><p>${getTotalCartAmount()}</p></div>
+            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice() + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Delivery Fee</p><p>${getTotalCartAmount() === 0 ? 0 : 5}</p></div>
+            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : 5000 + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</b></div>
+            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : getTotalPrice() + 5000) + ' VND'}</b></div>
           </div>
-          <button onClick={() => navigate('/delivery_form', { state: { voucherCode } })}>PROCEED TO CHECKOUT</button>
+          <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
         <div className="cart-promocode">
           <div>
@@ -56,7 +94,7 @@ const Cart = () => {
             <div className='cart-promocode-input'>
               <input 
                 type="text" 
-                placeholder='promo code' 
+                placeholder='Promo code' 
                 value={voucherCode}
                 onChange={(e) => setVoucherCode(e.target.value)}
               />

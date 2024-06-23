@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AddToCartModal.css';
 
-const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings }) => {
+const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
   const [quantity, setQuantity] = useState(1);
   const [size, setSize] = useState('M');
   const [selectedToppings, setSelectedToppings] = useState([]);
@@ -17,13 +17,19 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings }) => {
   };
 
   const handleAddToCart = () => {
-    onAddToCart(quantity, size, selectedToppings);
+    const toppingCost = selectedToppings.reduce((total, toppingName) => {
+      const topping = toppings.find(t => t.name === toppingName);
+      return total + (topping ? topping.price : 0);
+    }, 0);
+    const totalPrice = price + toppingCost; 
+
+    onAddToCart(quantity, size, selectedToppings, totalPrice);
     onClose(); 
   };
 
   return (
-    <div className='modal-overlay'>
-      <div className='modal-content'>
+    <div className='modal-overlay' onClick={onClose}>
+      <div className='modal-content' onClick={(e) => e.stopPropagation()}>
         <h2>Customize your order</h2>
         <div className='modal-field'>
           <label>Quantity:</label>
@@ -59,10 +65,12 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings }) => {
           </div>
         </div>
         <button className='add-to-cart-button' onClick={handleAddToCart}>Add to Cart</button>
-        <button className='cancel1-button' onClick={onClose}>Cancel</button>
+        <button className='cancel-button' onClick={onClose}>Cancel</button>
       </div>
     </div>
   );
 };
 
 export default AddToCartModal;
+
+

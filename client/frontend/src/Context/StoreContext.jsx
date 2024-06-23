@@ -9,6 +9,7 @@ const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
 
+  // Add item to cart
   const addToCart = async (itemId, quantity, size, toppings) => {
     console.log(`Attempting to add item with ID: ${itemId} to cart`);
 
@@ -33,7 +34,6 @@ const StoreContextProvider = (props) => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log("Add to cart response:", response.data);
-
         setCartItems(response.data.cart);
       } catch (error) {
         console.error("Error adding to cart:", error);
@@ -44,7 +44,7 @@ const StoreContextProvider = (props) => {
   const removeFromCart = async (itemId, size = "M", toppings = []) => {
     setCartItems((prev) => {
       const updatedCart = { ...prev };
-      if (updatedCart[itemId].quantity > 1) {
+      if (updatedCart[itemId]?.quantity > 1) {
         updatedCart[itemId].quantity -= 1;
       } else {
         delete updatedCart[itemId];
@@ -59,7 +59,6 @@ const StoreContextProvider = (props) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log("Remove from cart response:", response.data);
-
         setCartItems(response.data.cart);
       } catch (error) {
         console.error("Error removing from cart:", error);
@@ -69,27 +68,37 @@ const StoreContextProvider = (props) => {
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
+
+    if (!food_list || food_list.length === 0) {
+      console.warn("Food list is empty or not loaded yet.");
+      return totalAmount;
+    }
+
     for (const itemId in cartItems) {
       const item = cartItems[itemId];
-      if (item.quantity > 0) {
+      if (item?.quantity > 0) {
         const itemInfo = food_list.find((product) => product._id === itemId);
         if (itemInfo) {
           totalAmount += itemInfo.price * item.quantity;
+        } else {
+          console.warn(`Product with ID ${itemId} not found in food list.`);
         }
       }
     }
     return totalAmount;
   };
 
+  // Fetch food list
   const fetchFoodList = async () => {
     try {
       const response = await axios.get(`${url}/product`);
-      setFoodList(response.data.data); 
+      setFoodList(response.data.data);
     } catch (error) {
       console.error("Error fetching food list:", error);
     }
   };
 
+  // Load cart data from server
   const loadCartData = async () => {
     if (token) {
       try {
@@ -111,6 +120,7 @@ const StoreContextProvider = (props) => {
     }
   };
 
+  // Load initial data on component mount
   useEffect(() => {
     async function loadData() {
       await fetchFoodList();
@@ -123,10 +133,10 @@ const StoreContextProvider = (props) => {
     }
     loadData();
   }, []);
-  
 
+  // Store token in local storage when it updates
   useEffect(() => {
-    console.log("Token updated in context:", token); // Debugging log
+    console.log("Token updated in context:", token);
     if (token) {
       localStorage.setItem("token", token);
     }

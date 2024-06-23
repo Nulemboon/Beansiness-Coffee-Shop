@@ -168,7 +168,7 @@ class AccountController {
             const role = 'Customer';
             const account = await newAccount.save();
             const token = this.createToken(account._id, role);
-            res.status(200).json(token, role);
+            res.status(200).json({token, role});
 
         } catch(error){
             res.status(500).json({error: "Error when register account: " + error.message});

@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './MenuListItem.css';
 import { assets } from '../../assets/assets';
+import { StoreContext } from '../../Context/StoreContext';
+import { toast } from 'react-toastify';
 
 const MenuListItem = ({ item, onClick, onAddToCartClick }) => {
+  const { token } = useContext(StoreContext);
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    if (!token) {
+      toast.error('Please sign in first to add items to your cart.', {
+        position: 'top-right',
+        autoClose: 3000 
+      });
+      return;
+    }
+    onAddToCartClick(item);
+  };
+
   return (
     <div className="menu-list-item">
       <div className="menu-list-item-content" onClick={() => onClick(item._id)}>
@@ -15,10 +31,7 @@ const MenuListItem = ({ item, onClick, onAddToCartClick }) => {
           <p>{item.price + ' VND'}</p>
         </div>
       </div>
-      <button className="add-to-cart-btn" onClick={(e) => {
-        e.stopPropagation();
-        onAddToCartClick(item);
-      }}>
+      <button className="add-to-cart-btn" onClick={handleAddToCart}>
         <img src={assets.add_icon_white} alt="Add to cart" />
       </button>
     </div>
