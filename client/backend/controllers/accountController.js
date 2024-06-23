@@ -12,7 +12,7 @@ class AccountController {
             const accounts = await AccountModel.find();
 
             if (!accounts || accounts.length === 0) {
-                res.status(204).json({message: 'No account available'});
+                res.status(404).json({message: 'No account available'});
                 return;
             }
 
@@ -27,7 +27,7 @@ class AccountController {
             const account = await AccountModel.findById(req.params.id);
 
             if (!account) {
-                res.status(204).json({ message: 'Account not found.' });  
+                res.status(404).json({ message: 'Account not found.' });  
                 return;
             } 
 
@@ -68,7 +68,7 @@ class AccountController {
             const accountId = req.params.id;
     
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                res.status(204).json({ message: 'Account Id is invalid' });
+                res.status(400).json({ message: 'Account Id is invalid' });
                 return;
             }
     
@@ -76,7 +76,7 @@ class AccountController {
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                res.status(204).json({ message: 'Account not found' });
+                res.status(404).json({ message: 'Account not found' });
                 return;
             }
     
@@ -97,19 +97,19 @@ class AccountController {
             const account = await AccountModel.findOne({phone})
     
             if(!account){
-                res.status(204).json({message: "Account does not exist"});
+                res.status(404).json({message: "Account does not exist"});
                 return;
             }
     
             const isMatch = await bcrypt.compare(password, account.password)
     
             if(!isMatch){
-                res.status(204).json({message: "Invalid credentials"});
+                res.status(400).json({message: "Invalid credentials"});
                 return;
             }
             
             if (account.isBlock) {
-                res.status(204).json({message: "Account Blocked"});
+                res.status(403).json({message: "Account Blocked"});
                 return;
             }
 
@@ -131,13 +131,13 @@ class AccountController {
             const exists = await AccountModel.findOne({phone});
 
             if(exists){
-                res.status(204).json({message: "User already exists"});
+                res.status(409).json({message: "User already exists"});
                 return;
             }
 
             // validating email format & strong password
             if(!validator.isEmail(email)){
-                res.status(204).json({message: "Please enter a valid email"});
+                res.status(400).json({message: "Please enter a valid email"});
                 return;
             }
 
@@ -146,7 +146,7 @@ class AccountController {
             //     return;
             // }
             if(phone.length != 10) {
-                res.status(204).json({message: "Please enter a valid phone number"});
+                res.status(400).json({message: "Please enter a valid phone number"});
                 return;
             }
     
@@ -168,6 +168,7 @@ class AccountController {
             const role = 'Customer';
             const account = await newAccount.save();
             const token = this.createToken(account._id, role);
+
             res.status(200).json({token: token, role: role});
 
         } catch(error){
