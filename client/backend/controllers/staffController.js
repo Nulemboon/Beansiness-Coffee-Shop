@@ -54,7 +54,7 @@ class StaffController {
 
     removeStaff = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const accountId = req.params.id;
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {

@@ -3,7 +3,7 @@ const DeliveryInfoModel = require('../models/DeliveryInfoModel');
 class DeliveryInfoController {
     createDeliveryInfo = async (req, res) => {
         try {
-            const { account_id } = req.user.id;
+            const account_id = req.user.id;
             const { receiver_name, address, phone_number, instruction } = req.body;
 
             const account = await AccountModel.find(account_id);
@@ -37,8 +37,8 @@ class DeliveryInfoController {
 
     deleteUserDeliveryInfo = async (req, res) => {
         try {
-            const { deliveryInfo_id } = req.params;
-            const { account_id } = req.user.id;
+            const deliveryInfo_id = req.params.id;
+            const account_id = req.user.id;
 
             const account = await AccountModel.find(account_id);
 
