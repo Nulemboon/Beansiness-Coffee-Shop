@@ -37,7 +37,6 @@ class StaffController {
             });
     
             const savedAccount = await newAccount.save();
-            const token = createToken(savedAccount._id)
             
             const newStaff = StaffModel({
                 account_id: savedAccount._id,
@@ -46,7 +45,7 @@ class StaffController {
 
             await newStaff.save();
 
-            res.status(200).json(token)
+            res.status(200).json(newStaff)
         } catch (error) {
             res.status(500).json({ error: 'Unable to add account' + error.message});
         }
@@ -80,11 +79,6 @@ class StaffController {
             res.status(500).json({ error: 'Unable to remove staff: ' + error.message});
         }
     }
-
-    createToken = (id) => {
-        return jwt.sign({id}, process.env.JWT_SECRET);
-    }
- 
 }
 
 

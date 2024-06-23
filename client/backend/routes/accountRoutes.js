@@ -13,9 +13,9 @@ router.post('/register', accountController.registerUser);
 
 router.post('/login', accountController.loginUser)
 
-router.post('/vouchers/add', voucherController.addVoucherUser);
+router.post('/vouchers/add', authenticate, roleMiddleware(['Customer']), voucherController.addVoucherUser);
 
-router.post('/vouchers/remove', voucherController.removeVoucherUser);
+router.post('/vouchers/remove', authenticate, roleMiddleware(['Customer']), voucherController.removeVoucherUser);
 
 router.post('/add', accountController.addAccount);
 

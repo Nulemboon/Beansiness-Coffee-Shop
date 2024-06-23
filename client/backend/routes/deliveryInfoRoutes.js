@@ -4,8 +4,8 @@ const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/', deliveryInfoController.createDeliveryInfo);
+router.post('/', authenticate, roleMiddleware(['Customer']), deliveryInfoController.createDeliveryInfo);
 
-router.delete('/:id', deliveryInfoController.deleteUserDeliveryInfo);
+router.delete('/:id', authenticate, roleMiddleware(['Customer']), deliveryInfoController.deleteUserDeliveryInfo);
 
 module.exports = router;
