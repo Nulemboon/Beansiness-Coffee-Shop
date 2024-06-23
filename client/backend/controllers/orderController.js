@@ -19,7 +19,7 @@ class OrderController {
         try {
             const order = await OrderModel.findById(req.params.id).populate('delivery_info', 'order_items', 'voucher_id');
             if (!order) {
-                res.status(204).json({ message: 'Order not found.' });
+                res.status(404).json({ message: 'Order not found.' });
                 return;
             }
 
@@ -35,7 +35,7 @@ class OrderController {
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
-                res.status(204).json({ message: 'Cart is empty' });
+                res.status(400).json({ message: 'Cart is empty' });
                 return;
             }
 
@@ -48,7 +48,7 @@ class OrderController {
                 const product = await ProductModel.findById(item.product_id);
 
                 if (!product) {
-                    return res.status(204).json({ message: `Product not found: ${item.product_id}` });
+                    return res.status(404).json({ message: `Product not found: ${item.product_id}` });
                 }
 
                 const orderItem = new OrderItemModel({
@@ -110,7 +110,7 @@ class OrderController {
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
-                res.status(204).json({ message: 'Cart is empty' });
+                res.status(400).json({ message: 'Cart is empty' });
                 return;
             }
 
@@ -123,7 +123,7 @@ class OrderController {
                 const product = await ProductModel.findById(item.product_id);
 
                 if (!product) {
-                    res.status(204).json({ message: `Product not found: ${item.product_id}` });
+                    res.status(404).json({ message: `Product not found: ${item.product_id}` });
                     return;
                 }
 
@@ -196,7 +196,7 @@ class OrderController {
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
-                res.status(204).json({ message: 'Invalid order ID' });
+                res.status(400).json({ message: 'Invalid order ID' });
                 return;
             }
 
@@ -208,7 +208,7 @@ class OrderController {
             );
 
             if (!updatedOrder) {
-                res.status(204).json({ message: 'Order not found' });
+                res.status(404).json({ message: 'Order not found' });
                 return;
             }
 
@@ -224,7 +224,7 @@ class OrderController {
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
-                res.status(204).json({ message: 'Invalid order ID'});
+                res.status(400).json({ message: 'Invalid order ID'});
                 return;
             }
 
@@ -236,7 +236,7 @@ class OrderController {
             );
 
             if (!updatedOrder) {
-                res.status(204).json({ message: 'Order not found' });
+                res.status(404).json({ message: 'Order not found' });
                 return;
             }
 

@@ -57,20 +57,20 @@ class StaffController {
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                return res.status(204).json({ message: 'Invalid account ID' });
+                return res.status(400).json({ message: 'Invalid account ID' });
             }
     
             // Delete the voucher by ID
             const deletedStaff = await StaffModel.findByIdAndDelete(accountId);
  
             if (!deletedStaff) {
-                return res.status(204).json({ message: 'Staff not found' });
+                return res.status(404).json({ message: 'Staff not found' });
             }
     
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                return res.status(204).json({ message: 'Account not found' });
+                return res.status(404).json({ message: 'Account not found' });
             }
     
             res.status(200).json({ message: 'Account deleted successfully'});

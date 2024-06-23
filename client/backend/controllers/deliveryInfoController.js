@@ -9,7 +9,7 @@ class DeliveryInfoController {
             const account = await AccountModel.find(account_id);
 
             if (!account) {
-                res.status(204).json({ message: "Account not found"});
+                res.status(404).json({ message: "Account not found"});
                 return ;
             }
 
@@ -43,13 +43,13 @@ class DeliveryInfoController {
             const account = await AccountModel.find(account_id);
 
             if (!account) {
-                res.status(204).json({ message: "Account not found"});
+                res.status(404).json({ message: "Account not found"});
                 return ;
             }
             
             const deliveryInfoIndex = account.delivery_info.findIndex(d => d.delivery_info.equals(deliveryInfo_id));
             if (deliveryInfoIndex === -1) {
-                res.status(204).json({ message: 'Delivery info not found in account' });
+                res.status(404).json({ message: 'Delivery info not found in account' });
                 return;
             }
 
