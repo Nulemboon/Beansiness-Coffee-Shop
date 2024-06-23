@@ -32,7 +32,7 @@ class ToppingController {
     createTopping = async (req, res) => {
         try {
             const { name, price } = req.body;
-            const newTopping = new ProductModel({
+            const newTopping = new ToppingModel({
                 name,
                 price
             });

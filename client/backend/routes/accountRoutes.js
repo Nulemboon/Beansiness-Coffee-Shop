@@ -1,7 +1,7 @@
 const express = require('express');
 const accountController = require('../controllers/accountController');
 const voucherController = require('../controllers/voucherController');
-const authMiddleware = require('../middleware/authMiddleware');
+const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -13,9 +13,9 @@ router.post('/register', accountController.registerUser);
 
 router.post('/login', accountController.loginUser)
 
-router.post('/:id/vouchers/add', voucherController.addVoucherUser);
+router.post('/vouchers/add', authenticate, roleMiddleware(['Customer']), voucherController.addVoucherUser);
 
-router.post('/:id/vouchers/remove', voucherController.removeVoucherUser);
+router.post('/vouchers/remove', authenticate, roleMiddleware(['Customer']), voucherController.removeVoucherUser);
 
 router.post('/add', accountController.addAccount);
 

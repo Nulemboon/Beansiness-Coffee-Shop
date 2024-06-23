@@ -103,11 +103,12 @@ class ProductController {
     // Delete Product
     deleteProduct = async (req, res) => {
         try {
-            const { productId } = req.params.id;
+            const productId = req.params.id;
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
                 res.status(204).json({ message: 'Product not found' });
+                return;
             }
 
             // Delete product
@@ -126,7 +127,7 @@ class ProductController {
 
     addReview = async (req, res) => {
         try {
-            const { productId } = req.params;
+            const productId = req.params.id;
             const { review, rating, accountId } = req.body;
     
             // Find the product by ID
@@ -158,7 +159,7 @@ class ProductController {
 
     removeReview = async (req, res) => {
         try {
-            const { productId, reviewId } = req.params;
+            const { productId, reviewId } = req.body;
     
             // Find the product by ID
             const product = await ProductModel.findById(productId);
