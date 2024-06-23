@@ -25,7 +25,7 @@ router.post('/', upload.single('image'), productController.createProduct);
 
 router.put('/', upload.single('image'), productController.updateProduct);
 
-router.delete('/delete-review/:id', productController.removeReview);
+router.delete('/delete-review/', productController.removeReview);
 
 router.delete('/:id', productController.deleteProduct);
 
