@@ -76,55 +76,44 @@ class VNPAY {
             res.status(500).json({ error: error.message });
         }
     }
-
-    // Method to handle the VNPAY response
     getResponse = async (req, res) => {
         console.log('Received VNPAY response:', req.query);
         try {
             let vnp_Params = req.query;
-
-            // Extract the secure hash from the query parameters
             let secureHash = vnp_Params['vnp_SecureHash'];
 
-            // Remove the secure hash from the parameters to prepare for validation
             delete vnp_Params['vnp_SecureHash'];
             delete vnp_Params['vnp_SecureHashType'];
 
-            // Sort the remaining parameters
             vnp_Params = sortObject(vnp_Params);
 
-            // Generate the secure hash for validation
             let signData = querystring.stringify(vnp_Params, { encode: false });
             let hmac = crypto.createHmac("sha512", config.vnp_HashSecret);
             let signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex");
 
-            // Validate the secure hash
             if (secureHash === signed) {
                 let orderId = vnp_Params['vnp_TxnRef'];
                 let rspCode = vnp_Params['vnp_ResponseCode'];
                 let amount = vnp_Params['vnp_Amount'];
-                amount = parseInt(amount) / 100; // Convert to original amount
+                amount = parseInt(amount) / 100; 
                 let content = vnp_Params['vnp_OrderInfo'];
                 let message = '';
 
-                // Determine the redirect URL based on the response code
-                let redirectUrl = '/transaction/error'; // Default to error page
+                let redirectUrl = '/transaction/error'; 
 
-                if (rspCode === "00") { // Payment success
+                if (rspCode === "00") { 
                     message = 'Payment is completed!';
                     redirectUrl = '/transaction/success';
-                } else if (rspCode === "04") { // Invalid amount
+                } else if (rspCode === "04") { 
                     message = 'Invalid amount';
                     redirectUrl = '/transaction/failure';
-                } else if (rspCode === "99") { // Invalid request
+                } else if (rspCode === "99") { 
                     message = 'Invalid request';
                     redirectUrl = '/transaction/failure';
-                } else { // Other errors
+                } else { 
                     message = 'Order is not completed, please try again!';
                     redirectUrl = '/transaction/failure';
                 }
-
-                // Save the transaction details to the database
                 const newTransaction = new TransactionModel({
                     amount: amount,
                     message: message,
@@ -135,7 +124,6 @@ class VNPAY {
                 newTransaction.save()
                     .then((savedTransaction) => {
                         console.log('Transaction saved, redirecting to:', redirectUrl);
-                        // Redirect to the appropriate page with the transaction ID
                         res.redirect(`${redirectUrl}?transactionId=${savedTransaction._id}`);
                     })
                     .catch((err) => {
@@ -143,7 +131,6 @@ class VNPAY {
                         res.status(500).json({ error: 'Failed to save transaction' });
                     });
             } else {
-                // If the secure hash is invalid, respond with an error
                 res.status(400).json({ message: 'Invalid secure hash' });
             }
         } catch (error) {
