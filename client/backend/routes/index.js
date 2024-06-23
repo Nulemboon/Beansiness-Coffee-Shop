@@ -9,6 +9,7 @@ const paymentRouter = require('./paymentRoutes');
 const productRouter = require('./productRoutes');
 const voucherRouter = require('./voucherRoutes');
 const staffRouter  = require('./staffRoutes');
+const toppingRouter = require('./toppingRoutes');
 const vnpayRouter = require('../subsystem/vnpayRoutes');
 
 function route(app) {
@@ -36,7 +37,10 @@ function route(app) {
     //Product
     app.use('/product', productRouter);
 
-    app.use("/images", express.static('uploads'))
+    app.use("/images", express.static('uploads'));
+
+    //Topping
+    app.use("/topping", toppingRouter);
 
     //Voucher
     app.use('/voucher', voucherRouter);
