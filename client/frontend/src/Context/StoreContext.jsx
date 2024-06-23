@@ -9,7 +9,6 @@ const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
 
-  // Add item to cart
   const addToCart = async (itemId, quantity, size, toppings) => {
     console.log(`Attempting to add item with ID: ${itemId} to cart`);
 
@@ -88,7 +87,6 @@ const StoreContextProvider = (props) => {
     return totalAmount;
   };
 
-  // Fetch food list
   const fetchFoodList = async () => {
     try {
       const response = await axios.get(`${url}/product`);

@@ -25,7 +25,7 @@ const PlaceOrder = () => {
   const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
-    console.log("Token on PlaceOrder mount:", token); // Debugging log
+    console.log("Token on PlaceOrder mount:", token); 
     if (!token) {
       toast.error("To place an order, sign in first");
       navigate('/cart');
@@ -68,8 +68,6 @@ const PlaceOrder = () => {
       if (response.data.success) {
         const { session_url } = response.data;
         window.location.replace(session_url);
-
-        // Success Order, clear cart
         removeCookie('cart', { path: '/' });
       } else {
         toast.error("Something went wrong");

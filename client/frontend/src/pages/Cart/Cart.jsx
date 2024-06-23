@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 const Cart = () => {
-  const { removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const navigate = useNavigate();
   const [voucherCode, setVoucherCode] = useState('');
   const [cart, setCart] = useState([]);
@@ -26,8 +25,9 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    if (getTotalCartAmount() > 0) {
-      navigate('/delivery_form', { state: { voucherCode } });
+    const totalPrice = getTotalPrice() + 20000; // Include delivery fee in total price
+    if (totalPrice > 0) {
+      navigate('/deliveryform', { state: { amount: totalPrice, voucherCode } });
     } else {
       alert('Your cart is empty!');
     }
@@ -82,9 +82,11 @@ const Cart = () => {
           <div>
             <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice() + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : 5000 + ' VND'}</p></div>
+            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : 20000 + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : getTotalPrice() + 5000) + ' VND'}</b></div>
+            <div className="cart-total-details"><p>Voucher</p><p>{voucherCode ? 'Applied' : 'No Voucher'}</p></div>
+            <hr />
+            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : getTotalPrice() + 20000) + ' VND'}</b></div>
           </div>
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
@@ -94,7 +96,7 @@ const Cart = () => {
             <div className='cart-promocode-input'>
               <input 
                 type="text" 
-                placeholder='Promo code' 
+                placeholder='Voucher' 
                 value={voucherCode}
                 onChange={(e) => setVoucherCode(e.target.value)}
               />

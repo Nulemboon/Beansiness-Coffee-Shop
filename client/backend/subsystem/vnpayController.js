@@ -119,8 +119,6 @@ class VNPAY {
                 } else {
                     message = 'Order is not completed, please try again!';
                 }
-
-                // Save Transaction
                 const newTransaction = TransactionModel({
                     amount: amount,
                     message: message,
@@ -136,9 +134,6 @@ class VNPAY {
                         console.error('Error saving transaction:', err);
                         res.status(500).json({ error: 'Failed to save transaction' });
                     });;
-
-
-                // Error checksum
             } else {
                 res.status(200).json({message: 'Fail checksum' });
             }
