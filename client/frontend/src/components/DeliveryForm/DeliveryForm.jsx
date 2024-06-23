@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import { StoreContext } from '../../Context/StoreContext';
 import './DeliveryForm.css';
 
 const DeliveryForm = () => {
   const location = useLocation();
   const { amount, voucherCode } = location.state || { amount: 0, voucherCode: '' };
-  
+  const { url } = useContext(StoreContext);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -34,15 +36,20 @@ const DeliveryForm = () => {
       amount: formData.amount,
       content: formData.content,
     };
-
-    axios.post('/create_payment_url', paymentData)
+  
+    axios.post(`${url}/transaction/create_payment_url`, paymentData)
       .then(response => {
-        window.location.href = response.data;
+        if (response.data && response.data.redirectUrl) {
+          window.location.href = response.data.redirectUrl;
+        } else {
+          console.error('Invalid response format:', response.data);
+        }
       })
       .catch(error => {
         console.error('There was an error creating the payment URL:', error);
       });
   };
+  
 
   return (
     <div className="delivery-form-container">
@@ -90,6 +97,16 @@ const DeliveryForm = () => {
             onChange={handleChange} 
             required 
             readOnly 
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="content">Content</label>
+          <textarea 
+            id="content" 
+            name="content" 
+            value={formData.content} 
+            onChange={handleChange} 
+            required 
           />
         </div>
         <button type="submit" className="submit-button">Submit</button>
