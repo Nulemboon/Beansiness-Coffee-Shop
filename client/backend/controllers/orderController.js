@@ -192,7 +192,7 @@ class OrderController {
 
     approveOrder = async (req, res) => {
         try {
-            const { orderId } = req.params.id;
+            const orderId = req.params.id;
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -220,7 +220,7 @@ class OrderController {
 
     rejectOrder = async(req, res) => {
         try {
-            const { orderId } = req.params.id;
+            const orderId = req.params.id;
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {

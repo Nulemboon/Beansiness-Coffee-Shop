@@ -17,6 +17,8 @@ router.post('/vouchers/add', authenticate, roleMiddleware(['Customer']), voucher
 
 router.post('/vouchers/remove', authenticate, roleMiddleware(['Customer']), voucherController.removeVoucherUser);
 
+router.get('/vouchers/:id', voucherController.getVoucherUser);
+
 router.post('/add', accountController.addAccount);
 
 router.delete('/:id', accountController.removeAccount);
