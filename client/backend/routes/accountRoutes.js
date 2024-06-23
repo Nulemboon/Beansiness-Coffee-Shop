@@ -15,7 +15,7 @@ router.post('/login', accountController.loginUser)
 
 router.post('/vouchers/add', voucherController.addVoucherUser);
 
-router.post('/:id/vouchers/remove', voucherController.removeVoucherUser);
+router.post('/vouchers/remove', voucherController.removeVoucherUser);
 
 router.post('/add', accountController.addAccount);
 

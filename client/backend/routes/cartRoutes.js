@@ -10,6 +10,8 @@ router.get('/total', authenticate, cartController.getTotalAmount);
 
 router.post('/', authenticate, cartController.addToCart);
 
+router.post('/decrease', authenticate, cartController.decreaseCartItem);
+
 router.post('/', authenticate, cartController.removeFromCart);
 
 

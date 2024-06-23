@@ -65,7 +65,7 @@ class AccountController {
 
     removeAccount = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const accountId = req.params.id;
     
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
                 res.status(204).json({ message: 'Account Id is invalid' });

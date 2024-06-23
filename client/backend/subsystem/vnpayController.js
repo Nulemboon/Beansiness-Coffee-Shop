@@ -73,8 +73,8 @@ class VNPAY {
             vnp_Params['vnp_SecureHash'] = signed;
             vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
-            res.status(200).json(vnpUrl);
-            // res.redirect(vnpUrl)
+            //res.status(200).json(vnpUrl);
+            res.redirect(vnpUrl)
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
