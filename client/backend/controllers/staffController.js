@@ -5,6 +5,20 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 class StaffController {
+    getAllStaff = async (req, res) => {
+        try {
+            const staff = await StaffModel.find().populate('account_id');
+            if (!staff || staff.length === 0) {
+                res.status(404).json({ error: 'Staff not found' });
+                return;
+            }
+
+            res.status(200).json({staff});
+        } catch (err) {
+            res.status(500).json({error: err.message});
+        }
+    }
+
     getStaffById = async (req, res) => {
         try {
             const staff = await StaffModel.findById(req.params.id);
@@ -37,7 +51,6 @@ class StaffController {
             });
     
             const savedAccount = await newAccount.save();
-            const token = createToken(savedAccount._id)
             
             const newStaff = StaffModel({
                 account_id: savedAccount._id,
@@ -46,7 +59,7 @@ class StaffController {
 
             await newStaff.save();
 
-            res.status(200).json(token)
+            res.status(200).json(newStaff)
         } catch (error) {
             res.status(500).json({ error: 'Unable to add account' + error.message});
         }
@@ -54,24 +67,24 @@ class StaffController {
 
     removeStaff = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const accountId = req.params.id;
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                return res.status(204).json({ message: 'Invalid account ID' });
+                return res.status(400).json({ message: 'Invalid account ID' });
             }
     
             // Delete the voucher by ID
             const deletedStaff = await StaffModel.findByIdAndDelete(accountId);
  
             if (!deletedStaff) {
-                return res.status(204).json({ message: 'Staff not found' });
+                return res.status(404).json({ message: 'Staff not found' });
             }
     
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                return res.status(204).json({ message: 'Account not found' });
+                return res.status(404).json({ message: 'Account not found' });
             }
     
             res.status(200).json({ message: 'Account deleted successfully'});
@@ -80,11 +93,6 @@ class StaffController {
             res.status(500).json({ error: 'Unable to remove staff: ' + error.message});
         }
     }
-
-    createToken = (id) => {
-        return jwt.sign({id}, process.env.JWT_SECRET);
-    }
- 
 }
 
 

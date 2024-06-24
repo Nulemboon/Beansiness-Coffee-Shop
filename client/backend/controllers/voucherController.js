@@ -32,11 +32,11 @@ class VoucherController {
     
     removeVoucher = async (req, res) => {
         try {
-            const { voucherId } = req.params;
-    
+            const voucherId = req.params.id;
+            
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(voucherId)) {
-                res.status(204).json({ message: 'Invalid voucher ID' });
+                res.status(400).json({ message: 'Invalid voucher ID' });
                 return;
             }
     
@@ -44,7 +44,7 @@ class VoucherController {
             const deletedVoucher = await Voucher.findByIdAndDelete(voucherId);
     
             if (!deletedVoucher) {
-                res.status(204).json({ message: 'Voucher not found' });
+                res.status(404).json({ message: 'Voucher not found' });
                 return;
             }
     
@@ -60,7 +60,7 @@ class VoucherController {
     // - Reduce user point after buying
     addVoucherUser = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const accountId = req.user.id;
             const { voucherId } = req.body;
     
             // Validate voucherId
@@ -79,7 +79,7 @@ class VoucherController {
 
             // Check if the user can buy voucher
             if (account.point < voucher.required_points) {
-                res.status(204).json({message: 'User does not have enough point to buy voucher.'});
+                res.status(400).json({message: 'User does not have enough point to buy voucher.'});
                 return;
             }
     
@@ -109,12 +109,12 @@ class VoucherController {
 
     removeVoucherUser = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
-            const { voucherId } = req.body;
+            const accountId = req.user.id;
+            const { voucherId } = req.params;
     
             // Validate voucherId
             if (!mongoose.Types.ObjectId.isValid(voucherId)) {
-                res.status(204).json({ message: 'Invalid voucher ID' });
+                res.status(400).json({ message: 'Invalid voucher ID' });
                 return;
             }
     
@@ -122,14 +122,14 @@ class VoucherController {
             const account = await AccountModel.findById(accountId);
     
             if (!account) {
-                res.status(204).json({ message: 'Account not found' });
+                res.status(404).json({ message: 'Account not found' });
                 return
             }
     
             // Find the voucher in the account's vouchers list
             const voucherIndex = account.vouchers.findIndex(v => v.voucher_id.equals(voucherId));
             if (voucherIndex === -1) {
-                res.status(204).json({ message: 'Voucher not found in account' });
+                res.status(404).json({ message: 'Voucher not found in account' });
                 return;
             }
     

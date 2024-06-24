@@ -137,55 +137,64 @@
       "name": "Latte",
       "description": "A delicious latte with milk",
       "price": "39000",
-      "category": "coffee"
+      "category": "coffee",
+      "imageURL": ""
     },
     {
       "name": "Cappuccino",
       "description": "The Best Cappuccino in the world",
       "price": "39000",
-      "category": "coffee"
+      "category": "coffee",
+      "imageURL": ""
     },
     {
       "name": "Americano",
       "description": "The Best Americano in the world",
       "price": "39000",
-      "category": "coffee"
+      "category": "coffee",
+      "imageURL": ""
     },
     {
       "name": "Expresso",
       "description": "The Best Expresso in the world",
       "price": "39000",
-      "category": "coffee"
+      "category": "coffee",
+      "imageURL": ""
     },
     {
       "name": "Lemon Tea",
       "description": "Refresh for the summer",
       "price": "20000",
-      "category": "tea"
+      "category": "tea",
+      "imageURL": ""
     },
     {
       "name": "Jasmine Tea",
       "description": "Experience the exquisite taste of premium jasmine tea",
       "price": "25000",
-      "category": "tea"
+      "category": "tea",
+      "imageURL": ""
     },
     {
       "name": "Peach Tea",
       "description": "Indulge in the delightful flavor of our premium peach tea",
       "price": "20000",
-      "category": "tea"
+      "category": "tea", 
+      "imageURL": ""
     },
     {
       "name": "Original Milktea",
       "description": "Rich and Creamy",
       "price": "45000",
-      "category": "milktea"
+      "category": "milktea",
+      "imageURL": ""
     },
     {
       "name": "Special Milktea",
       "description": "Even MORE Rich and Creamy",
       "price": "55000",
-      "category": "milktea"
+      "category": "milktea",
+      "imageURL": ""
     }
   ]
 }

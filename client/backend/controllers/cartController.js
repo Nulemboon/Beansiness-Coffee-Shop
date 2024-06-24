@@ -10,7 +10,7 @@ class CartController {
             // Validate product
             const product = await ProductModel.findById(productId);
             if (!product) {
-                res.status(204).json({ message: `Product not found: ${productId}` });
+                res.status(404).json({ message: `Product not found: ${productId}` });
                 return;
             }
 
@@ -19,7 +19,7 @@ class CartController {
             for (const toppingId of toppings) {
                 const topping = await ToppingModel.findById(toppingId);
                 if (!topping) {
-                    res.status(204).json({ message: `Topping not found: ${toppingId}` });
+                    res.status(404).json({ message: `Topping not found: ${toppingId}` });
                     return;
                 }
                 validatedToppings.push(toppingId);
@@ -39,6 +39,58 @@ class CartController {
             } else {
                 // Add new item to cart
                 cart.push({ productId, quantity, size, toppings: validatedToppings });
+            }
+
+            // Update cart cookie
+            res.cookie('cart', cart, { httpOnly: true });
+            res.status(200).json(cart);
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while adding to the cart: ' + error.message});
+        }
+    }
+
+    async decreaseCartItem(req, res) {
+        try {
+            const { productId, size, toppings } = req.body;
+            let cart = req.cookies.cart || [];
+
+            // Validate product
+            const product = await ProductModel.findById(productId);
+            if (!product) {
+                res.status(404).json({ message: `Product not found: ${productId}` });
+                return;
+            }
+
+            // Validate toppings
+            const validatedToppings = [];
+            for (const toppingId of toppings) {
+                const topping = await ToppingModel.findById(toppingId);
+                if (!topping) {
+                    res.status(404).json({ message: `Topping not found: ${toppingId}` });
+                    return;
+                }
+                validatedToppings.push(toppingId);
+            }
+
+            // Check if the item already exists in the cart
+            const existingItemIndex = cart.findIndex(
+                (item) =>
+                    item.product_id === productId &&
+                    item.size === size &&
+                    item.toppings.sort().toString() === validatedToppings.sort().toString()
+            );
+
+            if (existingItemIndex !== -1) {
+                if (cart[existingItemIndex].quantity == 1) {
+                    res.status(400).json({ message: `Can not reduce item below 1` });
+                    return;
+                }
+                
+                // Update quantity if item exists
+                cart[existingItemIndex].quantity -= 1;
+            } else {
+                res.status(404).json({ message: `Cart item not found` });
+                return;
             }
 
             // Update cart cookie
@@ -93,7 +145,7 @@ class CartController {
                 const product = await ProductModel.findById(item.product_id);
 
                 if (!product) {
-                    res.status(204).json({ message: `Product not found: ${item.product_id}` });
+                    res.status(404).json({ message: `Product not found: ${item.product_id}` });
                     return;
                 }
 
@@ -139,7 +191,7 @@ class CartController {
                 
                 // Check if product exist
                 if (!product) {
-                    res.status(204).json({ message: `Product not found: ${item.product_id}` });
+                    res.status(404).json({ message: `Product not found: ${item.product_id}` });
                     return;
                 }
 

@@ -3,13 +3,13 @@ const DeliveryInfoModel = require('../models/DeliveryInfoModel');
 class DeliveryInfoController {
     createDeliveryInfo = async (req, res) => {
         try {
-            const { account_id } = req.user.id;
+            const account_id = req.user.id;
             const { receiver_name, address, phone_number, instruction } = req.body;
 
             const account = await AccountModel.find(account_id);
 
             if (!account) {
-                res.status(204).json({ message: "Account not found"});
+                res.status(404).json({ message: "Account not found"});
                 return ;
             }
 
@@ -35,24 +35,26 @@ class DeliveryInfoController {
         }
     };
 
-    deleteDeliveryInfo = async (req, res) => {
+    deleteUserDeliveryInfo = async (req, res) => {
         try {
-            const { deliveryInfo_id } = req.params;
-            const { account_id } = req.user.id;
+            const deliveryInfo_id = req.params.id;
+            const account_id = req.user.id;
 
             const account = await AccountModel.find(account_id);
 
             if (!account) {
-                res.status(204).json({ message: "Account not found"});
+                res.status(404).json({ message: "Account not found"});
                 return ;
             }
-
-            const deletedDeliveryInfo = await DeliveryInfoModel.findByIdAndDelete(deliveryInfo_id);
-
-            if (!deletedDeliveryInfo) {
-                res.status(204).json({ message: 'Delivery Info not found' });
+            
+            const deliveryInfoIndex = account.delivery_info.findIndex(d => d.delivery_info.equals(deliveryInfo_id));
+            if (deliveryInfoIndex === -1) {
+                res.status(404).json({ message: 'Delivery info not found in account' });
                 return;
             }
+
+            account.delivery_info.splice(deliveryInfoIndex);
+            await account.save();
 
             res.status(200).json({ message: 'Delivery Info has been deleted.'});
         } catch (error) {

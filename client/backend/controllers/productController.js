@@ -6,7 +6,7 @@ class ProductController {
         try {
             const products = await ProductModel.find().populate('available_toppings');
             if (!products || products.length === 0) {
-                res.status(204).json({message: "No product Available"});
+                res.status(404).json({message: "No product Available"});
                 return;
             }
             
@@ -20,7 +20,7 @@ class ProductController {
         try {
             const product = await ProductModel.findById(req.params.id).populate('available_toppings');
             if (!product) {
-                res.status(204).json({message: `Product not found` });
+                res.status(404).json({message: `Product not found` });
                 return;
             }
 
@@ -39,7 +39,7 @@ class ProductController {
             });
     
             if (!products) {
-                res.status(204).json({ error: `Product not found` });
+                res.status(404).json({ error: `Product not found` });
                 return;
             }
 
@@ -90,7 +90,7 @@ class ProductController {
             const updatedProduct = await ProductModel.findByIdAndUpdate(productId, updateData, { new: true, runValidators: true });
 
             if (!updatedProduct) {
-                res.status(204).json({ message: 'Product not found' });
+                res.status(404).json({ message: 'Product not found' });
                 return;
             }
 
@@ -103,18 +103,19 @@ class ProductController {
     // Delete Product
     deleteProduct = async (req, res) => {
         try {
-            const { productId } = req.params.id;
+            const productId = req.params.id;
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                res.status(204).json({ message: 'Product not found' });
+                res.status(404).json({ message: 'Product not found' });
+                return;
             }
 
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
 
             if (!deletedProduct) {
-                res.status(204).json({ message: `Product not found: ${productId}` });
+                res.status(404).json({ message: `Product not found: ${productId}` });
                 return;
             }
 
@@ -126,14 +127,14 @@ class ProductController {
 
     addReview = async (req, res) => {
         try {
-            const { productId } = req.params;
+            const productId = req.params.id;
             const { review, rating, accountId } = req.body;
     
             // Find the product by ID
             const product = await ProductModel.findById(productId);
     
             if (!product) {
-                return res.status(204).json({ message: 'Product not found' });
+                return res.status(404).json({ message: 'Product not found' });
             }
     
             // Create a new review
@@ -158,13 +159,13 @@ class ProductController {
 
     removeReview = async (req, res) => {
         try {
-            const { productId, reviewId } = req.params;
+            const { productId, reviewId } = req.body;
     
             // Find the product by ID
             const product = await ProductModel.findById(productId);
     
             if (!product) {
-                return res.status(204).json({ message: 'Product not found' });
+                return res.status(404).json({ message: 'Product not found' });
             }
     
             // Find the index of the review to be removed

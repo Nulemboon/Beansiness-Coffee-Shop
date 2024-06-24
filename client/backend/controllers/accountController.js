@@ -1,4 +1,6 @@
 const AccountModel = require('../models/AccountModel');
+const StaffModel = require('../models/StaffModel');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -10,7 +12,7 @@ class AccountController {
             const accounts = await AccountModel.find();
 
             if (!accounts || accounts.length === 0) {
-                res.status(204).json({message: 'No account available'});
+                res.status(404).json({message: 'No account available'});
                 return;
             }
 
@@ -22,10 +24,13 @@ class AccountController {
     
     getAccountById = async (req, res) => {
         try {
-            const account = await AccountModel.findById(req.params.id);
+            const account = await AccountModel.findById(req.params.id).populate({
+                path: 'vouchers.voucher_id',
+                model: 'Voucher',
+            });
 
             if (!account) {
-                res.status(204).json({ message: 'Account not found.' });  
+                res.status(404).json({ message: 'Account not found.' });  
                 return;
             } 
 
@@ -63,10 +68,10 @@ class AccountController {
 
     removeAccount = async (req, res) => {
         try {
-            const { accountId } = req.params.id;
+            const accountId = req.params.id;
     
             if (!mongoose.Types.ObjectId.isValid(accountId)) {
-                res.status(204).json({ message: 'Account Id is invalid' });
+                res.status(400).json({ message: 'Account Id is invalid' });
                 return;
             }
     
@@ -74,7 +79,7 @@ class AccountController {
             const deletedAccount = await AccountModel.findByIdAndDelete(accountId);
     
             if (!deletedAccount) {
-                res.status(204).json({ message: 'Account not found' });
+                res.status(404).json({ message: 'Account not found' });
                 return;
             }
     
@@ -84,35 +89,39 @@ class AccountController {
         }
     }
 
-    createToken = (id) => {
-        return jwt.sign({id}, process.env.JWT_SECRET);
+    createToken = (id, role) => {
+        return jwt.sign({ user: { id: id, role: role } }, process.env.JWT_SECRET);
     }
     
     //login user
     loginUser = async (req,res) => {
         const {phone, password} = req.body;
         try{
-            const account = await AccountModel.findOne({phone})
+            const account = await AccountModel.findOne({phone: phone});
     
             if(!account){
-                res.status(204).json({message: "Account does not exist"});
+                res.status(404).json({message: "Account does not exist"});
                 return;
             }
     
-            const isMatch = await bcrypt.compare(password, account.password)
+            const isMatch = await bcrypt.compare(password, account.password);
+
     
             if(!isMatch){
-                res.status(204).json({message: "Invalid credentials"});
+                res.status(400).json({message: "Invalid credentials"});
                 return;
             }
             
             if (account.isBlock) {
-                res.status(204).json({message: "Account Blocked"});
+                res.status(403).json({message: "Account Blocked"});
                 return;
             }
+
+            const staff = await StaffModel.findOne({ account_id: account._id });
+            const role = staff ? staff.role : 'Customer';
             
-            const token = this.createToken(account._id);
-            res.status(200).json(token);
+            const token = this.createToken(account._id, role);
+            res.status(200).json({token: token, role: role});
         } catch (error) {
             res.status(500).json({error: 'Login failed: ' + error.message});
         }
@@ -132,7 +141,7 @@ class AccountController {
 
             // validating email format & strong password
             if(!validator.isEmail(email)){
-                res.status(409).json({message: "Please enter a valid email"});
+                res.status(400).json({message: "Please enter a valid email"});
                 return;
             }
 
@@ -141,7 +150,7 @@ class AccountController {
             //     return;
             // }
             if(phone.length != 10) {
-                res.status(409).json({message: "Please enter a valid phone number"});
+                res.status(400).json({message: "Please enter a valid phone number"});
                 return;
             }
     
@@ -160,10 +169,11 @@ class AccountController {
                 voucher: [],
                 isBlock: false
             });
-
+            const role = 'Customer';
             const account = await newAccount.save();
-            const token = this.createToken(account._id);
-            res.status(200).json(token);
+            const token = this.createToken(account._id, role);
+
+            res.status(200).json({token: token, role: role});
 
         } catch(error){
             res.status(500).json({error: "Error when register account: " + error.message});

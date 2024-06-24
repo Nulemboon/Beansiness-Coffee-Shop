@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/:id', staffController.getStaffById);
 
+router.get('/', staffController.getAllStaff);
+
 router.post('/', staffController.addStaff);
 
 router.delete('/:id', staffController.removeStaff);

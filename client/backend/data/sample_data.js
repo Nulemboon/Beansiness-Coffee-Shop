@@ -6,7 +6,6 @@ const OrderModel = require('../models/OrderModel');
 const OrderItemModel = require('../models/OrderItemModel');
 const TransactionModel = require('../models/TransactionModel');
 const VoucherModel = require('../models/VoucherModel');
-const ReviewModel = require('../models/ReviewModel');
 const StaffModel = require('../models/StaffModel');
 
 const bcrypt = require('bcrypt');
@@ -26,7 +25,6 @@ async function insertSampleData() {
         await TransactionModel.deleteMany({});
         await VoucherModel.deleteMany({});
         await StaffModel.deleteMany({});
-        await ReviewModel.deleteMany({});
 
         const salt = 10;
 
@@ -39,7 +37,7 @@ async function insertSampleData() {
         const accounts = sampleData.accounts;
         const newAccounts = [];
         for (const account of accounts) {
-            const hashedPassword = await bcrypt.hash("abc123", salt);
+            const hashedPassword = await bcrypt.hash(account.password, salt);
             newAccounts.push({
                 name: account.name,
                 phone: account.phone,
@@ -74,13 +72,7 @@ async function insertSampleData() {
         },
         );
 
-        savedAccounts[4].delivery_info.push({
-            delivery_id: savedDelivery[1]._id,
-        },
-        {
-            delivery_id: savedDelivery[3]._id,
-        }
-        )
+        savedAccounts[4].delivery_info.push(savedDelivery[1]._id, savedDelivery[3]._id);
 
         await savedAccounts[4].save();
 
@@ -106,16 +98,28 @@ async function insertSampleData() {
         },
         );
 
-        savedAccounts[3].delivery_info.push({
-            delivery_id: savedDelivery[0]._id,
-        },
-        {
-            delivery_id: savedDelivery[2]._id,
-        }
-        )
+        savedAccounts[3].delivery_info.push(savedDelivery[0]._id, savedDelivery[2]._id)
 
         await savedAccounts[3].save();
 
+        const admin = await StaffModel({
+            role: 'Admin',
+            account_id: savedAccounts[0]
+        });
+        await admin.save();
+
+        const onsite = await StaffModel({
+            role: 'Onsite',
+            account_id: savedAccounts[1]
+        });
+        await onsite.save();
+        
+        const shipper = await StaffModel({
+            role: 'Shipper',
+            account_id: savedAccounts[2]
+        });
+        await shipper.save();
+        
         const toppings = sampleData.toppings;
         const savedToppings = await ToppingModel.insertMany(toppings);
         
@@ -142,6 +146,9 @@ async function insertSampleData() {
         await savedProducts[7].save();
         savedProducts[8].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[8].save();
+
+
+
     } catch (error) {
         console.error('Error inserting sample data:', error);
     } finally {
