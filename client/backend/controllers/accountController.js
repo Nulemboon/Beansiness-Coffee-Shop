@@ -24,7 +24,10 @@ class AccountController {
     
     getAccountById = async (req, res) => {
         try {
-            const account = await AccountModel.findById(req.params.id);
+            const account = await AccountModel.findById(req.params.id).populate({
+                path: 'vouchers.voucher_id',
+                model: 'Voucher',
+            });
 
             if (!account) {
                 res.status(404).json({ message: 'Account not found.' });  

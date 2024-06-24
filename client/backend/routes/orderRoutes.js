@@ -6,13 +6,15 @@ const router = express.Router();
 
 router.get('/pending', orderController.getPendingOrders);
 
+router.get('/approved', orderController.getApprovedOrders); 
+
 router.get('/', orderController.getAllOrders);
 
-router.post('/offline', orderController.offlineOrder);
+router.post('/offline', authenticate, roleMiddleware(['Onsite','Admin']), orderController.offlineOrder);
 
-router.post('/approve/:id', orderController.approveOrder);
+router.post('/approve/:id', authenticate, roleMiddleware(['Onsite','Admin']), orderController.approveOrder);
 
-router.post('/reject/:id', orderController.rejectOrder);
+router.post('/reject/:id', authenticate, roleMiddleware(['Onsite','Admin']), orderController.rejectOrder);
 
 router.post('/', authenticate, roleMiddleware(['Customer']), orderController.placeOrder);
 
