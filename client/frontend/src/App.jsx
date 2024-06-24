@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
@@ -22,38 +23,36 @@ import MenuPage from './pages/MenuPage/MenuPage';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState({
-    name: "John",
-    role: "onsite",
-  });
-
+  
   return (
     <>
-      <ToastContainer />
-      {showLogin && <LoginPopup setShowLogin={setShowLogin} setUser={setUser} />}
-      <div className='app'>
-        <Navbar setShowLogin={setShowLogin} user={user} />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/order' element={<PlaceOrder />} />
-          <Route path='/order/vnpay_return' element={<Result />} />
-          <Route path='/myorders' element={<MyOrders />} />
-          <Route path='/verify' element={<Verify />} />
-          <Route path='/vouchersite' element={<VoucherSite />} />
-          <Route path='/menupage' element={<MenuPage />} />
-          <Route path='/staff' element={<StaffRoute user={user} />}>
-            <Route path='/staff/order' element={<StaffOrder user={user} />} />
-            <Route path='/staff/confirm' element={<StaffConfirm user={user} />} /> 
-            <Route path='/staff/register' element={<RegisterOffline user={user} />} />
-          </Route>
-          <Route path='/ship' element={<ShipRoute user={user} />}>
-            <Route path='/ship/order' element={<ShipperConfirm user={user} />} />
-          </Route>
-          <Route path='*' element={<Navigate to='/' replace />} />      
-        </Routes>
-      </div>
-      <Footer />
+      <CookiesProvider defaultSetOptions={{ path: '/' }}>
+        <ToastContainer />
+        {showLogin && <LoginPopup setShowLogin={setShowLogin} />}
+        <div className='app'>
+          <Navbar setShowLogin={setShowLogin} />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/cart' element={<Cart />} />
+            <Route path='/order' element={<PlaceOrder />} />
+            <Route path='/order/vnpay_return' element={<Result />} />
+            <Route path='/myorders' element={<MyOrders />} />
+            <Route path='/verify' element={<Verify />} />
+            <Route path='/vouchersite' element={<VoucherSite />} />
+            <Route path='/menupage' element={<MenuPage />} />
+            <Route path='/staff' element={<StaffRoute />}>
+              <Route path='/staff/order' element={<StaffOrder />} />
+              <Route path='/staff/confirm' element={<StaffConfirm />} /> 
+              <Route path='/staff/register' element={<RegisterOffline />} />
+            </Route>
+            <Route path='/ship' element={<ShipRoute />}>
+              <Route path='/ship/order' element={<ShipperConfirm />} />
+            </Route>
+            <Route path='*' element={<Navigate to='/' replace />} />      
+          </Routes>
+        </div>
+        <Footer />
+      </CookiesProvider>
     </>
   );
 }
@@ -63,7 +62,7 @@ const StaffRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (user.role !== 'onsite') {
+  if (localStorage.getItem('role') !== 'onsite') {
     return <Navigate to={redirectPath} replace />
   }
 
@@ -75,7 +74,7 @@ const ShipRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (user.role !== 'ship') {
+  if (localStorage.getItem('role') !== 'shipper') {
     return <Navigate to={redirectPath} replace />
   }
 

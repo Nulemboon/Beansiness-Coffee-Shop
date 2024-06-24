@@ -1,52 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './StaffOrder.css';
 import axios from 'axios';
+import { StoreContext } from '../../Context/StoreContext';
 import { toast } from 'react-toastify';
+import CartTable from '../../components/OfflineCart/OfflineCart';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import OfflineDetail from '../../components/OfflineDetail/OfflineDetail';
-import Cookies from 'js-cookies';
+// import { useCookies } from 'react-cookie';
 
 const StaffOrder = ({ user }) => {
+  // const [cookies, setCookie] = useCookies(['cart']);
+  const { url } = useContext(StoreContext);
   const [searchQuery, setSearchQuery] = useState('');
-  const [products, setProducts] = useState([{
-    _id: '1',
-    name: 'Product 123',
-    description: 'Description 1',
-    price: 100,
-    category: 'Salad',
-    // image: assets.product1
-  }, {
-    _id: '2',
-    name: 'Product 121',
-    description: 'Description 2',
-    price: 200,
-    category: 'Salad',
-    // image: assets.product2
-  }, {
-    _id: '3',
-    name: 'Product 3',
-    description: 'Description 3',
-    price: 300,
-    category: 'Salad',
-    // image: assets.product3
-  }]);
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [products, setProducts] = useState([]);
+  // const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [phone, setPhone] = useState('');
   const [showOfflineDetail, setShowOfflineDetail] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [noPhone, setNoPhone] = useState(false);
+  const defaultPhone = '0395842367';
 
   // Fetch products based on search query
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`/product/${searchQuery}`);
-        if (response.data.success) {
-          setProducts(response.data.products);
+        const response = await axios.get(`${url}/product/${searchQuery}`);
+        if (response.data && Array.isArray(response.data.data)) {
+          setProducts(response.data.data);
+        } else if (Array.isArray(response.data)) {
+          setProducts(response.data);
         } else {
           toast.error('Failed to fetch products');
         }
       } catch (error) {
         toast.error('Error fetching products');
+      }
+    };
+
+    const fetchCart = async () => {
+      try {
+        const response = await axios.get(`${url}/cart`);
+        if (response.data && Array.isArray(response.data.data)) {
+          setCart(response.data.data);
+        } else if (Array.isArray(response.data)) {
+          setCart(response.data);
+        } else {
+          toast.error('Failed to fetch cart');
+        }
+      } catch (error) {
+        toast.error('Error fetching cart');
       }
     };
 
@@ -56,60 +59,21 @@ const StaffOrder = ({ user }) => {
       // Fetch all products if search query is empty
       fetchProducts('/product');
     }
+    fetchCart();
+    console.log(cart);
+
+    // setSelectedProductIds(cookies.cart);
   }, [searchQuery]);
-
-  const addProduct = (productId) => {
-    const productToAdd = products.find((product) => product._id === productId);
-    if (productToAdd) {
-      const existingProduct = selectedProductIds.find((item) => item._id === productId);
-      if (existingProduct) {
-        const updatedProducts = selectedProductIds.map((item) =>
-          item._id === productId
-            ? { ...item, quantity: item.quantity + 1, totalPrice: (item.quantity + 1) * item.price }
-            : item
-        );
-        setSelectedProductIds(updatedProducts);
-      } else {
-        setSelectedProductIds([
-          ...selectedProductIds,
-          {
-            _id: productToAdd._id,
-            name: productToAdd.name,
-            price: productToAdd.price,
-            quantity: 1,
-            totalPrice: productToAdd.price
-          }
-        ]);
-      }
-    }
-  };
-
-  const removeProduct = (_id) => {
-    const updatedProducts = selectedProductIds.map(product => {
-      if (product._id === _id) {
-        const updatedQuantity = product.quantity - 1;
-        // Remove the product if quantity becomes 0
-        return updatedQuantity > 0 ? { ...product, quantity: updatedQuantity } : null;
-      }
-      return product;
-    }).filter(Boolean); // Filter out null values (products with quantity 0)
-
-    setSelectedProductIds(updatedProducts);
-  };
-
-  const emptyProduct = (_id) => {
-    const updatedProducts = selectedProductIds.filter(product => product._id !== _id);
-    setSelectedProductIds(updatedProducts);
-  };
 
   const handleProductDoubleClick = (product) => {
     setShowOfflineDetail(true);
     setSelectedProduct(product);
-  };
-
+    };
+    
   const handleCloseOfflineDetail = () => {
     setShowOfflineDetail(false);
     setSelectedProduct(null);
+    // setSelectedProductIds(cookies.cart);
   };
 
   // Submit offline order
@@ -119,17 +83,25 @@ const StaffOrder = ({ user }) => {
       toast.error('Invalid phone number. Please enter a valid 10-digit phone number.');
       return;
     }
-    Cookies.set('cart', JSON.stringify(selectedProductIds), { expires: 7 });
+    // const cart = cookies.cart || [];
+    if (cart.length < 1) {
+      toast.error('Please select at least 1 product to place order.');
+      return;
+    }
+    // setCookie('cart', JSON.stringify(cart), { path: '/' });
 
+    // console.log(cookies.cart);
     try {
-      const response = await axios.post('/order/offline', {
-        products: selectedProductIds,
+      const response = await axios.post(`${url}/order/offline`, {
         phone: phone,
-      }, { withCredentials: true });
-      if (response.data.success) {
+      });
+      console.log(response);
+      if (response.status === 200) {
         toast.success(response.data.message);
-        Cookies.removeItem('cart'); // Clear cart
-        setSelectedProductIds([]);
+        // setCookie('cart', [], { path: '/' }); // Clear cart
+        // setSelectedProductIds([]);
+        setPhone('');
+        setNoPhone(false);
       } else {
         toast.error(response.data.message); // Show error message if adding fails
       }
@@ -149,6 +121,14 @@ const StaffOrder = ({ user }) => {
 
   const handlePhoneChange = (event) => {
     setPhone(event.target.value);
+  };
+
+  const handleNoPhoneChange = (e) => {
+    setNoPhone(e.target.checked);
+    setPhone(defaultPhone);
+    if (noPhone) {
+      setPhone('');
+    }
   };
 
   return (
@@ -175,8 +155,8 @@ const StaffOrder = ({ user }) => {
                 onDoubleClick={() => handleProductDoubleClick(product)}
               >
                 <div className='product-details'>
-                  <h3>{product.name}</h3>
-                  <p>${product.price}</p>
+                  <div><h3>{product.name}</h3></div>
+                  <div><p>{product.price}đ</p></div>
                 </div>
               </li>
             ))}
@@ -185,32 +165,10 @@ const StaffOrder = ({ user }) => {
 
         <div className='selected-products'>
           <h2>Selected Products</h2>
-          <table className='selected-products-table'>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedProductIds.map((product) => (
-                <tr key={product._id}>
-                  <td>{product.name}</td>
-                  <td>${product.price}</td>
-                  <td>{product.quantity}</td>
-                  <td>${product.totalPrice}</td>
-                  <td>
-                    <button onClick={() => addProduct(product._id)}>+</button>
-                    <button onClick={() => removeProduct(product._id)}>-</button>
-                    <button onClick={() => emptyProduct(product._id)}>x</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <CartTable 
+            products={products}
+            cart={cart}
+          />
           <div className='submit-container'>
             <input 
               type='text' 
@@ -218,7 +176,16 @@ const StaffOrder = ({ user }) => {
               placeholder='Phone Number' 
               value={phone}
               onChange={handlePhoneChange}
+              disabled={noPhone}
             />
+            <label style={{ marginLeft: '10px', marginTop: '20px' }}>
+              <input 
+                type='checkbox' 
+                checked={noPhone}
+                onChange={handleNoPhoneChange}
+              />
+              No phone
+            </label>
             <button className='button-submit' onClick={handleSubmit}>Order</button>
           </div>
         </div>
