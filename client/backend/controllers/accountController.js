@@ -90,7 +90,7 @@ class AccountController {
     }
 
     createToken = (id, role) => {
-        return jwt.sign({id, role}, process.env.JWT_SECRET);
+        return jwt.sign({ user: { id: id, role: role } }, process.env.JWT_SECRET);
     }
     
     //login user
