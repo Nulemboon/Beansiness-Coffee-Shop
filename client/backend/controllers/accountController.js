@@ -97,14 +97,15 @@ class AccountController {
     loginUser = async (req,res) => {
         const {phone, password} = req.body;
         try{
-            const account = await AccountModel.findOne({phone})
+            const account = await AccountModel.findOne({phone: phone});
     
             if(!account){
                 res.status(404).json({message: "Account does not exist"});
                 return;
             }
     
-            const isMatch = await bcrypt.compare(password, account.password)
+            const isMatch = await bcrypt.compare(password, account.password);
+
     
             if(!isMatch){
                 res.status(400).json({message: "Invalid credentials"});
@@ -116,11 +117,11 @@ class AccountController {
                 return;
             }
 
-            const staff = await StaffModel.findOne({ account_id: user._id });
+            const staff = await StaffModel.findOne({ account_id: account._id });
             const role = staff ? staff.role : 'Customer';
             
             const token = this.createToken(account._id, role);
-            res.status(200).json(token, role);
+            res.status(200).json({token: token, role: role});
         } catch (error) {
             res.status(500).json({error: 'Login failed: ' + error.message});
         }

@@ -9,3 +9,4 @@ router.post('/', toppingController.createTopping);
 
 router.delete('/:id', toppingController.deleteTopping);
 
+module.exports = router;
