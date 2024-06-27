@@ -1,4 +1,5 @@
 const productController = require('../controllers/productController');
+const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const express = require('express');
 const router = express.Router();
@@ -19,13 +20,13 @@ router.get('/:q', productController.getProductByQuery);
 
 router.get('/', productController.getAllProducts);
 
-router.post('/add-review/:id', productController.addReview);
+router.post('/add-review/:id', authenticate, roleMiddleware(['Admin', 'Customer']), productController.addReview);
 
 router.post('/', upload.single('image'), productController.createProduct);
 
 router.put('/', upload.single('image'), productController.updateProduct);
 
-router.delete('/delete-review/', productController.removeReview);
+router.delete('/delete-review/', authenticate, roleMiddleware(['Admin', 'Customer']), productController.removeReview);
 
 router.delete('/:id', productController.deleteProduct);
 

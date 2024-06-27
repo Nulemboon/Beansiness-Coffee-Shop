@@ -111,6 +111,10 @@ class ProductController {
                 return;
             }
 
+            //Unlink image
+            const product = await ProductModel.findById(productId);
+            fs.unlink(`uploads/${product.imageURL}`, () => { })
+
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
 
@@ -128,7 +132,8 @@ class ProductController {
     addReview = async (req, res) => {
         try {
             const productId = req.params.id;
-            const { review, rating, accountId } = req.body;
+            const accountId = req.user.id;
+            const { review, rating } = req.body;
     
             // Find the product by ID
             const product = await ProductModel.findById(productId);
@@ -139,8 +144,8 @@ class ProductController {
     
             // Create a new review
             const newReview = {
-                review,
-                rating,
+                review: review,
+                rating: rating,
                 account_id: accountId,
                 created_at: new Date()
             };
