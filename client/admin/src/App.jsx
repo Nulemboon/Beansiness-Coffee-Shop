@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -14,13 +13,18 @@ import FinancialReport from './pages/FinancialReport/FinancialReport';
 import Staff from './pages/Staff/Staff';
 import Login from './pages/Login/Login';
 import Toppings from './pages/Toppings/Toppings';
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
+    if (token) {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
   }, []);
 
   const handleLogout = () => {
@@ -28,6 +32,10 @@ const App = () => {
     setIsAuthenticated(false);
     navigate('/login');
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
 
   return (
     <div className='app'>

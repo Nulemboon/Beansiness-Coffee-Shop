@@ -18,7 +18,7 @@ const Login = ({ setIsAuthenticated }) => {
       });
       if (response.status === 200) {
         const { token, role } = response.data;
-        if (role === 'Customer') {
+        if (role === 'Admin') {
           localStorage.setItem('authToken', token);
           setIsAuthenticated(true); // Update the authenticated state
           navigate('/list'); // Redirect to the list page

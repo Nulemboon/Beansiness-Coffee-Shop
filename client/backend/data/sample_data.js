@@ -104,19 +104,19 @@ async function insertSampleData() {
 
         const admin = await StaffModel({
             role: 'Admin',
-            account_id: savedAccounts[0]
+            account_id: savedAccounts[0]._id
         });
         await admin.save();
 
         const onsite = await StaffModel({
             role: 'Onsite',
-            account_id: savedAccounts[1]
+            account_id: savedAccounts[1]._id
         });
         await onsite.save();
         
         const shipper = await StaffModel({
             role: 'Shipper',
-            account_id: savedAccounts[2]
+            account_id: savedAccounts[2]._id
         });
         await shipper.save();
         
@@ -147,7 +147,7 @@ async function insertSampleData() {
         savedProducts[8].available_toppings.push(savedToppings[1], savedToppings[2], savedToppings[3], savedToppings[4]);
         await savedProducts[8].save();
 
-
+        
 
     } catch (error) {
         console.error('Error inserting sample data:', error);

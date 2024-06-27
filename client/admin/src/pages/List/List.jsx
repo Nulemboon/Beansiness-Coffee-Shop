@@ -259,7 +259,7 @@ const List = () => {
               </>
             ) : (
               <>
-                <img src={item.imageURL} alt={item.name} />
+                <img src={`${url}/images/` + item.imageURL} alt={item.name} />
                 <p>{item.name}</p>
                 <p>{item.description}</p>
                 <p>{item.category}</p>
