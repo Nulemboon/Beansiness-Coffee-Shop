@@ -12,7 +12,8 @@ router.post('/', authenticate, roleMiddleware(['Customer']), cartController.addT
 
 router.post('/decrease', authenticate, roleMiddleware(['Customer']), cartController.decreaseCartItem);
 
-router.post('/', authenticate, roleMiddleware(['Customer']), cartController.removeFromCart);
+router.post('/remove', authenticate, roleMiddleware(['Customer']), cartController.removeFromCart);
 
+router.get('/clear', authenticate, roleMiddleware(['Customer']), cartController.clearCart)
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const OrderModel = require('../models/OrderModel');
 const OrderItemModel = require('../models/OrderItemModel');
+const mongoose = require('mongoose');
 
 class ReportController {
     getRevenuePerProduct = async (req, res) => {
@@ -71,7 +72,7 @@ class ReportController {
     getDailyRevenue = async (req, res) => {
         try {
             const { dateFrom, dateTo } = req.query;
-            const result = await Order.aggregate([
+            const result = await OrderModel.aggregate([
                 {
                     $match: {
                         completed_at: {
@@ -134,7 +135,7 @@ class ReportController {
     getSalesPerDay = async (req, res) => {
         try {
             const { dateFrom, dateTo, prodId } = req.query;
-            const result = await Order.aggregate([
+            const result = await OrderModel.aggregate([
                 {
                     $match: {
                         completed_at: {
