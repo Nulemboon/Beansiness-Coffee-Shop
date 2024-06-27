@@ -40,7 +40,7 @@ const StaffManagement = () => {
 
   const addStaff = async () => {
     try {
-      const response = await axios.post(`${url}/staff/add`, newStaff);
+      const response = await axios.post(`${url}/staff`, newStaff);
       if (response.status === 200) {
         fetchList();
         setNewStaff({ name: '', phone: '', email: '', role: '', password: '123456789' });
@@ -152,7 +152,7 @@ const StaffManagement = () => {
         <input
           style={{ marginLeft: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
           type="text"
-          placeholder="Search by name"
+          placeholder="Search ..."
           value={searchQuery}
           onChange={handleSearchChange}
         />
@@ -166,6 +166,7 @@ const StaffManagement = () => {
           value={newStaff.name}
           onChange={handleNewStaffChange}
           required
+          className="user-input"
         />
         <input
           style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
@@ -175,6 +176,7 @@ const StaffManagement = () => {
           value={newStaff.phone}
           onChange={handleNewStaffChange}
           required
+          className="user-input"
         />
         <input
           style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
@@ -184,6 +186,8 @@ const StaffManagement = () => {
           value={newStaff.email}
           onChange={handleNewStaffChange}
           required
+          className="user-input"
+
         />
         <input
           style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
@@ -193,6 +197,8 @@ const StaffManagement = () => {
           value={newStaff.role}
           onChange={handleNewStaffChange}
           required
+          className="user-input"
+
         />
         <button type="submit" className='button-63'>Add Staff</button>
       </form>
@@ -246,19 +252,25 @@ const StaffManagement = () => {
                 <p>{item.account_id.phone}</p>
                 <p>{item.account_id.email}</p>
                 <p>{item.role}</p>
-                <button onClick={() => startEditing(item)}>Edit</button>
-                <button onClick={() => removeStaff(item._id)}>Remove</button>
+                <button className='buttonne' onClick={() => startEditing(item)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                </svg>
+                </button>                
+                <button className='buttonne' onClick={() => removeUser(item._id)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                </svg>
+                </button>              
               </>
             )}
           </div>
         ))}
       </div>
       <div className='pagination'>
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+        <button onClick={handlePrevPage} disabled={currentPage === 1} className='button-63-2'>
           Prev
         </button>
-        <span>{`Page ${currentPage} of ${totalPages}`}</span>
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages} className='button-63-2'>
           Next
         </button>
       </div>

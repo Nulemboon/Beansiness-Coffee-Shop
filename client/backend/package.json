@@ -9,7 +9,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000",
     "start": "nodemon --inspect server.js",
-    "dev": "nodemon --inspect server.js"
+    "server": "nodemon --inspect server.js"
   },
   "author": "",
   "license": "ISC",

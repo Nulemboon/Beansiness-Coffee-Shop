@@ -6,6 +6,6 @@ router.get('/', voucherController.getVoucher);
 
 router.post('/', voucherController.addVoucher);
 
-router.delete('/', voucherController.removeVoucher);
+router.delete('/:id', voucherController.removeVoucher);
 
 module.exports = router;

@@ -37,7 +37,11 @@ const Voucher = () => {
 
   const addVoucher = async () => {
     try {
-      const response = await axios.post(`${url}/voucher`, newVoucher);
+      const response = await axios.post(`${url}/voucher`, {
+        ...newVoucher,
+        required_points: Number(newVoucher.required_points),
+        discount: Number(newVoucher.discount)
+      });
 
       if (response.status === 200) {
         fetchList();
