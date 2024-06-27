@@ -9,6 +9,8 @@ router.get('/', toppingController.getAllTopping);
 
 router.post('/', toppingController.createTopping);
 
+router.put('/:id', toppingController.updateTopping);
+
 router.delete('/:id', toppingController.deleteTopping);
 
 module.exports = router;
