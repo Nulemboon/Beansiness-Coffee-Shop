@@ -1,6 +1,6 @@
 const express = require('express');
 
-const accountRouter = require('./AccountRoutes');
+const accountRouter = require('./accountRoutes');
 const cartRouter = require('./cartRoutes');
 const deliveryInfoRouter = require('./deliveryInfoRoutes');
 const reportRouter = require('./reportRoutes');
