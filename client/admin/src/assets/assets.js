@@ -8,6 +8,7 @@ import user_icon from './user-icon.png'
 import voucher_icon from './voucher_icon.png'
 import report_icon from './report_icon.png'
 import staff_icon from './staff_icon.png'
+import topping_icon from './topping_icon.png'
 export const assets ={
     logo,
     add_icon,
@@ -18,7 +19,8 @@ export const assets ={
     user_icon,
     voucher_icon,
     report_icon,
-    staff_icon
+    staff_icon,
+    topping_icon
 }
 
 export const url = 'http://localhost:3000'
