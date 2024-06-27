@@ -13,7 +13,7 @@ import Voucher from './pages/Voucher/Voucher';
 import FinancialReport from './pages/FinancialReport/FinancialReport';
 import Staff from './pages/Staff/Staff';
 import Login from './pages/Login/Login';
-
+import Toppings from './pages/Toppings/Toppings';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ const App = () => {
             <>
               <Route path="/add" element={<Add />} />
               <Route path="/list" element={<List />} />
+              <Route path="/toppings" element={<Toppings />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/users" element={<UserList />} />
               <Route path="/vouchers" element={<Voucher />} />

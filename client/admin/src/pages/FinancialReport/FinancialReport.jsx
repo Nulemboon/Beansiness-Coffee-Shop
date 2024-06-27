@@ -43,21 +43,21 @@ const FinancialReport = () => {
 
       switch (selectedReport) {
         case 'Revenue by product':
-          url = 'http://localhost:3000/api/report/product';
+          url = 'http://localhost:3000/report/product';
           params = {
             fromDate: fromDate,
             toDate: toDate,
           };
           break;
         case 'Revenue by day':
-          url = 'http://localhost:3000/api/report/revenue';
+          url = 'http://localhost:3000/report/revenue';
           params = {
             fromDate: fromDate,
             toDate: toDate,
           };
           break;
         case 'Sales by product':
-          url = 'http://localhost:3000/api/report/sales';
+          url = 'http://localhost:3000/report/sales';
           params = {
             fromDate: fromDate,
             toDate: toDate,

@@ -33,3 +33,6 @@
     color: white;
     cursor: pointer;
 }
+.topping-item {
+    margin-left: 15px;
+}
