@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
 import Navbar from './components/Navbar/Navbar';
@@ -9,7 +10,7 @@ import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import MyOrders from './pages/MyOrders/MyOrders';
 import ChangePassword from './components/ChangePassword/ChangePassword';
 import VoucherSite from './components/VoucherSite/VoucherSite';
-import ReviewForm from './components/WriteReview/ReviewForm'; 
+import ReviewForm from './components/WriteReview/ReviewForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MenuPage from './pages/MenuPage/MenuPage';
@@ -19,7 +20,7 @@ import DeliveryForm from './components/DeliveryForm/DeliveryForm';
 import Result from './pages/Result/Result';
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
-
+  
   return (
     <>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
@@ -43,6 +44,30 @@ const App = () => {
       </CookiesProvider>
     </>
   );
+}
+
+const StaffRoute = ({
+  user,
+  redirectPath = '/',
+  children,
+}) => {
+  if (localStorage.getItem('role') !== 'onsite') {
+    return <Navigate to={redirectPath} replace />
+  }
+
+  return children ? children : <Outlet />;
+}
+
+const ShipRoute = ({
+  user,
+  redirectPath = '/',
+  children,
+}) => {
+  if (localStorage.getItem('role') !== 'shipper') {
+    return <Navigate to={redirectPath} replace />
+  }
+
+  return children ? children : <Outlet />;
 }
 
 export default App;

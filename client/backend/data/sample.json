@@ -196,5 +196,14 @@
       "category": "milktea",
       "imageURL": ""
     }
+  ],
+
+  "reviews": [
+    {
+      "rating": 4.5,
+      "review": "This is great!!!"
+    }
+
+    
   ]
 }

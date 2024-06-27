@@ -1,65 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './StaffConfirm.css';
-import { url } from '../../assets/assets';
+import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Sidebar from '../../components/Sidebar/Sidebar';
 
-const StaffConfirm = () => {
-  const [list, setList] = useState([
-    {
-      "HID": 1,
-      "date_time": "2024-06-17 10:30 AM",
-      "Address": "123 Main St, City A",
-      "total": "200",
-      "orderList": [
-        {
-          "PID": 101,
-          "name": "Product A",
-          "size": "Medium",
-          "amount": 2
-        },
-        {
-          "PID": 102,
-          "name": "Product B",
-          "size": "Large",
-          "amount": 1
-        }
-      ]
-    },
-    {
-      "HID": 2,
-      "date_time": "2024-06-16 02:00 PM",
-      "Address": "456 Elm St, City B",
-      "total": "500",
-      "orderList": [
-        {
-          "PID": 201,
-          "name": "Product X",
-          "size": "Small",
-          "amount": 3
-        },
-        {
-          "PID": 202,
-          "name": "Product Y",
-          "size": "Medium",
-          "amount": 1
-        },
-        {
-          "PID": 203,
-          "name": "Product Z",
-          "size": "Large",
-          "amount": 2
-        }
-      ]
-    }
-  ]);
+const StaffConfirm = ({ user }) => {
+  const { url } = useContext(StoreContext);
+  const [list, setList] = useState([]);
 
   const fetchList = async () => {
     try {
-      const response = await axios.get(`${url}/order`);
-      if (response.data.success) {
-        setList(response.data.data);  // Correctly setting the list state
+      const response = await axios.get(`${url}/order/pending`);
+      console.log(response);
+      if (response.data) {
+        setList(response.data);
       } else {
         toast.error("Failed to fetch orders");
       }
@@ -68,11 +23,11 @@ const StaffConfirm = () => {
       toast.error("Failed to fetch orders");
     }
   }
-  // TODO: Replace API link
+
   const handleConfirm = async (HID) => {
     try {
-      const response = await axios.post(`${url}/order/confirm`, { HID });
-      if (response.data.success) {
+      const response = await axios.post(`${url}/order/approve/${HID}`);
+      if (response.status === 200) {
         toast.success("Order confirmed successfully");
         fetchList(); // Refresh the list after confirmation
       } else {
@@ -84,11 +39,10 @@ const StaffConfirm = () => {
     }
   }
 
-  // TODO: Replace API link
   const handleReject = async (HID) => {
     try {
-      const response = await axios.post(`${url}/order/reject`, { HID });
-      if (response.data.success) {
+      const response = await axios.post(`${url}/order/reject/${HID}`);
+      if (response.status === 200) {
         toast.success("Order rejected successfully");
         fetchList(); // Refresh the list after rejection
       } else {
@@ -106,7 +60,7 @@ const StaffConfirm = () => {
 
   return (
     <div className='app-content'>
-      <Sidebar/>
+      <Sidebar user={user}/>
     <div className="order-list-container">
       {list.length > 0 ? (
         list.map(order => (
@@ -152,7 +106,7 @@ const StaffConfirm = () => {
           </div>
         ))
       ) : (
-        <p>Loading...</p>
+        <p>No Pending Order</p>
       )}
     </div>
     </div>

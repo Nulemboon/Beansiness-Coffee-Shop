@@ -2,131 +2,115 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { url } from '../../assets/assets'; // Adjust the import path as needed
-import './Staff.css'
-
-const staffData = [
-  {
-    id: 1,
-    name: "John Doe",
-    phone: "123-456-7890",
-    role: "Manager",
-    password: "password123",
-    email: "john@example.com"
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    phone: "987-654-3210",
-    role: "Staff",
-    password: "password456",
-    email: "jane@example.com"
-  },
-  // Add more staff data as needed for testing
-];
+import './Staff.css';
 
 const StaffManagement = () => {
-  const [list, setList] = useState(staffData);
-  const [filteredStaff, setFilteredStaff] = useState(staffData);
+  const [list, setList] = useState([]);
   const [editingStaff, setEditingStaff] = useState(null);
-  const [newStaff, setNewStaff] = useState({ name: '', phone: '', role: '', password: '', email: '' });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [editStaffDetails, setEditStaffDetails] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    role: ''
+  });
+  const [newStaff, setNewStaff] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    role: '',
+    password: '123456789'
+  });
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const startEditing = (staffId, currentStaff) => {
-    setEditingStaff(staffId);
-    setNewStaff(currentStaff);
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setNewStaff((prevStaff) => ({
-      ...prevStaff,
-      [name]: value
-    }));
-  };
-
-  const saveEdit = async (staffId) => {
+  const fetchList = async () => {
     try {
-      const response = await axios.put(`${url}/api/staff/edit`, {
-        id: staffId,
-        ...newStaff
-      });
-      if (response.data.success) {
-        toast.success(response.data.message);
-        await fetchList();
-        setEditingStaff(null);
+      const response = await axios.get(`${url}/staff`);
+      if (response.status === 200) {
+        setList(response.data.staff);
+        console.log(response.data.staff);
       } else {
-        toast.error("Error updating staff.");
+        toast.error(response.data.message);
       }
     } catch (error) {
-      toast.error("Error updating staff.");
-    }
-  };
-  
-
-  const handleBlur = (staffId) => {
-    saveEdit(staffId);
-  };
-
-  const handleKeyPress = (e, staffId) => {
-    if (e.key === 'Enter') {
-      saveEdit(staffId);
+      toast.error("Error fetching the staff list.");
     }
   };
 
   const addStaff = async () => {
     try {
-      const response = await axios.post(`${url}/api/staff/add`, newStaff);
-      if (response.data.success) {
-        toast.success(response.data.message);
-        await fetchList();
-        setNewStaff({ name: '', phone: '', role: '', password: '', email: '' });
+      const response = await axios.post(`${url}/staff`, newStaff);
+      if (response.status === 200) {
+        fetchList();
+        setNewStaff({ name: '', phone: '', email: '', role: '', password: '123456789' });
+        toast.success("Staff added successfully.");
       } else {
-        toast.error("Error adding staff.");
+        toast.error("Failed to add staff.");
       }
     } catch (error) {
-      toast.error("Error adding staff.");
+      toast.error("Failed to add staff.");
     }
   };
 
   const removeStaff = async (staffId) => {
     try {
-      const response = await axios.delete(`${url}/api/staff/delete`, {
-        data: { id: staffId }
-      });
-      if (response.data.success) {
-        toast.success(response.data.message);
+      const response = await axios.delete(`${url}/staff/${staffId}`);
+      if (response.status === 200) {
         fetchList();
+        toast.success("Staff removed successfully.");
       } else {
-        toast.error("Error removing staff.");
+        toast.error("Failed to remove staff.");
       }
     } catch (error) {
-      toast.error("Error removing staff.");
+      toast.error("Failed to remove staff.");
     }
   };
 
-  const fetchList = async () => {
+  const startEditing = (staff) => {
+    setEditingStaff(staff._id);
+    setEditStaffDetails({
+      name: staff.account_id.name,
+      phone: staff.account_id.phone,
+      email: staff.account_id.email,
+      role: staff.role
+    });
+  };
+
+  const handleEditChange = (e) => {
+    setEditStaffDetails({ ...editStaffDetails, [e.target.name]: e.target.value });
+  };
+
+  const saveEdit = async (staffId) => {
     try {
-      const response = await axios.get(`${url}/api/staff/list`);
-      if (response.data.success) {
-        setList(response.data.staff);
-        setFilteredStaff(response.data.staff);
+      const response = await axios.put(`${url}/staff/${staffId}`, editStaffDetails);
+      if (response.status === 200) {
+        fetchList();
+        setEditingStaff(null);
+        toast.success("Staff updated successfully.");
       } else {
-        toast.error("Error fetching staff list.");
+        toast.error("Failed to update staff.");
       }
     } catch (error) {
-      toast.error("Error fetching staff list.");
+      toast.error("Failed to update staff.");
     }
+  };
+
+  const cancelEditing = () => {
+    setEditingStaff(null);
+  };
+
+  const handleNewStaffChange = (e) => {
+    setNewStaff({ ...newStaff, [e.target.name]: e.target.value });
+  };
+
+  const handleNewStaffSubmit = (e) => {
+    e.preventDefault();
+    addStaff();
   };
 
   const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = list.filter((staff) =>
-      staff.name.toLowerCase().includes(query)
-    );
-    setFilteredStaff(filtered);
+    setSearchQuery(e.target.value);
     setCurrentPage(1); // Reset to first page on search
   };
 
@@ -134,20 +118,30 @@ const StaffManagement = () => {
     fetchList();
   }, []);
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStaff.slice(indexOfFirstItem, indexOfLastItem);
+  // Ensure list is always an array
+  const filteredList = list.filter(
+    (staff) =>
+      staff.account_id.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff.account_id.phone.includes(searchQuery) ||
+      staff.account_id.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const nextPage = () => {
-    if (currentPage * itemsPerPage < filteredStaff.length) {
-      setCurrentPage(currentPage + 1);
+  const paginatedList = filteredList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
     }
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
     }
   };
 
@@ -156,203 +150,127 @@ const StaffManagement = () => {
       <div style={{ display: 'flex', alignItems: 'center', marginTop: "15px", marginLeft: "15px" }}>
         <h1>Staff Management</h1>
         <input
+          style={{ marginLeft: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
           type="text"
-          placeholder="Search by name"
+          placeholder="Search ..."
           value={searchQuery}
           onChange={handleSearchChange}
-          style={{ marginLeft: '20px', padding: '5px' }}
         />
       </div>
-      <div>
-        <h2 style={{ marginLeft: '40px' }}>Add New Staff</h2>
+      <form onSubmit={handleNewStaffSubmit} className="new-staff-form">
         <input
-        style={{ marginRight: '10px',
-          marginLeft: '40px',
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '180px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          color: '#333',
-          backgroundColor: '#fff',
-          transition: 'border-color 0.3s ease',
-          '&:focus': {
-            outline: 'none',
-            borderColor: '#6c63ff',
-            boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-          }, }}
+          style={{ marginLeft: '30px', marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
           type="text"
           name="name"
           placeholder="Name"
           value={newStaff.name}
-          onChange={handleEditChange}
+          onChange={handleNewStaffChange}
+          required
+          className="user-input"
         />
         <input
-        style={{ marginRight: '10px',
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '180px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          color: '#333',
-          backgroundColor: '#fff',
-          transition: 'border-color 0.3s ease',
-          '&:focus': {
-            outline: 'none',
-            borderColor: '#6c63ff',
-            boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-          }, }}
+          style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
           type="text"
           name="phone"
-          placeholder="Phone Number"
+          placeholder="Phone"
           value={newStaff.phone}
-          onChange={handleEditChange}
+          onChange={handleNewStaffChange}
+          required
+          className="user-input"
         />
         <input
-        style={{ marginRight: '10px',
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '180px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          color: '#333',
-          backgroundColor: '#fff',
-          transition: 'border-color 0.3s ease',
-          '&:focus': {
-            outline: 'none',
-            borderColor: '#6c63ff',
-            boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-          }, }}
-          type="text"
-          name="role"
-          placeholder="Role"
-          value={newStaff.role}
-          onChange={handleEditChange}
-        />
-        <input
-        style={{ marginRight: '10px',
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '180px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          color: '#333',
-          backgroundColor: '#fff',
-          transition: 'border-color 0.3s ease',
-          '&:focus': {
-            outline: 'none',
-            borderColor: '#6c63ff',
-            boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-          }, }}
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={newStaff.password}
-          onChange={handleEditChange}
-        />
-        <input
-        style={{ marginRight: '10px',
-          padding: '8px 12px',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-          width: '180px',
-          fontSize: '14px',
-          fontFamily: 'inherit',
-          color: '#333',
-          backgroundColor: '#fff',
-          transition: 'border-color 0.3s ease',
-          '&:focus': {
-            outline: 'none',
-            borderColor: '#6c63ff',
-            boxShadow: '0 0 5px rgba(108, 99, 255, 0.5)',
-          }, }}
+          style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
           type="email"
           name="email"
           placeholder="Email"
           value={newStaff.email}
-          onChange={handleEditChange}
-        />
-        <button onClick={addStaff} className='button-63'>Add Staff</button>
-      </div>
+          onChange={handleNewStaffChange}
+          required
+          className="user-input"
 
-      <h2 style={{ marginLeft: '40px' }}>Staff List</h2>
+        />
+        <input
+          style={{ marginRight: '10px', padding: '8px 12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '14px', fontFamily: 'inherit', color: '#333', width: '180px', backgroundColor: '#fff', transition: 'border-color 0.3s ease' }}
+          type="text"
+          name="role"
+          placeholder="Role"
+          value={newStaff.role}
+          onChange={handleNewStaffChange}
+          required
+          className="user-input"
+
+        />
+        <button type="submit" className='button-63'>Add Staff</button>
+      </form>
+
       <div className='list-table'>
-        <div className='list-table-format title'>
+        <div className='list-table-format1 title'>
           <b>Name</b>
           <b>Phone</b>
-          <b>Role</b>
-          <b>Password</b>
           <b>Email</b>
-          <b>Actions</b> {/* Added an Actions header */}
+          <b>Role</b>
+          <b>Actions</b>
         </div>
-        {currentItems.map((item, index) => (
-          <div key={index} className='list-table-format'>
-            {editingStaff === item.id ? (
+        {paginatedList.map((item, index) => (
+          <div key={index} className='list-table-format1'>
+            {editingStaff === item._id ? (
               <>
                 <input
                   type="text"
-                  value={newStaff.name}
                   name="name"
+                  value={editStaffDetails.name}
                   onChange={handleEditChange}
-                  onBlur={() => handleBlur(item.id)}
-                  onKeyPress={(e) => handleKeyPress(e, item.id)}
+                  className="staff-input"
                 />
                 <input
                   type="text"
-                  value={newStaff.phone}
                   name="phone"
+                  value={editStaffDetails.phone}
                   onChange={handleEditChange}
-                  onBlur={() => handleBlur(item.id)}
-                  onKeyPress={(e) => handleKeyPress(e, item.id)}
-                />
-                <input
-                  type="text"
-                  value={newStaff.role}
-                  name="role"
-                  onChange={handleEditChange}
-                  onBlur={() => handleBlur(item.id)}
-                  onKeyPress={(e) => handleKeyPress(e, item.id)}
-                />
-                <input
-                  type="password"
-                  value={newStaff.password}
-                  name="password"
-                  onChange={handleEditChange}
-                  onBlur={() => handleBlur(item.id)}
-                  onKeyPress={(e) => handleKeyPress(e, item.id)}
+                  className="staff-input"
                 />
                 <input
                   type="email"
-                  value={newStaff.email}
                   name="email"
+                  value={editStaffDetails.email}
                   onChange={handleEditChange}
-                  onBlur={() => handleBlur(item.id)}
-                  onKeyPress={(e) => handleKeyPress(e, item.id)}
+                  className="staff-input"
                 />
+                <input
+                  type="text"
+                  name="role"
+                  value={editStaffDetails.role}
+                  onChange={handleEditChange}
+                  className="staff-input"
+                />
+                <button onClick={() => saveEdit(item._id)}>Save</button>
+                <button onClick={cancelEditing}>Cancel</button>
               </>
             ) : (
               <>
-                <p onClick={() => startEditing(item.id, item)}>{item.name}</p>
-                <p onClick={() => startEditing(item.id, item)}>{item.phone}</p>
-                <p onClick={() => startEditing(item.id, item)}>{item.role}</p>
-                <p onClick={() => startEditing(item.id, item)}>{item.password}</p>
-                <p onClick={() => startEditing(item.id, item)}>{item.email}</p>
+                <p>{item.account_id.name}</p>
+                <p>{item.account_id.phone}</p>
+                <p>{item.account_id.email}</p>
+                <p>{item.role}</p>
+                <button className='buttonne' onClick={() => startEditing(item)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                </svg>
+                </button>                
+                <button className='buttonne' onClick={() => removeStaff(item.account_id._id)}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                </svg>
+                </button>              
               </>
             )}
-            <button onClick={() => removeStaff(item.id)}>Remove</button>
           </div>
         ))}
       </div>
-
       <div className='pagination'>
-        <button onClick={prevPage} disabled={currentPage === 1} className='button-63-2'>
-          Previous
+        <button onClick={handlePrevPage} disabled={currentPage === 1} className='button-63-2'>
+          Prev
         </button>
-        <button onClick={nextPage} disabled={currentPage * itemsPerPage >= filteredStaff.length} className='button-63-2'>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages} className='button-63-2'>
           Next
         </button>
       </div>

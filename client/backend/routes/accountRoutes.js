@@ -11,7 +11,12 @@ router.get('/', accountController.getAllAccounts);
 
 router.post('/register', accountController.registerUser);
 
-router.post('/login', accountController.loginUser)
+router.post('/login', accountController.loginUser);
+
+router.post('/logout', (req, res) => {
+    res.clearCookie('cart');
+    res.status(200).json({ message: 'Logged out successfully' });
+});
 
 router.post('/vouchers/add', authenticate, roleMiddleware(['Customer']), voucherController.addVoucherUser);
 

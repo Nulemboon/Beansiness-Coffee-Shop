@@ -1,6 +1,6 @@
-.list-table-format{
+.list-table-format1{
     display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 0.5fr 1fr;
+    grid-template-columns: 2fr 1fr 2fr 0.5fr 0.5fr 0.25fr 0.25fr;
     align-items: center;
     gap: 10px;
     padding: 12px 15px;
@@ -10,6 +10,10 @@
 .list-table-format.title{
     background-color: #f9f9f9;
 }
+.buttonne{
+    max-width: 30px;
+}
+
 .list-table-format img{
     width: 50px;
 }

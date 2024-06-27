@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
-
-const Login = () => {
+import { toast } from 'react-toastify';
+const Login = ({ setIsAuthenticated }) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -16,15 +16,20 @@ const Login = () => {
         phone,
         password,
       });
-      if (response.data.success) {
-        localStorage.setItem('authToken', response.data.token);
-        navigate('/list'); 
+      if (response.status === 200) {
+        const { token, role } = response.data;
+        if (role === 'Admin') {
+          localStorage.setItem('authToken', token);
+          setIsAuthenticated(true); // Update the authenticated state
+          navigate('/list'); // Redirect to the list page
+        } else {
+          toast.error('Access denied: Only Admins can log in');
+        }
       } else {
-        setError('Invalid credentials');
+        toast.error('Invalid credentials');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setError('An error occurred during login. Please try again.');
+      toast.error('Account does not exist');
     }
   };
 
@@ -43,7 +48,7 @@ const Login = () => {
             required
           />
         </div>
-        <div class="form-group">
+        <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
             type="password"

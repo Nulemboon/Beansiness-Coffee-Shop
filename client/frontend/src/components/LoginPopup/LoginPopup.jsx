@@ -5,9 +5,14 @@ import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const LoginPopup = ({ setShowLogin }) => {
+const LoginPopup = ({ setShowLogin, setUser }) => {
     const { setToken, url, loadCartData } = useContext(StoreContext);
     const [currState, setCurrState] = useState("Sign Up");
+// TODO: Handle set user
+    setUser({
+        name: "John",
+        role: "onsite",
+    });
 
     const [data, setData] = useState({
         userName: "",  

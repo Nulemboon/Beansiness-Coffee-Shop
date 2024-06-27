@@ -9,7 +9,10 @@ const mongoose = require('mongoose');
 class AccountController {
     getAllAccounts = async (req, res) => {
         try {
-            const accounts = await AccountModel.find();
+            const accounts = await AccountModel.find().populate('order_id').populate('delivery_info').populate({
+                path: 'vouchers.voucher_id',
+                model: 'Voucher',
+            });
 
             if (!accounts || accounts.length === 0) {
                 res.status(404).json({message: 'No account available'});
@@ -24,7 +27,10 @@ class AccountController {
     
     getAccountById = async (req, res) => {
         try {
-            const account = await AccountModel.findById(req.params.id);
+            const account = await AccountModel.findById(req.params.id).populate('order_id').populate('delivery_info').populate({
+                path: 'vouchers.voucher_id',
+                model: 'Voucher',
+            });
 
             if (!account) {
                 res.status(404).json({ message: 'Account not found.' });  
@@ -87,7 +93,7 @@ class AccountController {
     }
 
     createToken = (id, role) => {
-        return jwt.sign({id, role}, process.env.JWT_SECRET);
+        return jwt.sign({ user: { id: id, role: role } }, process.env.JWT_SECRET);
     }
     
     //login user

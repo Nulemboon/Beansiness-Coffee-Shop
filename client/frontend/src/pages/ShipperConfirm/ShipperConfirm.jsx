@@ -3,57 +3,9 @@ import './ShipperConfirm.css';
 import { url } from '../../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import Sidebar from '../../components/Sidebar/Sidebar';
 
 const ShipperConfirm = () => {
-  const [list, setList] = useState([
-      {
-       "HID": 1,
-       "date_time": "2024-06-17 10:30 AM",
-       "Address": "123 Main St, City A",
-       "total": "200",
-       "orderList": [
-        {
-         "PID": 101,
-         "name": "Product A",
-         "size": "Medium",
-         "amount": 2
-        },
-        {
-         "PID": 102,
-         "name": "Product B",
-         "size": "Large",
-         "amount": 1
-        }
-       ]
-      },
-      {
-       "HID": 2,
-       "date_time": "2024-06-16 02:00 PM",
-       "Address": "456 Elm St, City B",
-       "total": "500",
-       "orderList": [
-        {
-         "PID": 201,
-         "name": "Product X",
-         "size": "Small",
-         "amount": 3
-        },
-        {
-         "PID": 202,
-         "name": "Product Y",
-         "size": "Medium",
-         "amount": 1
-        },
-        {
-         "PID": 203,
-         "name": "Product Z",
-         "size": "Large",
-         "amount": 2
-        }
-       ]
-      }
-     ]);
+  const [list, setList] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
 
   const fetchList = async () => {
@@ -92,7 +44,6 @@ const ShipperConfirm = () => {
 
   return (
     <div className='app-content'>
-      <Sidebar/>
     <div className="order-list-container">
       {list.length > 0 ? (
         list.map((order) => (

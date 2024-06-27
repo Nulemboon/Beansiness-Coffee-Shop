@@ -14,12 +14,12 @@ class VoucherController {
     
     addVoucher = async (req, res) => {
         try {
-            const { name, description, requiredPoints, discount } = req.body;
+            const { name, description, required_points, discount } = req.body;
     
             const newVoucher = VoucherModel({
                 name: name,
                 description: description,
-                required_points: requiredPoints,
+                required_points: required_points,
                 discount: discount
             });
     
@@ -41,7 +41,7 @@ class VoucherController {
             }
     
             // Delete the voucher by ID
-            const deletedVoucher = await Voucher.findByIdAndDelete(voucherId);
+            const deletedVoucher = await VoucherModel.findByIdAndDelete(voucherId);
     
             if (!deletedVoucher) {
                 res.status(404).json({ message: 'Voucher not found' });
