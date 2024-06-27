@@ -3,6 +3,8 @@ const toppingController = require('../controllers/toppingController');
 
 const router = express.Router();
 
+router.get('/:id', toppingController.getToppingById);
+
 router.get('/', toppingController.getAllTopping);
 
 router.post('/', toppingController.createTopping);

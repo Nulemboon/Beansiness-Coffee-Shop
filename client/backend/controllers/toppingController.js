@@ -17,6 +17,7 @@ class ToppingController {
     
     getToppingById = async (req, res) => {
         try {
+            
             const topping = await ToppingModel.findById(req.params.id);
             if (!topping) {
                 res.status(404).json({message: 'Topping not found.' });
@@ -47,7 +48,12 @@ class ToppingController {
     updateTopping = async (req, res) => {
         try {
             const toppingId = req.params.id;
-            const { updateData } = req.body;
+            const { name, price } = req.body;
+
+            const updateData = {
+                name: name,
+                price: price
+            }
 
             // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
@@ -72,9 +78,9 @@ class ToppingController {
     // Delete Product
     deleteTopping = async (req, res) => {
         try {
-            const { toppingId } = req.params.id;
+            const toppingId = req.params.id;
 
-            // Validate toppingId
+            // // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
                 res.status(400).json({message: 'Invalid topping Id.' });
                 return;
