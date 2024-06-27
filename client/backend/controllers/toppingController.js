@@ -48,7 +48,12 @@ class ToppingController {
     updateTopping = async (req, res) => {
         try {
             const toppingId = req.params.id;
-            const { updateData } = req.body;
+            const { name, price } = req.body;
+
+            const updateData = {
+                name: name,
+                price: price
+            }
 
             // Validate toppingId
             if (!mongoose.Types.ObjectId.isValid(toppingId)) {
