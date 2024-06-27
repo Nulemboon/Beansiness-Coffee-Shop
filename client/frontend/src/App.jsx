@@ -15,7 +15,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MenuPage from './pages/MenuPage/MenuPage';
 import UserInformation from './components/UserInformation/UserInformation';
-import { CookiesProvider } from 'react-cookie';
 import DeliveryForm from './components/DeliveryForm/DeliveryForm';
 import Result from './pages/Result/Result';
 const App = () => {
