@@ -8,7 +8,7 @@ const OrderItemModel = require('../models/OrderItemModel.js');
 class OrderController {
     getAllOrders = async (req, res) => {
         try {
-            const orders = await OrderModel.find();
+            const orders = await OrderModel.find().populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching orders: ' + error.message});
@@ -31,7 +31,7 @@ class OrderController {
 
     async placeOrder(req, res) {
         try {
-            const { delivery_info, shipping_fee, transaction_id } = req.body;
+            const { deliveryId, shippingFee, transactionId } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -45,10 +45,10 @@ class OrderController {
             let totalAmount = 0;
 
             for (const item of cart) {
-                const product = await ProductModel.findById(item.product_id);
+                const product = await ProductModel.findById(item.productId);
 
                 if (!product) {
-                    return res.status(404).json({ message: `Product not found: ${item.product_id}` });
+                    return res.status(404).json({ message: `Product not found: ${item.productId}` });
                 }
 
                 const orderItem = new OrderItemModel({
@@ -64,21 +64,21 @@ class OrderController {
                 totalAmount += product.price * item.quantity;
             }
 
-            const delivery = new DeliveryInfoModel({
-                receiver_name: delivery_info.receiver_name,
-                address: delivery_info.address,
-                phone_number: delivery_info.phone_number,
-                instruction: delivery_info.instruction  
-            });
-            await delivery.save();
+            // const delivery = new DeliveryInfoModel({
+            //     receiver_name: delivery_info.receiver_name,
+            //     address: delivery_info.address,
+            //     phone_number: delivery_info.phone_number,
+            //     instruction: delivery_info.instruction  
+            // });
+            // await delivery.save();
 
             const order = new OrderModel({
                 account_id: accountId,
-                delivery_info: delivery._id,
+                delivery_info: deliveryId,
                 order_items: orderItems,
-                shipping_fee,
+                shipping_fee: parseInt(shippingFee),
                 status: 'Pending', // Initial order status
-                transaction_id,
+                transaction_id: transactionId,
             });
 
             await order.save();
@@ -96,7 +96,7 @@ class OrderController {
             );
 
             
-            res.clearCookie('cart');
+            // res.clearCookie('cart');
 
             res.status(200).json(order);
         } catch (error) {
