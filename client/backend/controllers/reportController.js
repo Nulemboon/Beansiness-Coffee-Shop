@@ -98,7 +98,10 @@ class ReportController {
 
                 // loop through order item in result
                 for (const item of order.order_items) {
-                    const { quantity } = item;
+                    const { product_id, quantity } = item;
+                    const { _id } = product_id;
+
+                    if (_id != prodId) continue;
 
                     dailyMap[completed_date] += quantity;
                 }
