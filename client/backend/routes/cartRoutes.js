@@ -4,16 +4,16 @@ const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.getCart);
+router.get('/total', cartController.getTotalAmount);
 
-router.get('/total', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.getTotalAmount);
+router.get('/clear', cartController.clearCart)
 
-router.post('/', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.addToCart);
+router.get('/', cartController.getCart);
 
-router.post('/decrease', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.decreaseCartItem);
+router.post('/decrease', cartController.decreaseCartItem);
 
-router.post('/remove', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.removeFromCart);
+router.post('/remove', cartController.removeFromCart);
 
-router.get('/clear', authenticate, roleMiddleware(['Customer', 'Onsite']), cartController.clearCart)
+router.post('/', cartController.addToCart);
 
 module.exports = router;

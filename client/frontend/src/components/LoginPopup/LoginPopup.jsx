@@ -6,7 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const LoginPopup = ({ setShowLogin }) => {
-    const { setAuthToken, url, loadCartData } = useContext(StoreContext);
+    const { setToken, url, loadCartData, setAuthToken } = useContext(StoreContext);
     const [currState, setCurrState] = useState("Sign Up");
 
     const [data, setData] = useState({
@@ -48,8 +48,8 @@ const LoginPopup = ({ setShowLogin }) => {
 
             if (token) {
                 console.log("Token received:", token); 
-                // setToken(token);
-                setAuthToken(response.data.token);
+                setToken(token);
+                setAuthToken(token);
                 localStorage.setItem("token", token);
                 await loadCartData(); 
                 toast.success('Operation successful.');
