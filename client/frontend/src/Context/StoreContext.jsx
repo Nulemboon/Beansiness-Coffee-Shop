@@ -9,7 +9,6 @@ const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
 
-  // Function to set the token in Axios defaults
   const setAuthToken = (token) => {
     if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -159,6 +158,7 @@ const StoreContextProvider = (props) => {
     getTotalCartAmount,
     token,
     setToken,
+    setAuthToken,
     loadCartData,
     setCartItems,
   };
