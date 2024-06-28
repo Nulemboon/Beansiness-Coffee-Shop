@@ -6,10 +6,10 @@ import { toast } from 'react-toastify';
 import CartTable from '../../components/OfflineCart/OfflineCart';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import OfflineDetail from '../../components/OfflineDetail/OfflineDetail';
-// import { useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 const StaffOrder = ({ user }) => {
-  // const [cookies, setCookie] = useCookies(['cart']);
+  const [cookies, setCookie] = useCookies(['cart']);
   const { url } = useContext(StoreContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState([]);
@@ -21,6 +21,24 @@ const StaffOrder = ({ user }) => {
   const [noPhone, setNoPhone] = useState(false);
   const defaultPhone = '0395842367';
 
+  
+  // const fetchCart = async () => {
+  //   try {
+  //     const response = await axios.get(`${url}/cart`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem('token')}`,
+  //       },
+  //     });
+  //     if (response.data && Array.isArray(response.data.cart)) {
+  //       setCart(response.data.cart);
+  //       console.log(response.data);
+  //     } else {
+  //       toast.error('Failed to fetch cart');
+  //     }
+  //   } catch (error) {
+  //     toast.error('Error fetching cart');
+  //   }
+  // };
   // Fetch products based on search query
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,29 +56,14 @@ const StaffOrder = ({ user }) => {
       }
     };
 
-    const fetchCart = async () => {
-      try {
-        const response = await axios.get(`${url}/cart`);
-        if (response.data && Array.isArray(response.data.data)) {
-          setCart(response.data.data);
-        } else if (Array.isArray(response.data)) {
-          setCart(response.data);
-        } else {
-          toast.error('Failed to fetch cart');
-        }
-      } catch (error) {
-        toast.error('Error fetching cart');
-      }
-    };
-
     if (searchQuery.trim() !== '') {
       fetchProducts();
     } else {
       // Fetch all products if search query is empty
       fetchProducts('/product');
     }
-    fetchCart();
-    console.log(cart);
+    // fetchCart();
+    setCart(cookies.cart || []);
 
     // setSelectedProductIds(cookies.cart);
   }, [searchQuery]);
@@ -73,6 +76,7 @@ const StaffOrder = ({ user }) => {
   const handleCloseOfflineDetail = () => {
     setShowOfflineDetail(false);
     setSelectedProduct(null);
+    // setCart(cookies.cart);
     // setSelectedProductIds(cookies.cart);
   };
 
@@ -83,7 +87,8 @@ const StaffOrder = ({ user }) => {
       toast.error('Invalid phone number. Please enter a valid 10-digit phone number.');
       return;
     }
-    // const cart = cookies.cart || [];
+    const cart = cookies.cart || [];
+    console.log(cart);
     if (cart.length < 1) {
       toast.error('Please select at least 1 product to place order.');
       return;
@@ -94,7 +99,7 @@ const StaffOrder = ({ user }) => {
     try {
       const response = await axios.post(`${url}/order/offline`, {
         phone: phone,
-      });
+      }, { withCredentials: true });
       console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -134,7 +139,7 @@ const StaffOrder = ({ user }) => {
   return (
     <div className='app-content'>
       <Sidebar user={user} />
-      <div>
+      <div style={{marginBottom: '30px'}}>
         <div className='product-list'>
           <h2>Product List</h2>
           <form onSubmit={handleSearchSubmit} className='search-form'>
@@ -167,7 +172,6 @@ const StaffOrder = ({ user }) => {
           <h2>Selected Products</h2>
           <CartTable 
             products={products}
-            cart={cart}
           />
           <div className='submit-container'>
             <input 

@@ -4,12 +4,12 @@ import axios from 'axios';
 import './OfflineDetail.css';
 import { StoreContext } from '../../Context/StoreContext';
 import { toast } from 'react-toastify';
-// import { useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 const OfflineDetail = ({ product, onClose }) => {
   const [availableToppings, setAvailableToppings] = useState([]);
   const [selectedToppings, setSelectedToppings] = useState([]);
-  // const [cookies, setCookie, removeCookie, remove] = useCookies(['cart']);
+  const [cookies, setCookie, removeCookie, remove] = useCookies(['cart']);
   const { url } = useContext(StoreContext);
   const [selectedSize, setSelectedSize] = useState('M');
 
@@ -40,20 +40,63 @@ const OfflineDetail = ({ product, onClose }) => {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    const cart = cookies.cart || [];
+    // console.log({
+    //   _id: product._id,
+    //     quantity: 1,
+    //     size: selectedSize,
+    //     toppings: availableToppings.filter(topping => selectedToppings.includes(topping.name)).map(topping => topping._id),
+    //   })
     try {
-      const response = await axios.post(`${url}/cart`, {
-        productId: product._id,
-        quantity: 1,
-        size: selectedSize,
-        toppings: availableToppings.filter(topping => selectedToppings.includes(topping.name)),
-      }, { withCredentials: true });
-      console.log(response);
-      if (response.status === 200) {
+      // const response = await axios.post(`${url}/cart`, {
+      //   _id: product._id,
+      //   quantity: 1,
+      //   size: selectedSize,
+      //   toppings: availableToppings.filter(topping => selectedToppings.includes(topping.name)).map(topping => topping._id),
+      // }, {
+      //   headers: {
+      //     Authorization: `Bearer ${localStorage.getItem('token')}`,
+      //   },
+      //   withCredentials: true,
+      // });
+      // if (response.status === 200) {
+        // console.log(response.data);
+
+        // Add product to cart
+        const item = {
+          _id: product._id,
+          quantity: 1,
+          size: selectedSize,
+          toppings: availableToppings.filter(topping => selectedToppings.includes(topping.name)).map(topping => topping._id),
+        }
+        // console.log(item);
+        // Check if the item already exists in the cart
+        const existingItemIndex = cart.findIndex(
+          (itemNew) =>
+            itemNew._id === item._id &&
+            itemNew.size === item.size &&
+            itemNew.toppings.sort().toString() === item.toppings.sort().toString()
+        );
+
+        if (existingItemIndex !== -1) {
+            // Update quantity if item exists
+            console.log(cart[existingItemIndex]);
+            cart[existingItemIndex].quantity += 1;
+            setCookie('cart', cart, { path: '/' });
+        } else {
+            // Add new item to cart
+            console.log(cart)
+            const updatedCart = [...cart, item];
+            console.log(updatedCart);
+            setCookie('cart', updatedCart, { path: '/' }); // Update cart in local storage
+          }
+        // console.log(cookies.cart);
         toast.success('Product added');
         setSelectedSize('M');
-      } else {
-        toast.error(response.data.message); // Show error message if adding fails
-      }
+      // } else {
+      //   toast.error(response.data.message); // Show error message if adding fails
+      // }
     } catch (error) {
       console.error('Error adding product:', error);
       toast.error('Failed to add product');
