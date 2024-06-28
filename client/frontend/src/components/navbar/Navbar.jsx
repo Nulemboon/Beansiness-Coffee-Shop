@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import './Navbar.css';
+import './navbar.css';
 import { assets } from '../../assets/assets';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
@@ -42,6 +42,8 @@ const Navbar = ({ setShowLogin }) => {
         <Link to="/" onClick={() => setMenu("home")} className={`${menu === "home" ? "active" : ""}`}>home</Link>
         <Link to="/menupage" onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>menu</Link>
         <a href='#footer' onClick={() => setMenu("contact")} className={`${menu === "contact" ? "active" : ""}`}>contact us</a>
+        {localStorage.getItem('role') === "Shipper" && <Link to="/ship/order" onClick={() => setMenu("ship")} className={`${menu === "ship" ? "active" : ""}`}>shipment</Link>}
+        {localStorage.getItem('role') === "Onsite" && <Link to="/staff/order" onClick={() => setMenu("staff")} className={`${menu === "staff" ? "active" : ""}`}>staff</Link>}
         {token && (
           <Link to="/vouchersite" onClick={() => setMenu("myvouchers")} className={`${menu === "myvouchers" ? "active" : ""}`}>my vouchers</Link>
         )}

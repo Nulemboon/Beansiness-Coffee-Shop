@@ -31,7 +31,7 @@ class OrderController {
 
     async placeOrder(req, res) {
         try {
-            const { deliveryId, shippingFee, transactionId } = req.body;
+            const { delivery_info, shipping_fee, transaction_id, voucher_id } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -222,11 +222,13 @@ class OrderController {
         try {
             const { orderId } = req.params.id;
 
+            // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
                 res.status(400).json({ message: 'Invalid order ID'});
                 return;
             }
 
+            // Find and update the order's status to "Approved"
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
                 { status: 'Reject' },

@@ -28,7 +28,7 @@ class DeliveryInfoController {
 
             await account.save();
 
-            res.status(200).json(deliveryInfo);
+            res.status(200).json(savedDeliveryInformation);
 
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while creating delivery info: ' + error.message });
