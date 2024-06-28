@@ -152,49 +152,49 @@
       "description": "The Best Americano in the world",
       "price": "39000",
       "category": "coffee",
-      "imageURL": ""
+      "imageURL": "americano.jpg"
     },
     {
       "name": "Espresso",
       "description": "The Best Espresso in the world",
       "price": "39000",
       "category": "coffee",
-      "imageURL": "espresso.jpgw "
+      "imageURL": "espresso.jpg"
     },
     {
       "name": "Lemon Tea",
       "description": "Refresh for the summer",
       "price": "20000",
       "category": "tea",
-      "imageURL": ""
+      "imageURL": "lemontea.jpg"
     },
     {
       "name": "Jasmine Tea",
       "description": "Experience the exquisite taste of premium jasmine tea",
       "price": "25000",
       "category": "tea",
-      "imageURL": ""
+      "imageURL": "jasminetea.jpg"
     },
     {
       "name": "Peach Tea",
       "description": "Indulge in the delightful flavor of our premium peach tea",
       "price": "20000",
       "category": "tea", 
-      "imageURL": ""
+      "imageURL": "peachtea.jpg"
     },
     {
       "name": "Original Milktea",
       "description": "Rich and Creamy",
       "price": "45000",
       "category": "milktea",
-      "imageURL": ""
+      "imageURL": "milktea.jpg"
     },
     {
       "name": "Special Milktea",
       "description": "Even MORE Rich and Creamy",
       "price": "55000",
       "category": "milktea",
-      "imageURL": ""
+      "imageURL": "specialtea.jpg"
     }
   ],
 
