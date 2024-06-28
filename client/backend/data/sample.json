@@ -138,14 +138,14 @@
       "description": "A delicious latte with milk",
       "price": "39000",
       "category": "coffee",
-      "imageURL": ""
+      "imageURL": "latte.jpg"
     },
     {
       "name": "Cappuccino",
       "description": "The Best Cappuccino in the world",
       "price": "39000",
       "category": "coffee",
-      "imageURL": ""
+      "imageURL": "cappu.jpg"
     },
     {
       "name": "Americano",
@@ -155,11 +155,11 @@
       "imageURL": ""
     },
     {
-      "name": "Expresso",
-      "description": "The Best Expresso in the world",
+      "name": "Espresso",
+      "description": "The Best Espresso in the world",
       "price": "39000",
       "category": "coffee",
-      "imageURL": ""
+      "imageURL": "espresso.jpgw "
     },
     {
       "name": "Lemon Tea",

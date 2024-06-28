@@ -41,9 +41,7 @@ const StaffOrder = ({ user }) => {
     const fetchCart = async () => {
       try {
         const response = await axios.get(`${url}/cart`);
-        if (response.data && Array.isArray(response.data.data)) {
-          setCart(response.data.data);
-        } else if (Array.isArray(response.data)) {
+        if (response.data && Array.isArray(response.data)) {
           setCart(response.data);
         } else {
           toast.error('Failed to fetch cart');

@@ -22,11 +22,11 @@ router.get('/', productController.getAllProducts);
 
 router.post('/add-review/:id', authenticate, roleMiddleware(['Admin', 'Customer']), productController.addReview);
 
+router.post('/delete-review', authenticate, roleMiddleware(['Admin', 'Customer']), productController.removeReview);
+
 router.post('/', upload.single('image'), productController.createProduct);
 
 router.put('/', upload.single('image'), productController.updateProduct);
-
-router.delete('/delete-review/', authenticate, roleMiddleware(['Admin', 'Customer']), productController.removeReview);
 
 router.delete('/:id', productController.deleteProduct);
 
