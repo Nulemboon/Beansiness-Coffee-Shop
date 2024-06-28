@@ -8,7 +8,7 @@ const OrderItemModel = require('../models/OrderItemModel.js');
 class OrderController {
     getAllOrders = async (req, res) => {
         try {
-            const orders = await OrderModel.find().populate('account_id').populate({path: 'order_items', populate: {path: 'product_id'}}).populate({path: 'order_items', populate: {path: 'toppings'}});
+            const orders = await OrderModel.find().populate('account_id').populate({path: 'order_items', populate: {path: 'product_id'}}).populate({path: 'order_items', populate: {path: 'toppings'}}).populate('delivery_info');
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching orders: ' + error.message});
