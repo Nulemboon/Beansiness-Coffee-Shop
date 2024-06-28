@@ -83,7 +83,8 @@ class ProductController {
 
             // Validate productId
             if (!mongoose.Types.ObjectId.isValid(productId)) {
-                throw new Error("In validate productId");
+                res.status(404).json({ message: 'Product not found' });
+                return;
             }
 
             // Find and update the product by ID with only the specified fields

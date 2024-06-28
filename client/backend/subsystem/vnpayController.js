@@ -76,6 +76,8 @@ class VNPAY {
             res.status(500).json({ error: error.message });
         }
     }
+
+
     getResponse = async (req, res) => {
         console.log('Received VNPAY response:', req.query);
         try {
@@ -99,21 +101,16 @@ class VNPAY {
                 let content = vnp_Params['vnp_OrderInfo'];
                 let message = '';
 
-                let redirectUrl = '/transaction/error'; 
-
                 if (rspCode === "00") { 
                     message = 'Payment is completed!';
-                    redirectUrl = '/transaction/success';
                 } else if (rspCode === "04") { 
                     message = 'Invalid amount';
-                    redirectUrl = '/transaction/failure';
                 } else if (rspCode === "99") { 
                     message = 'Invalid request';
-                    redirectUrl = '/transaction/failure';
                 } else { 
                     message = 'Order is not completed, please try again!';
-                    redirectUrl = '/transaction/failure';
                 }
+
                 const newTransaction = new TransactionModel({
                     amount: amount,
                     message: message,
@@ -123,7 +120,7 @@ class VNPAY {
 
                 newTransaction.save()
                     .then((savedTransaction) => {
-                        const redirectUrl = `http://localhost:5173/result?vnp_TransactionStatus=${rspCode}&vnp_Amount=${amount * 100}&vnp_BankTranNo=${vnp_Params['vnp_BankTranNo']}&vnp_PayDate=${vnp_Params['vnp_PayDate']}&transactionId=${savedTransaction._id}`;
+                        const redirectUrl = `http://localhost:5173/result?transactionId=${savedTransaction._id}`;
                         res.redirect(redirectUrl);
                     })
                     .catch((err) => {
@@ -135,6 +132,23 @@ class VNPAY {
             }
         } catch (error) {
             console.error('Error processing VNPAY response:', error);
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    
+    getTransaction = async (req, res) => {
+        try {
+            const transactionId = req.params.id;
+            const transaction = TransactionModel.findById(transactionId);
+            
+            if (!transaction) {
+                res.status(404).json({ message: 'Transaction not found' });
+                return;
+            }
+
+            res.status(200).json(transaction);
+        } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }

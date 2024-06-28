@@ -11,4 +11,6 @@ router.post('/', staffController.addStaff);
 
 router.delete('/:id', staffController.removeStaff);
 
+router.put('/:id', staffController.updateStaff);
+
 module.exports = router;

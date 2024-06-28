@@ -61,7 +61,7 @@ class StaffController {
 
             res.status(200).json(newStaff)
         } catch (error) {
-            res.status(500).json({ error: 'Unable to add account' + error.message});
+            res.status(500).json({ error: 'Unable to add account: ' + error.message});
         }
     }
 
@@ -94,7 +94,41 @@ class StaffController {
         }
     }
 
-    updateStaff = async (req, res) => {};
+    updateStaff = async (req, res) => {
+        try {
+            const accountId = req.params.id;
+            const { name, phone, email, role } = req.body;
+
+            if (!mongoose.Types.ObjectId.isValid(accountId)) {
+                res.status(404).json({ message: 'Account not found' });
+                return;
+            }
+            
+            // Update staff model
+            const updatedStaff = await StaffModel.findOneAndUpdate({account_id: accountId}, {role: role});
+            
+            if (!updatedStaff) {
+                res.status(404).json({ message: 'Staff not found' });
+                return;
+            }
+            // Update account
+
+            const updatedAccount = await AccountModel.findByIdAndUpdate(accountId, {
+                name: name,
+                phone: phone,
+                email: email
+            })
+
+            if (!updatedAccount) {
+                res.status(404).json({ message: 'Account not found' });
+                return;
+            }
+
+            res.status(200).json({ message: `Staff has been updated: ${accountId}`})
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to update Staff: ' + error.message});
+        }
+    }
 }
 
 
