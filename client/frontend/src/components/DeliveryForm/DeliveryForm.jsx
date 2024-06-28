@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import './DeliveryForm.css';
 
 const DeliveryForm = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { amount, voucherCode } = location.state || { amount: 0, voucherCode: '' };
-  const { url, customerId } = useContext(StoreContext); // Assuming customerId is available in StoreContext
+  const { url, customerId } = useContext(StoreContext);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,17 +30,21 @@ const DeliveryForm = () => {
   }, [amount, voucherCode]);
 
   useEffect(() => {
-    axios.get(`${url}/account/667d2308971469fa2b8b95bb`)
-      .then(response => {
-        if (response.data && response.data.delivery_info) {
-          setDeliveryInfo(response.data.delivery_info);
-        } else {
-          console.error('Invalid response format:', response.data);
-        }
-      })
-      .catch(error => {
-        console.error('There was an error fetching the customer data:', error);
-      });
+    axios.get(`${url}/account/current`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      if (response.data && response.data.delivery_info) {
+        setDeliveryInfo(response.data.delivery_info);
+      } else {
+        console.error('Invalid response format:', response.data);
+      }
+    })
+    .catch(error => {
+      console.error('There was an error fetching the customer data:', error);
+    });
   }, [customerId, url]);
 
   const handleSelectDeliveryInfo = (info) => {
@@ -50,26 +55,32 @@ const DeliveryForm = () => {
       phone: info.phone_number,
       address: info.address,
     });
+    localStorage.setItem('deliveryInfoId', info._id); 
   };
 
   const handleDeleteDeliveryInfo = (id) => {
-    axios.delete(`${url}/deliveryInfo/${id}`)
-      .then(response => {
-        setDeliveryInfo(deliveryInfo.filter(info => info._id !== id));
-        if (selectedDeliveryInfo && selectedDeliveryInfo._id === id) {
-          setSelectedDeliveryInfo(null);
-          setFormData({
-            name: '',
-            phone: '',
-            address: '',
-            amount: amount,
-            content: `Order with voucher code: ${voucherCode}`,
-          });
-        }
-      })
-      .catch(error => {
-        console.error('There was an error deleting the delivery info:', error);
-      });
+    axios.delete(`${url}/account/deliveryInfo/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      setDeliveryInfo(deliveryInfo.filter(info => info._id !== id));
+      if (selectedDeliveryInfo && selectedDeliveryInfo._id === id) {
+        setSelectedDeliveryInfo(null);
+        setFormData({
+          name: '',
+          phone: '',
+          address: '',
+          amount: amount,
+          content: `Order with voucher code: ${voucherCode}`,
+        });
+        localStorage.removeItem('deliveryInfoId');
+      }
+    })
+    .catch(error => {
+      console.error('There was an error deleting the delivery info:', error);
+    });
   };
 
   const handleChange = (e) => {
@@ -84,42 +95,51 @@ const DeliveryForm = () => {
       content: formData.content,
     };
 
-    const newDeliveryInfo = {
-      receiver_name: formData.name,
-      phone_number: formData.phone,
-      address: formData.address,
-    };
-
     if (!selectedDeliveryInfo) {
-      axios.post(`${url}/deliveryInfo`, newDeliveryInfo)
-        .then(response => {
-          if (response.data && response.data._id) {
-            setDeliveryInfo([...deliveryInfo, response.data]);
-            createPaymentUrl(paymentData);
-          } else {
-            console.error('Invalid response format:', response.data);
-          }
-        })
-        .catch(error => {
-          console.error('There was an error creating the delivery info:', error);
-        });
-    } else {
-      createPaymentUrl(paymentData);
-    }
-  };
+      const newDeliveryInfo = {
+        receiver_name: formData.name,
+        phone_number: formData.phone,
+        address: formData.address,
+      };
 
-  const createPaymentUrl = (paymentData) => {
-    axios.post(`${url}/transaction/create_payment_url`, paymentData)
+      axios.post(`${url}/deliveryInfo/`, newDeliveryInfo, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
       .then(response => {
-        if (response.data && response.data.redirectUrl) {
-          window.location.href = response.data.redirectUrl;
+        if (response.data && response.data._id) {
+          setDeliveryInfo([...deliveryInfo, response.data]);
+          localStorage.setItem('deliveryInfoId', response.data._id); 
+          createPaymentUrl(paymentData, response.data._id);
         } else {
           console.error('Invalid response format:', response.data);
         }
       })
       .catch(error => {
-        console.error('There was an error creating the payment URL:', error);
+        console.error('There was an error creating the delivery info:', error);
       });
+    } else {
+      createPaymentUrl(paymentData, selectedDeliveryInfo._id);
+    }
+  };
+
+  const createPaymentUrl = (paymentData, deliveryInfoId) => {
+    axios.post(`${url}/transaction/create_payment_url`, { ...paymentData, delivery_info_id: deliveryInfoId }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    .then(response => {
+      if (response.data && response.data.redirectUrl) {
+        window.location.href = response.data.redirectUrl;
+      } else {
+        console.error('Invalid response format:', response.data);
+      }
+    })
+    .catch(error => {
+      console.error('There was an error creating the payment URL:', error);
+    });
   };
 
   return (
@@ -127,7 +147,7 @@ const DeliveryForm = () => {
       <h1 className="delivery-form-title">Delivery Information</h1>
       
       <div className="delivery-info-list">
-        <h2>Existing Delivery Information</h2>
+        <h2 className='existandnew'>Existing Delivery Information</h2>
         {deliveryInfo.map(info => (
           <div key={info._id} className="delivery-info-item">
             <p><strong>Name:</strong> {info.receiver_name}</p>
@@ -138,8 +158,8 @@ const DeliveryForm = () => {
           </div>
         ))}
       </div>
-
-      <h2>{selectedDeliveryInfo ? 'Edit Delivery Information' : 'New Delivery Information'}</h2>
+        
+      <h2 className='existandnew'>{selectedDeliveryInfo ? 'Edit Delivery Information' : 'New Delivery Information'}</h2>
       <form onSubmit={handleSubmit} className="delivery-form">
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -195,7 +215,10 @@ const DeliveryForm = () => {
             required 
           />
         </div>
-        <button type="submit" className="submit-button">Submit</button>
+        <div className="form-actions">
+          <button type="button" className="cancel-button" onClick={() => navigate('/menupage')}>Cancel</button>
+          <button type="submit" className="submit-button">Submit</button>
+        </div>
       </form>
     </div>
   );

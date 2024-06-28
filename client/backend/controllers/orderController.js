@@ -45,7 +45,7 @@ class OrderController {
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
-                res.status(400).json({ message: 'Cart is empty' });
+                res.status(400).json({ message: 'Cart is empty' }); 
                 return;
             }
 

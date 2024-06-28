@@ -123,15 +123,13 @@ class VNPAY {
 
                 newTransaction.save()
                     .then((savedTransaction) => {
-                        res.status(200).json({ transactionId: savedTransaction._id });
+                        const redirectUrl = `http://localhost:5173/result?vnp_TransactionStatus=${rspCode}&vnp_Amount=${amount * 100}&vnp_BankTranNo=${vnp_Params['vnp_BankTranNo']}&vnp_PayDate=${vnp_Params['vnp_PayDate']}&transactionId=${savedTransaction._id}`;
+                        res.redirect(redirectUrl);
                     })
                     .catch((err) => {
                         console.error('Error saving transaction:', err);
                         res.status(500).json({ error: 'Failed to save transaction' });
-                    });;
-
-
-                // Error checksum
+                    });
             } else {
                 res.status(400).json({ message: 'Invalid secure hash' });
             }

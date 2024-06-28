@@ -3,7 +3,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #f4f1ea; /* light beige background */
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -12,29 +12,31 @@
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
-  color: #333;
+  color: #4b2e24; /* dark coffee color */
 }
 
 .delivery-info-list {
+  
   margin-bottom: 20px;
 }
 
 .delivery-info-item {
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #d3c4a1; 
   border-radius: 4px;
   background-color: #fff;
 }
 
 .delivery-info-item p {
   margin: 5px 0;
+  color: #4b2e24; 
 }
 
 .delivery-info-item button {
   margin-right: 10px;
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #6f4e37; 
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -42,7 +44,7 @@
 }
 
 .delivery-info-item button:last-child {
-  background-color: #dc3545;
+  background-color: #b5651d; 
 }
 
 .delivery-info-item button:hover {
@@ -61,15 +63,17 @@
 .form-group label {
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
+  color: #4b2e24; 
 }
 
 .form-group input, .form-group textarea {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #d3c4a1; 
   border-radius: 4px;
   font-size: 16px;
+  background-color: #fff;
+  color: #4b2e24; 
 }
 
 .form-group textarea {
@@ -78,7 +82,7 @@
 
 .submit-button {
   padding: 10px 20px;
-  background-color: #28a745;
+  background-color: #8b4513; 
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -88,4 +92,27 @@
 
 .submit-button:hover {
   opacity: 0.9;
+}
+
+.existandnew{
+  color: #4b2e24;
+}
+.cancel-button {
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.cancel-button:hover {
+  opacity: 0.9;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }

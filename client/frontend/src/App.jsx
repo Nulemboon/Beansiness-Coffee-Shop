@@ -3,7 +3,7 @@ import { Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/navbar/Navbar';
 import Cart from './pages/Cart/Cart';
 import LoginPopup from './components/LoginPopup/LoginPopup';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
@@ -37,11 +37,11 @@ const App = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/placeorder' element={<PlaceOrder />} />
             <Route path='/myorders' element={<MyOrders />} />
-            <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
-            <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
+            <Route path='/vouchersite' element={<VoucherSite />} />
+            <Route path='/menupage' element={<MenuPage />} /> 
             <Route path='/userinfo' element={<UserInformation />} />
             <Route path='/deliveryform' element={<DeliveryForm />} />
-            <Route path='/order/vnpay_return' element={<Result />} />
+            <Route path='/result' element={<Result />} />
             <Route path='/staff' element={<StaffRoute />}>
               <Route path='/staff/order' element={<StaffOrder />} />
               <Route path='/staff/confirm' element={<StaffConfirm />} />

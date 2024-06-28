@@ -11,12 +11,16 @@ const VoucherSite = () => {
   useEffect(() => {
     const fetchVouchers = async () => {
       try {
-        const response = await fetch(`${url}/voucher`);
+        const response = await fetch(`${url}/account/current`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        setVouchers(data);
+        setVouchers(data.vouchers.map(v => v.voucher_id));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -40,7 +44,7 @@ const VoucherSite = () => {
             <div className="voucher-details">
               <h3>{voucher.name}</h3>
               <p>Description: {voucher.description}</p>
-              <p>Discount: {voucher.discount}</p>
+              <p>Discount: {voucher.discount} VND</p>
               <p>Required Points: {voucher.required_points}</p>
             </div>
           </div>
