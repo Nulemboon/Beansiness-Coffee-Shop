@@ -123,13 +123,15 @@ class VNPAY {
 
                 newTransaction.save()
                     .then((savedTransaction) => {
-                        console.log('Transaction saved, redirecting to:', redirectUrl);
-                        res.redirect(`${redirectUrl}?transactionId=${savedTransaction._id}`);
+                        res.status(200).json({ transactionId: savedTransaction._id });
                     })
                     .catch((err) => {
                         console.error('Error saving transaction:', err);
                         res.status(500).json({ error: 'Failed to save transaction' });
-                    });
+                    });;
+
+
+                // Error checksum
             } else {
                 res.status(400).json({ message: 'Invalid secure hash' });
             }
