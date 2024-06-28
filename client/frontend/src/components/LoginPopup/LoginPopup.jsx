@@ -5,19 +5,15 @@ import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-const LoginPopup = ({ setShowLogin, setUser }) => {
-    const { setToken, url, loadCartData } = useContext(StoreContext);
+const LoginPopup = ({ setShowLogin }) => {
+    const { setAuthToken, url, loadCartData } = useContext(StoreContext);
     const [currState, setCurrState] = useState("Sign Up");
-// TODO: Handle set user
-    setUser({
-        name: "John",
-        role: "onsite",
-    });
 
     const [data, setData] = useState({
-        userName: "",
-        password: "",
-        phone: "" // only used for sign-up
+        userName: "",  
+        phone: "",     
+        email: "",     
+        password: ""
     });
 
     const onChangeHandler = (event) => {
@@ -28,33 +24,47 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
 
     const onLogin = async (e) => {
         e.preventDefault();
-
+    
         try {
             let response;
             if (currState === "Login") {
-                const new_url = `${url}/signin/?userName=${data.userName}&password=${data.password}`;
-                response = await axios.get(new_url);
+                const new_url = `${url}/account/login`;
+                response = await axios.post(new_url, {
+                    phone: data.phone,
+                    password: data.password
+                });
             } else {
-                const new_url = `${url}/signup/userName=${data.userName}&password=${data.password}&phone=${data.phone}`;
-                response = await axios.post(new_url);
+                const new_url = `${url}/account/register`;
+                response = await axios.post(new_url, {
+                    name: data.userName,
+                    phone: data.phone,
+                    email: data.email,
+                    password: data.password
+                });
             }
+    
+            const token = response.data.token;
+            localStorage.setItem('role', response.data.role);
 
-            if (response.data === 1) { 
-                if (currState === "Login") {
-                    const token = response.headers['auth-token'] || response.data.token; 
-                    setToken(token);
-                    localStorage.setItem("token", token);
-                    loadCartData({ token: token });
-                }
+            if (token) {
+                console.log("Token received:", token); 
+                // setToken(token);
+                setAuthToken(response.data.token);
+                localStorage.setItem("token", token);
+                await loadCartData(); 
                 toast.success('Operation successful.');
                 setShowLogin(false);
             } else {
-                toast.error('Operation failed. Please check your details and try again.');
+                console.warn('Server response indicates failure:', response.data);
+                toast.error(response.data.message || 'Operation failed. Please check your details and try again.');
             }
         } catch (err) {
+            console.error('Error during login/register:', err.response ? err.response.data : err.message);
             toast.error('An error occurred. Please try again.');
         }
     };
+    
+    
 
     return (
         <div className='login-popup'>
@@ -73,13 +83,23 @@ const LoginPopup = ({ setShowLogin, setUser }) => {
                             required
                         />
                     )}
+                    {currState === "Sign Up" && (
+                        <input
+                            name='email'
+                            onChange={onChangeHandler}
+                            value={data.email}
+                            type="email"
+                            placeholder='Your email'
+                            required
+                        />
+                    )}
                     <input
                         name="phone"
                         onChange={onChangeHandler}
                         value={data.phone}
                         type="tel"
                         placeholder="Your phone number"
-                        required={currState === "Sign Up"}
+                        required
                     />
                     <input
                         name='password'

@@ -41,7 +41,7 @@ class OrderController {
 
     async placeOrder(req, res) {
         try {
-            const { deliveryId, shippingFee, transactionId } = req.body;
+            const { delivery_info, shipping_fee, transaction_id, voucher_id } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {

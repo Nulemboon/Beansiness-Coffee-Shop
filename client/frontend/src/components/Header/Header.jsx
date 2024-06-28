@@ -9,7 +9,7 @@ const Header = () => {
         <h2>Order your favourite coffee here</h2>
         <p>Khách hàng là thượng đế!</p>
         <Link to="/menupage">
-          <button>View Menu</button>
+          <button >View Menu</button>
         </Link>
       </div>
     </div>

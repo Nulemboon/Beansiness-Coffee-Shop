@@ -3,27 +3,28 @@ import { Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import Home from './pages/Home/Home';
 import Footer from './components/Footer/Footer';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/navbar/Navbar';
 import Cart from './pages/Cart/Cart';
 import LoginPopup from './components/LoginPopup/LoginPopup';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import MyOrders from './pages/MyOrders/MyOrders';
-import Verify from './pages/Verify/Verify';
-import Result from './pages/Result/Result';
-import StaffOrder from './pages/StaffOrder/StaffOrder';
-import StaffConfirm from './pages/StaffConfirm/StaffConfirm';
-import ShipperConfirm from './pages/ShipperConfirm/ShipperConfirm';
-import RegisterOffline from './pages/RegisterOffline/RegisterOffline';
 import ChangePassword from './components/ChangePassword/ChangePassword';
 import VoucherSite from './components/VoucherSite/VoucherSite';
 import ReviewForm from './components/WriteReview/ReviewForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MenuPage from './pages/MenuPage/MenuPage';
+import UserInformation from './components/UserInformation/UserInformation';
+import DeliveryForm from './components/DeliveryForm/DeliveryForm';
+import Result from './pages/Result/Result';
+import StaffOrder from './pages/StaffOrder/StaffOrder';
+import StaffConfirm from './pages/StaffConfirm/StaffConfirm';
+import ShipperConfirm from './pages/ShipperConfirm/ShipperConfirm';
+import RegisterOffline from './pages/RegisterOffline/RegisterOffline';
 
 const App = () => {
   const [showLogin, setShowLogin] = useState(false);
-  
+
   return (
     <>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
@@ -34,22 +35,23 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/cart' element={<Cart />} />
-            <Route path='/order' element={<PlaceOrder />} />
-            <Route path='/order/vnpay_return' element={<Result />} />
+            <Route path='/placeorder' element={<PlaceOrder />} />
             <Route path='/myorders' element={<MyOrders />} />
-            <Route path='/verify' element={<Verify />} />
-            <Route path='/vouchersite' element={<VoucherSite />} />
-            <Route path='/menupage' element={<MenuPage />} />
+            <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
+            <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
+            <Route path='/userinfo' element={<UserInformation />} />
+            <Route path='/deliveryform' element={<DeliveryForm />} />
+            <Route path='/order/vnpay_return' element={<Result />} />
             <Route path='/staff' element={<StaffRoute />}>
               <Route path='/staff/order' element={<StaffOrder />} />
-              <Route path='/staff/confirm' element={<StaffConfirm />} /> 
+              <Route path='/staff/confirm' element={<StaffConfirm />} />
               <Route path='/staff/register' element={<RegisterOffline />} />
             </Route>
             <Route path='/ship' element={<ShipRoute />}>
               <Route path='/ship/order' element={<ShipperConfirm />} />
             </Route>
-            <Route path='*' element={<Navigate to='/' replace />} />      
           </Routes>
+
         </div>
         <Footer />
       </CookiesProvider>
@@ -62,7 +64,7 @@ const StaffRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (localStorage.getItem('role') !== 'onsite') {
+  if (localStorage.getItem('role') !== 'Onsite') {
     return <Navigate to={redirectPath} replace />
   }
 
@@ -74,7 +76,7 @@ const ShipRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (localStorage.getItem('role') !== 'shipper') {
+  if (localStorage.getItem('role') !== 'Shipper') {
     return <Navigate to={redirectPath} replace />
   }
 

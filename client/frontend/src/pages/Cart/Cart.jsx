@@ -2,39 +2,58 @@ import React, { useContext, useState, useEffect } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useCookies } from 'react-cookie';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, getTotalCartAmount, loadCartData, url } = useContext(StoreContext);
   const navigate = useNavigate();
   const [voucherCode, setVoucherCode] = useState('');
-  const [cartDetails, setCartDetails] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
-    async function fetchCartData() {
-      await loadCartData(); 
-    }
-    fetchCartData();
-  }, [loadCartData]);
+    const currentCart = cookies.cart || [];
+    setCart(currentCart);
+  }, [cookies.cart]);
 
-  useEffect(() => {
-    async function fetchCartDetails() {
-      try {
-        const response = await axios.get(`${url}/cart`);
-        setCartDetails(response.data.cartItems); 
-      } catch (error) {
-        console.error('Error fetching cart details:', error);
-      }
+  const handleRemoveFromCart = (itemIndex) => {
+    const updatedCart = cart.filter((_, index) => index !== itemIndex);
+    setCart(updatedCart);
+    setCookie('cart', updatedCart, { path: '/' });
+    if (cart[itemIndex]) {
+      removeFromCart(cart[itemIndex]._id);
     }
-    fetchCartDetails();
-  }, [url, cartItems]);
+  };
+
+  const handleCheckout = () => {
+    const totalPrice = getTotalPrice() + 20000; // Include delivery fee in total price
+    if (totalPrice > 0) {
+      navigate('/deliveryform', { state: { amount: totalPrice, voucherCode } });
+    } else {
+      alert('Your cart is empty!');
+    }
+  };
+
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => {
+      const toppingCost = item.toppings.reduce((sum, toppingName) => {
+        const topping = item.toppings.find(t => t.name === toppingName);
+        return sum + (topping ? topping.price : 0);
+      }, 0);
+      return total + (item.price + toppingCost) * item.quantity;
+    }, 0);
+  };
+
+  if (!cart.length) {
+    return <div>Your cart is empty</div>;
+  }
 
   return (
     <div className='cart'>
       <div className="cart-items">
         <div className="cart-items-title">
           <p>Title</p>
-          <p>Topping</p>
+          <p>Size</p>
+          <p>Toppings</p>
           <p>Price</p>
           <p>Quantity</p>
           <p>Total</p>
@@ -42,15 +61,16 @@ const Cart = () => {
         </div>
         <br />
         <hr />
-        {cartDetails.map((item, index) => (
+        {cart.map((item, index) => (
           <div key={index}>
             <div className="cart-items-title cart-items-item">
-              <p>{item.name}</p>
-              <p>{item.topping}</p>
-              <p>${item.price}</p>
+              <p>{item.name}</p> 
+              <p>{item.size}</p>
+              <p>{item.toppings.join(', ')}</p> 
+              <p>{item.price + ' VND'}</p>
               <div>{item.quantity}</div>
-              <p>${item.price * item.quantity}</p>
-              <p className='cart-items-remove-icon' onClick={() => removeFromCart(item.id)}>x</p>
+              <p>{(item.price * item.quantity) + ' VND'}</p>
+              <p className='cart-items-remove-icon' onClick={() => handleRemoveFromCart(index)}>x</p>
             </div>
             <hr />
           </div>
@@ -60,13 +80,15 @@ const Cart = () => {
         <div className="cart-total">
           <h2 style={{ color: '#8B4513' }}>Cart Totals</h2>
           <div>
-            <div className="cart-total-details"><p>Subtotal</p><p>${getTotalCartAmount()}</p></div>
+            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice() + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Delivery Fee</p><p>${getTotalCartAmount() === 0 ? 0 : 5}</p></div>
+            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : 20000 + ' VND'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>${getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 5}</b></div>
+            <div className="cart-total-details"><p>Voucher</p><p>{voucherCode ? 'Applied' : 'No Voucher'}</p></div>
+            <hr />
+            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : getTotalPrice() + 20000) + ' VND'}</b></div>
           </div>
-          <button onClick={() => navigate('/delivery_form', { state: { voucherCode } })}>PROCEED TO CHECKOUT</button>
+          <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
         <div className="cart-promocode">
           <div>
@@ -74,7 +96,7 @@ const Cart = () => {
             <div className='cart-promocode-input'>
               <input 
                 type="text" 
-                placeholder='promo code' 
+                placeholder='Voucher' 
                 value={voucherCode}
                 onChange={(e) => setVoucherCode(e.target.value)}
               />

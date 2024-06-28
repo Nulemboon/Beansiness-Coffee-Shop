@@ -4,105 +4,8 @@ import { StoreContext } from '../../Context/StoreContext';
 import { assets } from '../../assets/assets';
 import ConfirmCancelModal from '../../components/ConfirmCancelModal/ConfirmCancelModal'; 
 import ReviewForm from '../../components/WriteReview/ReviewForm';
-
-const mockOrders = [
-  {
-    "id": 1,
-    "createdAt": "2024-06-15T14:48:00.000Z",
-    "items": [
-      { "name": "Espresso", "quantity": 2 },
-      { "name": "Cappuccino", "quantity": 1 },
-      { "name": "Iced Latte", "quantity": 1 }
-    ],
-    "amount": 18,
-    "status": "Delivered",
-    "account_id": "1234567890",
-    "delivery_info_id": "del123",
-    "shipping_fee": 5,
-    "completed_at": "2024-06-15T16:00:00.000Z",
-    "transaction_id": "txn123"
-  },
-  {
-    "id": 2,
-    "createdAt": "2024-06-16T10:22:00.000Z",
-    "items": [
-      { "name": "Green Tea", "quantity": 2 },
-      { "name": "Matcha Latte", "quantity": 1 },
-      { "name": "Chai Tea", "quantity": 2 }
-    ],
-    "amount": 22,
-    "status": "In Progress",
-    "account_id": "1234567891",
-    "delivery_info_id": "del124",
-    "shipping_fee": 4,
-    "completed_at": null,
-    "transaction_id": "txn124"
-  },
-  {
-    "id": 3,
-    "createdAt": "2024-06-17T08:00:00.000Z",
-    "items": [
-      { "name": "Smoothie - Berry Blast", "quantity": 1 },
-      { "name": "Cold Brew", "quantity": 2 },
-      { "name": "Hot Chocolate", "quantity": 1 }
-    ],
-    "amount": 24,
-    "status": "Cancelled",
-    "account_id": "1234567892",
-    "delivery_info_id": "del125",
-    "shipping_fee": 6,
-    "completed_at": "2024-06-17T09:00:00.000Z",
-    "transaction_id": "txn125"
-  },
-  {
-    "id": 4,
-    "createdAt": "2024-06-18T09:30:00.000Z",
-    "items": [
-      { "name": "Americano", "quantity": 1 },
-      { "name": "Flat White", "quantity": 1 },
-      { "name": "Mocha", "quantity": 2 }
-    ],
-    "amount": 20,
-    "status": "Delivered",
-    "account_id": "1234567893",
-    "delivery_info_id": "del126",
-    "shipping_fee": 3,
-    "completed_at": "2024-06-18T11:00:00.000Z",
-    "transaction_id": "txn126"
-  },
-  {
-    "id": 5,
-    "createdAt": "2024-06-19T11:45:00.000Z",
-    "items": [
-      { "name": "Lemonade", "quantity": 3 },
-      { "name": "Iced Tea - Peach", "quantity": 2 },
-      { "name": "Frappuccino", "quantity": 1 }
-    ],
-    "amount": 28,
-    "status": "In Progress",
-    "account_id": "1234567894",
-    "delivery_info_id": "del127",
-    "shipping_fee": 5,
-    "completed_at": null,
-    "transaction_id": "txn127"
-  },
-  {
-    "id": 6,
-    "createdAt": "2024-06-19T11:45:00.000Z",
-    "items": [
-      { "name": "Lemonade", "quantity": 3 },
-      { "name": "Iced Tea - Peach", "quantity": 2 },
-      { "name": "Frappuccino", "quantity": 1 }
-    ],
-    "amount": 28,
-    "status": "In Delivery",
-    "account_id": "1234567894",
-    "delivery_info_id": "del127",
-    "shipping_fee": 5,
-    "completed_at": null,
-    "transaction_id": "txn127"
-  }
-];
+import axios from 'axios'; 
+import { Link } from 'react-router-dom'; 
 
 const MyOrders = () => {
   const { url } = useContext(StoreContext);
@@ -110,30 +13,24 @@ const MyOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // State to manage confirmation modal visibility
-  const [orderToCancel, setOrderToCancel] = useState(null); // State to manage which order to cancel
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false); 
+  const [orderToCancel, setOrderToCancel] = useState(null); 
   const [showReview, setShowReview] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      setData(mockOrders);
-      setLoading(false);
-    }, 1000);
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(`${url}/order`);
+        setData(response.data);
+      } catch (err) {
+        console.error('Failed to fetch orders:', err);
+        setError('Failed to load orders. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    // Uncomment below and remove mock data above when ready to use the API
-    // const fetchOrders = async () => {
-    //   try {
-    //     const response = await axios.get(`${url}/vieworder`);
-    //     setData(response.data);
-    //   } catch (err) {
-    //     console.error('Failed to fetch orders:', err);
-    //     setError('Failed to load orders. Please try again.');
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
-    // fetchOrders();
+    fetchOrders();
   }, [url]);
 
   const handleOrderClick = (order) => {
@@ -162,6 +59,7 @@ const MyOrders = () => {
 
   const handleConfirmCancel = () => {
     if (orderToCancel) {
+      // Here, you might also want to send a request to the backend to cancel the order
       setData(prevData =>
         prevData.map(order =>
           order.id === orderToCancel ? { ...order, status: 'Cancelled' } : order
@@ -181,6 +79,16 @@ const MyOrders = () => {
 
   if (error) {
     return <div>{error}</div>;
+  }
+
+  if (data.length === 0) {
+    return (
+      <div className='my-orders'>
+        <h2>No Orders Yet</h2>
+        <p>You haven't placed any orders yet. Start exploring our delicious menu now!</p>
+        <Link to="/menupage" className="go-to-menu-button">Go to Menu</Link>
+      </div>
+    );
   }
 
   return (
@@ -206,10 +114,10 @@ const MyOrders = () => {
               <button onClick={() => handleOpenConfirm(order.id)}>Cancel</button>
             )}
             {order.status === 'Delivered' && (
-                <div>
-                    <button onClick={() => handleReview(order)}>Write Review</button>
-                    {showReview && <ReviewForm onClose={() => setShowReview(false)} />}
-                </div>
+              <div>
+                <button onClick={() => handleReview(order.id)}>Write Review</button>
+                {showReview && <ReviewForm onClose={() => setShowReview(false)} />}
+              </div>
             )}
           </div>
         ))}

@@ -1,56 +1,54 @@
 const CartItem = require("./CartItem");
 
 class Cart {
-    constructor(productList) {
-        this.productList = productList;
+    constructor(productList = []) {
+        this.productList = productList.map(item => 
+            new CartItem(item.product, item.listTopping, item.size, item.quantity)
+        );
         this.cartPrice = this.calculateCartPrice();
     }
 
-    /**This function will include:
-     * 
-     * - Add item to cart if not exists
-     * 
-     * - Modify cartItem quantity base on `quantity` of passed cartItem
-     */
-    updateCart(cartItem) {
-        var changed = false;
-        this.productList.forEach((cartItem1) => {
-            if (cartItem1.equals(cartItem)) {
-                cartItem1.updateQuantity(cartItem.quantity);
+    updateCart(newItem) {
+        let changed = false;
+        
+        // Find and update the item if it exists in the cart
+        this.productList.forEach((cartItem) => {
+            if (cartItem.equals(newItem)) {
+                cartItem.updateQuantity(newItem.quantity);
                 changed = true;
             }
         });
-        
-        // Changed is true when the cart is modified
-        if (changed)
-            return;
 
-        this.productList.push(cartItem);
-    }
-    
-    /** Remove product from cart */
-    removeItem(cartItem) {
-        this.productList = this.productList.filter(cartItem1 => !cartItem1.equals(cartItem));
+        // If item was not found in the cart, add it as a new CartItem
+        if (!changed) {
+            this.productList.push(new CartItem(
+                newItem.product, 
+                newItem.listTopping, 
+                newItem.size, 
+                newItem.quantity
+            ));
+        }
     }
 
-    /** Calcuate total price of cart */
+    removeItem(cartItemToRemove) {
+        this.productList = this.productList.filter(cartItem => 
+            !cartItem.equals(cartItemToRemove)
+        );
+    }
+
     calculateCartPrice() {
-        var price = 0.0;
+        let price = 0.0;
 
-        // Loop through every product item
         this.productList.forEach((cartItem) => {
-            itemPrice = cartItem.product.price;
+            let itemPrice = cartItem.product.price;
 
-            // Take topping price
             cartItem.listTopping.forEach((topping) => {
                 itemPrice += topping.price;
-            })
+            });
 
-            // Calculate price based on size
-            itemPrice += ((cartItem.size == 'L') ? 10000 : 0);
-            itemPrice += ((cartItem.size == 'M') ? 5000 : 0);
+            itemPrice += ((cartItem.size === 'L') ? 10000 : 0);
+            itemPrice += ((cartItem.size === 'M') ? 5000 : 0);
 
-            // Update total price
             price += itemPrice * cartItem.quantity;
         });
 
