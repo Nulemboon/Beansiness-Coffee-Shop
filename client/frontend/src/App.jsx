@@ -37,11 +37,11 @@ const App = () => {
             <Route path='/cart' element={<Cart />} />
             <Route path='/placeorder' element={<PlaceOrder />} />
             <Route path='/myorders' element={<MyOrders />} />
-            <Route path='/vouchersite' element={<VoucherSite />} /> {/*for testing */}
-            <Route path='/menupage' element={<MenuPage />} /> {/*for testing */}
+            <Route path='/vouchersite' element={<VoucherSite />} />
+            <Route path='/menupage' element={<MenuPage />} /> 
             <Route path='/userinfo' element={<UserInformation />} />
             <Route path='/deliveryform' element={<DeliveryForm />} />
-            <Route path='/order/vnpay_return' element={<Result />} />
+            <Route path='/result' element={<Result />} />
             <Route path='/staff' element={<StaffRoute />}>
               <Route path='/staff/order' element={<StaffOrder />} />
               <Route path='/staff/confirm' element={<StaffConfirm />} />

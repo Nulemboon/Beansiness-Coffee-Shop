@@ -14,7 +14,11 @@ const UserInformation = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${url}/account/667672a4da25253337cd4bb8`);
+        const response = await axios.get(`${url}/account/current`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // assuming token is stored in localStorage
+          },
+        });
         setUser(response.data);
       } catch (err) {
         setError('Failed to load user information.');
