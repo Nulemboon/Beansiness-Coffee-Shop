@@ -41,7 +41,7 @@ class OrderController {
 
     async placeOrder(req, res) {
         try {
-            const { delivery_info, shipping_fee, transaction_id, voucher_id } = req.body;
+            const { deliveryId, shippingFee, transactionId, voucherId } = req.body;
             const cart = req.cookies.cart;
 
             if (!cart || cart.length === 0) {
@@ -89,6 +89,7 @@ class OrderController {
                 shipping_fee: parseInt(shippingFee),
                 status: 'Pending', // Initial order status
                 transaction_id: transactionId,
+                voucherId: voucherId
             });
 
             await order.save();
