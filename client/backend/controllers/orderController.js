@@ -154,7 +154,7 @@ class OrderController {
 
             const order = new OrderModel({
                 account_id: account ? account._id : req.user.id,
-                delivery_info: {},
+                delivery_info: '',
                 order_items: orderItems,
                 shipping_fee: 0,
                 status: 'Done',

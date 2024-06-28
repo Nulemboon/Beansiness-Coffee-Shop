@@ -101,19 +101,19 @@ const MyOrders = () => {
             <p><b>Account ID:</b> {order.account_id}</p>
             <p><b>Delivery Info ID:</b> {order.delivery_info_id}</p>
             <p><b>Transaction ID:</b> {order.transaction_id}</p>
-            <p><b>Order Items:</b> {order.items.map((item, idx) => (
-              <span key={idx}>{item.name} x {item.quantity}{idx < order.items.length - 1 ? ', ' : ''}</span>
+            <p><b>Order Items:</b> {order.order_items.map((item, idx) => (
+              <span key={idx}>{item.product_id.name}{item.toppings.length > 0 ? `(${item.toppings.map(topping => topping.name).join(', ')})` : ''} x {item.quantity}{idx < order.order_items.length - 1 ? ', ' : ''}</span>
             ))}</p>
-            <p><b>Shipping Fee:</b> ${order.shipping_fee}</p>
+            <p><b>Shipping Fee:</b> {order.shipping_fee}VND</p>
             <p><b>Status:</b> <span>&#x25cf;</span> {order.status}</p>
             <p><b>Completed At:</b> {order.completed_at ? new Date(order.completed_at).toLocaleString() : 'N/A'}</p>
-            {order.status === 'In Progress' && (
+            {order.status === 'Shipping' && (
               <button onClick={() => handleOrderClick(order)}>Track Order</button>
             )}
-            {order.status === 'In Delivery' && (
+            {order.status === 'Pending' && (
               <button onClick={() => handleOpenConfirm(order.id)}>Cancel</button>
             )}
-            {order.status === 'Delivered' && (
+            {order.status === 'Done' && (
               <div>
                 <button onClick={() => handleReview(order.id)}>Write Review</button>
                 {showReview && <ReviewForm onClose={() => setShowReview(false)} />}

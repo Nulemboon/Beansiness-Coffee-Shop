@@ -48,7 +48,20 @@ class AccountController {
             const accountId = req.user.id;
 
             const account = await AccountModel.findById(accountId)
-                .populate('order_id')
+                .populate({
+                    path: 'order_id',
+                    populate: {
+                        path: 'order_items',
+                        populate: [{
+                            path: 'product_id',
+                            model: 'Product',
+                        },
+                        {
+                            path: 'toppings',
+                            model: 'Topping',
+                        }]
+                    }
+                })
                 .populate('delivery_info')
                 .populate({
                     path: 'vouchers.voucher_id',

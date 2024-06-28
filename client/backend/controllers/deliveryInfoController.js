@@ -23,7 +23,7 @@ class DeliveryInfoController {
 
             const savedDeliveryInfo = await deliveryInfo.save();
 
-            account.delivery_info.clear();
+            // account.delivery_info.clear();
             account.delivery_info.push(savedDeliveryInfo._id);
 
             await account.save();

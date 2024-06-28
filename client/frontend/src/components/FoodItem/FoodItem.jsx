@@ -47,7 +47,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
     }
 
     setCookie('cart', currentCart, { path: '/' });
-    addToCart(id, quantity, size, selectedToppings, totalPrice);
+    addToCart(id, quantity, size, selectedToppings);
     setIsModalOpen(false);
   };
 

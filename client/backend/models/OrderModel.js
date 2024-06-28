@@ -12,7 +12,7 @@ const OrderSchema = new mongoose.Schema({
     delivery_info: {
         type: Schema.Types.ObjectId,
         ref: 'DeliveryInfo',
-        required: true
+        // required: true
     },
 
     // Cart
