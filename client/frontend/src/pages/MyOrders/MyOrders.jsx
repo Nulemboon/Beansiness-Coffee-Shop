@@ -20,8 +20,8 @@ const MyOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${url}/order`);
-        setData(response.data);
+        const response = await axios.get(`${url}/account/current`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+        setData(response.data.order_id);
       } catch (err) {
         console.error('Failed to fetch orders:', err);
         setError('Failed to load orders. Please try again.');
