@@ -56,8 +56,8 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
                 <input
                   type='checkbox'
                   value={topping.name}
-                  checked={selectedToppings.includes(topping.name)}
-                  onChange={() => handleToppingChange(topping.name)}
+                  checked={selectedToppings.includes(topping._id)}
+                  onChange={() => handleToppingChange(topping._id)}
                 />
                 {topping.name} (+{topping.price} VND)
               </label>

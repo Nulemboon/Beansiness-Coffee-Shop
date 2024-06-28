@@ -55,10 +55,10 @@ class OrderController {
             let totalAmount = 0;
 
             for (const item of cart) {
-                const product = await ProductModel.findById(item.productId);
+                const product = await ProductModel.findById(item._id);
 
                 if (!product) {
-                    return res.status(404).json({ message: `Product not found: ${item.productId}` });
+                    return res.status(404).json({ message: `Product not found: ${item}` });
                 }
 
                 const orderItem = new OrderItemModel({

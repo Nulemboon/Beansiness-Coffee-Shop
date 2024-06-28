@@ -139,7 +139,7 @@ class VNPAY {
     getTransaction = async (req, res) => {
         try {
             const transactionId = req.params.id;
-            const transaction = TransactionModel.findById(transactionId);
+            const transaction = await TransactionModel.findById(transactionId);
             
             if (!transaction) {
                 res.status(404).json({ message: 'Transaction not found' });
