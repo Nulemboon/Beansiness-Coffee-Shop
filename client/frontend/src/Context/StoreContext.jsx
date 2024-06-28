@@ -9,6 +9,15 @@ const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
 
+  // Function to set the token in Axios defaults
+  const setAuthToken = (token) => {
+    if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete axios.defaults.headers.common['Authorization'];
+    }
+  };
+
   const addToCart = async (itemId, quantity, size, toppings) => {
     console.log(`Attempting to add item with ID: ${itemId} to cart`);
 
@@ -137,6 +146,7 @@ const StoreContextProvider = (props) => {
     console.log("Token updated in context:", token);
     if (token) {
       localStorage.setItem("token", token);
+      setAuthToken(token);
     }
   }, [token]);
 
