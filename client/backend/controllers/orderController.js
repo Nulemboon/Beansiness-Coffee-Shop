@@ -42,8 +42,9 @@ class OrderController {
     async placeOrder(req, res) {
         try {
             const { deliveryId, shippingFee, transactionId, voucherId } = req.body;
-            const cart = req.cookies.cart;
-
+            const cartcart = req.cookies.cart;
+            const cart = JSON.parse(cartcart);
+            
             if (!cart || cart.length === 0) {
                 res.status(400).json({ message: 'Cart is empty' }); 
                 return;
@@ -55,10 +56,10 @@ class OrderController {
             let totalAmount = 0;
 
             for (const item of cart) {
-                const product = await ProductModel.findById(item.productId);
+                const product = await ProductModel.findById(item._id);
 
                 if (!product) {
-                    return res.status(404).json({ message: `Product not found: ${item.productId}` });
+                    return res.status(404).json({ message: `Product not found: ${item}` });
                 }
 
                 const orderItem = new OrderItemModel({
