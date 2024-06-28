@@ -216,9 +216,10 @@ class CartController {
                 }
 
                 // Check for size
+                // S: + 0
                 // L: + 10000
-                // M: + 0
-                priceProduct += ((item.size == 'L')? 10000 : 0);
+                // M: + 5000
+                priceProduct += ((item.size == 'L')? 10000 : ((item.size == 'M')? 5000 : 0));
 
                 totalPrice += priceProduct * item.quantity;
             }
