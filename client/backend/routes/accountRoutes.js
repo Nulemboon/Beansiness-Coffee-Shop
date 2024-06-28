@@ -5,6 +5,8 @@ const {authenticate, roleMiddleware} = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.get('/current', authenticate, roleMiddleware(['Admin', 'Onsite', 'Customer']),  accountController.getCurAccount);
+
 router.get('/:id', accountController.getAccountById);
 
 router.get('/', accountController.getAllAccounts);

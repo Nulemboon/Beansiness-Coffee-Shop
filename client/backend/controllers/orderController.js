@@ -8,7 +8,13 @@ const OrderItemModel = require('../models/OrderItemModel.js');
 class OrderController {
     getAllOrders = async (req, res) => {
         try {
-            const orders = await OrderModel.find().populate('account_id').populate({path: 'order_items', populate: {path: 'product_id'}}).populate({path: 'order_items', populate: {path: 'toppings'}}).populate('delivery_info');
+            const orders = await OrderModel
+                .find()
+                .populate('account_id')
+                .populate({path: 'order_items', populate: {path: 'product_id'}})
+                .populate({path: 'order_items', populate: {path: 'toppings'}})
+                .populate('delivery_info').populate('voucher_id');
+                
             res.status(200).json(orders);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while fetching orders: ' + error.message});
@@ -17,7 +23,11 @@ class OrderController {
 
     getOrderById = async (req, res) => {
         try {
-            const order = await OrderModel.findById(req.params.id).populate('delivery_info', 'order_items', 'voucher_id');
+            const order = await OrderModel.findById(req.params.id)
+                .populate({path: 'order_items', populate: {path: 'product_id'}})
+                .populate({path: 'order_items', populate: {path: 'toppings'}})
+                .populate('delivery_info').populate('voucher_id');
+
             if (!order) {
                 res.status(404).json({ message: 'Order not found.' });
                 return;
