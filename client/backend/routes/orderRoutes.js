@@ -8,6 +8,8 @@ router.get('/pending', orderController.getPendingOrders);
 
 router.get('/approved', orderController.getApprovedOrders); 
 
+router.get('/:id', orderController.getOrderById);
+
 router.get('/', orderController.getAllOrders);
 
 router.post('/offline', authenticate, roleMiddleware(['Onsite','Admin']), orderController.offlineOrder);
