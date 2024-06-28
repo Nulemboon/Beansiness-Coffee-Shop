@@ -1,62 +1,91 @@
+/* DeliveryForm.css */
 .delivery-form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    color: #4b2e2e;
-  }
-  
-  .delivery-form-title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #8B4513;
-  }
-  
-  .delivery-form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  label {
-    font-size: 16px;
-    margin-bottom: 5px;
-    color: #8B4513;
-  }
-  
-  input, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    background-color: #fff;
-  }
-  
-  input:focus, textarea:focus {
-    border-color: #8B4513;
-    outline: none;
-  }
-  
-  .submit-button {
-    background-color: #8B4513;
-    color: white;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .submit-button:hover {
-    background-color: #6e3c2e;
-  }
-  
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.delivery-form-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.delivery-info-list {
+  margin-bottom: 20px;
+}
+
+.delivery-info-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.delivery-info-item p {
+  margin: 5px 0;
+}
+
+.delivery-info-item button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delivery-info-item button:last-child {
+  background-color: #dc3545;
+}
+
+.delivery-info-item button:hover {
+  opacity: 0.9;
+}
+
+.delivery-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-button:hover {
+  opacity: 0.9;
+}
