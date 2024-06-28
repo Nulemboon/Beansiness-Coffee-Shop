@@ -119,7 +119,8 @@ class OrderController {
     async offlineOrder(req, res) {
         try {
             const { phone } = req.body;
-            const cart = req.cookies.cart;
+            const cartcart = req.cookies.cart;
+            const cart = JSON.parse(cartcart);
 
             if (!cart || cart.length === 0) {
                 res.status(400).json({ message: 'Cart is empty' });
@@ -154,7 +155,7 @@ class OrderController {
 
             const order = new OrderModel({
                 account_id: account ? account._id : req.user.id,
-                delivery_info: '',
+                // delivery_info: '',
                 order_items: orderItems,
                 shipping_fee: 0,
                 status: 'Done',
@@ -186,7 +187,7 @@ class OrderController {
 
     getPendingOrders = async (req, res) => {
         try {
-            const pendingOrders = await OrderModel.find({ status: 'Pending' }).populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
+            const pendingOrders = await OrderModel.find({ status: 'Pending' }).populate('account_id').populate('order_items').populate('delivery_info');
             res.status(200).json(pendingOrders);
         } catch (error) {
             res.status(500).json({ error: 'Unable to fetch pending orders: ' + error.message });
@@ -195,7 +196,7 @@ class OrderController {
 
     getApprovedOrders = async (req, res) => {
         try {
-            const approveOrders = await OrderModel.find({ status: 'Approved' }).populate('account_id').populate('order_items').populate('shipping_fee').populate('completed_at');
+            const approveOrders = await OrderModel.find({ status: 'Approved' }).populate('account_id').populate('order_items').populate('delivery_info');
             res.status(200).json(approveOrders);
         } catch (error) {
             res.status(500).json({ error: 'Unable to fetch pending orders: ' + error.message });
