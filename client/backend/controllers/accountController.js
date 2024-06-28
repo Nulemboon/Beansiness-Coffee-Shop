@@ -30,7 +30,7 @@ class AccountController {
             const account = await AccountModel.findById(req.params.id).populate('order_id').populate('delivery_info').populate({
                 path: 'vouchers.voucher_id',
                 model: 'Voucher',
-            });
+            }); 
 
             if (!account) {
                 res.status(404).json({ message: 'Account not found.' });  
@@ -42,6 +42,29 @@ class AccountController {
             res.status(500).json({ error: 'An error occurred while fetching the account: ' + error.message });
         }
     };
+
+    getCurAccount = async (req, res) => {
+        try {
+            const accountId = req.user.id;
+
+            const account = await AccountModel.findById(accountId)
+                .populate('order_id')
+                .populate('delivery_info')
+                .populate({
+                    path: 'vouchers.voucher_id',
+                    model: 'Voucher',
+                });
+
+            if (!account) {
+                res.status(404).json({ message: 'Account not found.' });  
+                return;
+            } 
+
+            res.status(200).json(account);
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while fetching the account: ' + error.message });
+        }
+    }
 
     addAccount = async (req, res) => {
         try {
