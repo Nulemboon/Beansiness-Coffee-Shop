@@ -130,12 +130,12 @@ class VNPAY {
 
                 newTransaction.save()
                     .then((savedTransaction) => {
-                        res.json({ transactionId: savedTransaction._id });
+                        res.status(200).json({ transactionId: savedTransaction._id });
                     })
                     .catch((err) => {
                         console.error('Error saving transaction:', err);
                         res.status(500).json({ error: 'Failed to save transaction' });
-                    });;
+                    });
 
 
                 // Error checksum
