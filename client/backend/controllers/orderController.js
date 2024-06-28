@@ -42,7 +42,7 @@ class OrderController {
     async placeOrder(req, res) {
         try {
             const { deliveryId, shippingFee, transactionId, voucherId } = req.body;
-            const cart = req.cookies.cart;
+            const cart = JSON.parse(req.cookies.cart);
 
             if (!cart || cart.length === 0) {
                 res.status(400).json({ message: 'Cart is empty' }); 

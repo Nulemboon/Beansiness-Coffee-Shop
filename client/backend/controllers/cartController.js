@@ -43,8 +43,6 @@ class CartController {
                 cart.push({ productId: productId, quantity: parseInt(quantity), size: size, toppings: validatedToppings });
             }
 
-            // Update cart cookie
-            res.cookie('cart', cart, { httpOnly: true });
             res.status(200).json(cart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while adding to the cart: ' + error.message});
@@ -94,8 +92,6 @@ class CartController {
                 return;
             }
 
-            // Update cart cookie
-            res.cookie('cart', cart, { httpOnly: true });
             res.status(200).json(cart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while adding to the cart: ' + error.message});
@@ -140,9 +136,7 @@ class CartController {
             // Remove item from cart
             cart.splice(itemIndex, 1);
 
-            // Update cart cookie
-            res.cookie('cart', cart, { httpOnly: true });
-            res.status(200).json({ message: `Item removed from cart: ${productId}`});
+            res.status(200).json(cart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while removing from the cart: ' + error.message});
         }
@@ -176,7 +170,7 @@ class CartController {
                 });
             }
 
-            res.status(200).json({ cart: validatedCart });
+            res.status(200).json(validatedCart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while checking the cart: ' + error.message});
         }
@@ -185,7 +179,7 @@ class CartController {
     async getCart(req, res) {
         try {
             const cart = req.cookies.cart || [];
-            res.status(200).json({ cart });
+            res.status(200).json(cart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while retrieving the cart: ' + error.message});
         }
