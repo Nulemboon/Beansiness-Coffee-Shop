@@ -22,8 +22,8 @@ const Navbar = ({ setShowLogin }) => {
         <Link to="/" onClick={() => setMenu("home")} className={`${menu === "home" ? "active" : ""}`}>home</Link>
         <Link to="/menupage" onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>menu</Link>
         <a href='#footer' onClick={() => setMenu("contact")} className={`${menu === "contact" ? "active" : ""}`}>contact us</a>
-        {localStorage.getItem('role') === "shipper" && <Link to="/ship/order" onClick={() => setMenu("ship")} className={`${menu === "ship" ? "active" : ""}`}>shipment</Link>}
-        {localStorage.getItem('role') === "onsite" && <Link to="/staff/order" onClick={() => setMenu("staff")} className={`${menu === "staff" ? "active" : ""}`}>staff</Link>}
+        {localStorage.getItem('role') === "Shipper" && <Link to="/ship/order" onClick={() => setMenu("ship")} className={`${menu === "ship" ? "active" : ""}`}>shipment</Link>}
+        {localStorage.getItem('role') === "Onsite" && <Link to="/staff/order" onClick={() => setMenu("staff")} className={`${menu === "staff" ? "active" : ""}`}>staff</Link>}
       </ul>
       <div className="navbar-right">
         <img src={assets.search_icon} alt="Search" />

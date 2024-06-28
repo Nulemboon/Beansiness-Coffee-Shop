@@ -1,23 +1,25 @@
 const express = require('express');
-
-const app = express();
-
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const cors = require('cors');
 const route = require('./routes/index');
 
-require('dotenv/config')
+require('dotenv/config');
 
-// Connect to the database
 connectDB();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-app.use(cookieParser());
-app.use(cors())
+const app = express();
 
-// Routes
+const corsOptions = {
+  origin: 'http://localhost:5173', 
+  credentials: true, 
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 route(app);
 
 module.exports = app;

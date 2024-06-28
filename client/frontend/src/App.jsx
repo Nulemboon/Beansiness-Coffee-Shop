@@ -62,7 +62,7 @@ const StaffRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (localStorage.getItem('role') !== 'onsite') {
+  if (localStorage.getItem('role') !== 'Onsite') {
     return <Navigate to={redirectPath} replace />
   }
 
@@ -74,7 +74,7 @@ const ShipRoute = ({
   redirectPath = '/',
   children,
 }) => {
-  if (localStorage.getItem('role') !== 'shipper') {
+  if (localStorage.getItem('role') !== 'Shipper') {
     return <Navigate to={redirectPath} replace />
   }
 
