@@ -102,13 +102,13 @@ class VNPAY {
                 let message = '';
 
                 if (rspCode === "00") { 
-                    message = 'Payment is completed!';
+                    message = 'success';
                 } else if (rspCode === "04") { 
-                    message = 'Invalid amount';
+                    message = 'failed';
                 } else if (rspCode === "99") { 
-                    message = 'Invalid request';
+                    message = 'failed';
                 } else { 
-                    message = 'Order is not completed, please try again!';
+                    message = 'failed';
                 }
 
                 const newTransaction = new TransactionModel({
@@ -124,7 +124,6 @@ class VNPAY {
                         res.redirect(redirectUrl);
                     })
                     .catch((err) => {
-                        console.error('Error saving transaction:', err);
                         res.status(500).json({ error: 'Failed to save transaction' });
                     });
             } else {
