@@ -30,8 +30,14 @@
     color: #5a3e36;
     border: 1px solid #D2691E;
     background-color: #FAEBD7;
-    display: flex;
     justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.my-orders-order:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .my-orders-order p {
@@ -141,6 +147,7 @@
 .close-button:hover {
     background-color: #5a3e36;
 }
+
 .go-to-menu-button {
     display: inline-block;
     margin-top: 20px;
@@ -150,9 +157,9 @@
     text-decoration: none;
     border-radius: 5px;
     text-align: center;
-  }
-  
-  .go-to-menu-button:hover {
+    transition: background-color 0.3s ease;
+}
+
+.go-to-menu-button:hover {
     background-color: #5a3e36;
-  }
-  
+}
