@@ -13,8 +13,7 @@ const MenuPage = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAddToCartModalOpen, setAddToCartModalOpen] = useState(false);
-  const [isFoodDetailModalOpen, setFoodDetailModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
   const [cookies, setCookie] = useCookies(['cart']);
 
   useEffect(() => {
@@ -44,28 +43,29 @@ const MenuPage = () => {
   const handleItemClick = (id) => {
     const item = foodItems.find((item) => item._id === id);
     setSelectedItem(item);
-    setFoodDetailModalOpen(true);
-    setAddToCartModalOpen(false);
+    setModalType('detail');
   };
 
   const handleAddToCartClick = (item) => {
     setSelectedItem(item);
-    setAddToCartModalOpen(true);
-    setFoodDetailModalOpen(false);
+    setModalType('cart');
   };
 
   const handleCloseModal = () => {
     setSelectedItem(null);
-    setAddToCartModalOpen(false);
-    setFoodDetailModalOpen(false);
+    setModalType(null);
   };
 
   const handleAddToCart = (quantity, size, selectedToppings) => {
     console.log('Adding to cart:', { item: selectedItem, quantity, size, toppings: selectedToppings });
 
     const currentCart = cookies.cart || [];
-    const productKey = `${selectedItem._id}_${size}_${selectedToppings.join('_')}`;
+    const toppingNames = selectedToppings.map(t => t.name).join('_');
+    const productKey = `${selectedItem._id}_${size}_${toppingNames}`;
     const productIndex = currentCart.findIndex(item => item.key === productKey);
+
+    const toppingCost = selectedToppings.reduce((total, topping) => total + topping.price, 0);
+    const totalPrice = selectedItem.price + toppingCost;
 
     if (productIndex > -1) {
       currentCart[productIndex].quantity += quantity;
@@ -74,7 +74,7 @@ const MenuPage = () => {
         key: productKey,
         _id: selectedItem._id,
         name: selectedItem.name,
-        price: selectedItem.price, 
+        price: totalPrice,
         quantity: quantity,
         size: size,
         toppings: selectedToppings,
@@ -83,9 +83,9 @@ const MenuPage = () => {
     }
 
     setCookie('cart', currentCart, { path: '/' });
-    setCartItems(currentCart); 
+    setCartItems(currentCart);
 
-    setAddToCartModalOpen(false); 
+    setModalType(null); 
   };
 
   if (loading) {
@@ -109,15 +109,16 @@ const MenuPage = () => {
           />
         ))}
       </div>
-      {selectedItem && isFoodDetailModalOpen && (
+      {selectedItem && modalType === 'detail' && (
         <FoodDetailModal item={selectedItem} onClose={handleCloseModal} />
       )}
-      {selectedItem && isAddToCartModalOpen && (
+      {selectedItem && modalType === 'cart' && (
         <AddToCartModal
-          isOpen={isAddToCartModalOpen}
+          isOpen={modalType === 'cart'}
           onClose={handleCloseModal}
           onAddToCart={handleAddToCart}
           toppings={selectedItem.available_toppings} // Pass toppings to the AddToCartModal
+          price={selectedItem.price}
         />
       )}
     </div>
