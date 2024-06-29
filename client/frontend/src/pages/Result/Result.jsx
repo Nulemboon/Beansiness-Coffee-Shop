@@ -18,55 +18,57 @@ const Result = () => {
     const [transactionDetails, setTransactionDetails] = useState(null);
     const transactionId = queryParams.get('transactionId');
 
+    // useEffect(() => {
+    //     const fetchTransactionDetails = async () => {
+    //         try {
+    //             const response = await axios.get(`${url}/transaction/${transactionId}`);
+    //             setTransactionDetails(response.data);
+    //             const getcart = await axios.get(`${url}/cart`, {
+    //                 headers: {
+    //                     'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //                 },
+    //             });
+    //         } catch (error) {
+    //             console.error('Error fetching transaction details:', error);
+    //         }
+    //     };
+
+    //     fetchTransactionDetails();
+    // }, [transactionId, url]);
+
     useEffect(() => {
-        const fetchTransactionDetails = async () => {
+        const fetchTransactionDetailsAndPlaceOrder = async () => {
             try {
                 const response = await axios.get(`${url}/transaction/${transactionId}`);
                 setTransactionDetails(response.data);
-                const getcart = await axios.get(`${url}/cart`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                });
-            } catch (error) {
-                console.error('Error fetching transaction details:', error);
-            }
-        };
-
-        fetchTransactionDetails();
-    }, [transactionId, url]);
-
-    useEffect(() => {
-        if (transactionDetails?.message === 'success' && !orderPlaced) {
-            const placeOrder = async () => {
-                try {
+                
+                if (response.data.message === 'success' && !orderPlaced) {
                     const deliveryInfoId = localStorage.getItem('deliveryInfoId');
 
                     await axios.post(`${url}/order`, {
                         deliveryId: deliveryInfoId,
-                        transactionId: transactionId,
+                        transactionId: response.data.transaction_id,
                         shippingFee: 20000
                     }, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         },
-                        withCredentials: true 
+                        withCredentials: true
                     });
 
                     localStorage.removeItem('deliveryInfoId');
-                    removeCookie('cart',{path:'/'});
-                    removeCookie('voucher_id',{path:'/'});
+                    removeCookie('cart', { path: '/' });
+                    removeCookie('voucher_id', { path: '/' });
 
                     setOrderPlaced(true);
-                } catch (error) {
-                    console.error('Error placing order:', error);
                 }
-            };
+            } catch (error) {
+                console.error('Error fetching transaction details or placing order:', error);
+            }
+        };
 
-            placeOrder();
-        
-        }
-    }, [transactionDetails, transactionId, url]);
+        fetchTransactionDetailsAndPlaceOrder();
+    }, []);
 
     if (!transactionDetails) {
         return <div>Loading...</div>;

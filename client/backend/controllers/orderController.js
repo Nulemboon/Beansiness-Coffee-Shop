@@ -202,7 +202,7 @@ class OrderController {
             const approveOrders = await OrderModel.find({ status: 'Approved' }).populate('account_id').populate('order_items').populate('delivery_info');
             res.status(200).json(approveOrders);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to fetch pending orders: ' + error.message });
+            res.status(500).json({ error: 'Unable to fetch approved orders: ' + error.message });
         }
     }
 
@@ -244,7 +244,6 @@ class OrderController {
                 return;
             }
 
-            // Find and update the order's status to "Approved"
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
                 { status: 'Rejected' },
@@ -258,7 +257,34 @@ class OrderController {
 
             res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to approve order: ' + error.message });
+            res.status(500).json({ error: 'Unable to reject order: ' + error.message });
+        }
+    };
+
+    cancelOrder = async(req, res) => {
+        try {
+            const { orderId } = req.params.id;
+
+            // Validate orderId
+            if (!mongoose.Types.ObjectId.isValid(orderId)) {
+                res.status(400).json({ message: 'Invalid order ID'});
+                return;
+            }
+
+            const updatedOrder = await OrderModel.findByIdAndUpdate(
+                orderId,
+                { status: 'Cancelled' },
+                { new: true, runValidators: true }
+            );
+
+            if (!updatedOrder) {
+                res.status(404).json({ message: 'Order not found' });
+                return;
+            }
+
+            res.status(200).json(updatedOrder);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to cancel order: ' + error.message });
         }
     };
 
@@ -272,7 +298,6 @@ class OrderController {
                 return;
             }
 
-            // Find and update the order's status to "Approved"
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
                 { status: 'Shipping' },
@@ -286,7 +311,7 @@ class OrderController {
 
             res.status(200).json(updatedOrder);
         } catch (error) {
-            res.status(500).json({ error: 'Unable to approve order: ' + error.message });
+            res.status(500).json({ error: 'Unable to ship order: ' + error.message });
         }
     };
 }
