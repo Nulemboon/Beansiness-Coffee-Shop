@@ -6,6 +6,11 @@
   max-width: 600px; 
   margin: 40px auto; 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+  transition: box-shadow 0.3s ease;
+}
+
+.user-information:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .user-information h2 {
@@ -13,15 +18,36 @@
   color: #6d4c41;
   font-size: 28px; 
   margin-bottom: 20px; 
+  font-family: 'Helvetica Neue', sans-serif;
 }
 
 .user-details {
   margin-top: 30px; 
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .user-details p {
   margin: 15px 0; 
   font-size: 18px; 
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+}
+
+.user-details p strong {
+  margin-right: 10px;
+  display: inline-block;
+  min-width: 100px;
+  color: #6d4c41;
+}
+
+.user-details p::before {
+  content: '•';
+  color: #6d4c41;
+  margin-right: 10px;
 }
 
 .change-password-button {
@@ -34,9 +60,10 @@
   display: block;
   margin: 30px auto; 
   font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .change-password-button:hover {
   background-color: #795548;
+  transform: translateY(-2px);
 }

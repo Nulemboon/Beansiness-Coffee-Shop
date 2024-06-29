@@ -3,6 +3,13 @@ import axios from 'axios';
 import './UserInformation.css'; 
 import ChangePassword from '../ChangePassword/ChangePassword';
 import { StoreContext } from '../../Context/StoreContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faPhone, faEnvelope, faStar } from '@fortawesome/free-solid-svg-icons';
+
+
+//remember to install this
+//cd client/frontend
+//npm install @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/fontawesome-svg-core
 
 const UserInformation = () => {
   const { url } = useContext(StoreContext);
@@ -16,7 +23,7 @@ const UserInformation = () => {
       try {
         const response = await axios.get(`${url}/account/current`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // assuming token is stored in localStorage
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         });
         setUser(response.data);
@@ -51,10 +58,10 @@ const UserInformation = () => {
       <h2>User Information</h2>
       {user ? (
         <div className="user-details">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Phone:</strong> {user.phone}</p>
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Points:</strong> {user.point}</p>
+          <p><strong><FontAwesomeIcon icon={faUser} /> Name:</strong> {user.name}</p>
+          <p><strong><FontAwesomeIcon icon={faPhone} /> Phone:</strong> {user.phone}</p>
+          <p><strong><FontAwesomeIcon icon={faEnvelope} /> Email:</strong> {user.email}</p>
+          <p><strong><FontAwesomeIcon icon={faStar} /> Points:</strong> {user.point}</p>
           <button className="change-password-button" onClick={handleOpenChangePassword}>
             Change Password
           </button>

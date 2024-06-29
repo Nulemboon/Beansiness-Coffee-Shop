@@ -2,10 +2,10 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import './ChangePassword.css';
 import { toast } from 'react-toastify';
-import { StoreContext } from '../../Context/StoreContext'; 
+import { StoreContext } from '../../Context/StoreContext';
 
 const ChangePassword = ({ isOpen, onClose }) => {
-    const { url, setToken } = useContext(StoreContext); 
+    const { url, setToken } = useContext(StoreContext);
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,7 +28,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
                 newPassword
             }, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json'
                 }
             });
@@ -36,7 +36,7 @@ const ChangePassword = ({ isOpen, onClose }) => {
             if (response.data.success) {
                 setSuccess('Password changed successfully.');
                 toast.success('Password changed successfully.');
-                setToken(response.data.token); 
+                setToken(response.data.token);
             } else {
                 setError(response.data.message || 'Failed to change password.');
                 toast.error(response.data.message || 'Failed to change password.');
