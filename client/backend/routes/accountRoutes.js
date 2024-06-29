@@ -28,4 +28,6 @@ router.post('/add', accountController.addAccount);
 
 router.delete('/:id', accountController.removeAccount);
 
+router.post('/change-password', authenticate,roleMiddleware(['Customer']), accountController.changePassword);
+
 module.exports = router;
