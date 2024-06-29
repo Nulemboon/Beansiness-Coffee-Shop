@@ -1,0 +1,28 @@
+.modal-content {
+    height: 500px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    display: block;
+    position: relative;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+
+.list-order .cart-items-title {
+    grid-template-columns: 1.5fr 0.5fr 1fr 1fr 1fr 1fr; 
+}
+
+.modal-content .delivery-info div {
+    margin-bottom: 5px;
+}
+
+.modal-content .delivery-info div p {
+    display: inline;
+    margin-right: 10px;
+}
+
+.modal-content .delivery-info div p:first-of-type {
+    color: #555555;
+}

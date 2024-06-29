@@ -62,7 +62,13 @@ class AccountController {
                         }]
                     }
                 })
-                .populate('delivery_info')
+                .populate({
+                    path: 'order_id',
+                    populate: {
+                        path: 'delivery_info',
+                    }
+                })
+                .populate({path: 'delivery_info'})
                 .populate({
                     path: 'vouchers.voucher_id',
                     model: 'Voucher',

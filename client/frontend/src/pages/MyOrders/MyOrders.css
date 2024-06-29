@@ -6,6 +6,11 @@
     text-align: center;
     color: #8B4513;
     margin-bottom: 20px;
+}
+
+.my-orders h3 {
+    color: #8B4513;
+    margin: 20px 0;
     font-size: 24px;
 }
 
@@ -17,8 +22,7 @@
 }
 
 .my-orders-order {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr 2fr 1fr;
+    display: flex;
     align-items: center;
     gap: 30px;
     font-size: 14px;
@@ -26,6 +30,16 @@
     color: #5a3e36;
     border: 1px solid #D2691E;
     background-color: #FAEBD7;
+    display: flex;
+    justify-content: space-between;
+}
+
+.my-orders-order p {
+    width: fit-content;
+}
+
+.my-orders-order .p-order-item {
+    width: 400px;
 }
 
 .my-orders-order img {
