@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FinancialReport.css';
 import {
   BarChart,
@@ -10,6 +10,7 @@ import {
   Legend
 } from 'recharts';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const reportTypes = ['Revenue by product', 'Revenue by day', 'Sales by product'];
 
@@ -19,6 +20,27 @@ const FinancialReport = () => {
   const [toDate, setToDate] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [productId, setProductId] = useState('');
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch product list when component mounts
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/product', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        if (response.status === 200) {
+          setProducts(response.data);
+        } else {
+          console.error('Failed to fetch products');
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleReportChange = (e) => {
     setSelectedReport(e.target.value);
@@ -26,10 +48,12 @@ const FinancialReport = () => {
 
   const handleFromDateChange = (e) => {
     setFromDate(e.target.value);
+    console.log('From Date:', e.target.value);  // Debug log
   };
 
   const handleToDateChange = (e) => {
     setToDate(e.target.value);
+    console.log('To Date:', e.target.value);  // Debug log
   };
 
   const handleProductIdChange = (e) => {
@@ -37,30 +61,32 @@ const FinancialReport = () => {
   };
 
   const handleGenerateReport = async () => {
+    console.log('Generating report with:', { selectedReport, fromDate, toDate, productId });  // Debug log
+
     try {
       let url = '';
       let params = {};
 
       switch (selectedReport) {
         case 'Revenue by product':
-          url = 'http://localhost:3000/report/product';
+          url = 'http://localhost:3000/report/product-sold';
           params = {
-            fromDate: fromDate,
-            toDate: toDate,
+            dateFrom: fromDate,
+            dateTo: toDate,
           };
           break;
         case 'Revenue by day':
           url = 'http://localhost:3000/report/revenue';
           params = {
-            fromDate: fromDate,
-            toDate: toDate,
+            dateFrom: fromDate,
+            dateTo: toDate,
           };
           break;
         case 'Sales by product':
           url = 'http://localhost:3000/report/sales';
           params = {
-            fromDate: fromDate,
-            toDate: toDate,
+            dateFrom: fromDate,
+            dateTo: toDate,
             prodId: productId,
           };
           break;
@@ -69,10 +95,34 @@ const FinancialReport = () => {
           return;
       }
 
-      const response = await axios.get(url, { params });
+      const response = await axios.get(url, { 
+        params,
+        headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` } 
+      });
 
-      if (response.data.success) {
-        setFilteredData(response.data.data);
+      if (response.status === 200) {
+        toast.success("Successfully generated report!");
+        let transformedData = [];
+
+        if (selectedReport === 'Revenue by product') {
+          transformedData = Object.values(response.data).map(item => ({
+            product: item.product_name,
+            revenue: item.revenue
+          }));
+        } else if (selectedReport === 'Revenue by day') {
+          transformedData = Object.keys(response.data).map(key => ({
+            day: key,
+            revenue: response.data[key]
+          }));
+        } else if (selectedReport === 'Sales by product') {
+          transformedData = Object.values(response.data).map(date => ({
+            date: date,
+            sales: response.data[date]
+          }));
+        }
+        
+        console.log(transformedData);
+        setFilteredData(transformedData);
       } else {
         console.error('Failed to fetch data');
       }
@@ -145,8 +195,15 @@ const FinancialReport = () => {
         </label>
         {selectedReport === 'Sales by product' && (
           <label style={{ marginRight: '20px' }}>
-            Product ID:
-            <input type="text" value={productId} onChange={handleProductIdChange} />
+            Product:
+            <select value={productId} onChange={handleProductIdChange}>
+              <option value="">Select Product</option>
+              {products.map(product => (
+                <option key={product._id} value={product._id}>
+                  {product.name}
+                </option>
+              ))}
+            </select>
           </label>
         )}
         <button onClick={handleGenerateReport} className='button-63'>Generate Report</button>
