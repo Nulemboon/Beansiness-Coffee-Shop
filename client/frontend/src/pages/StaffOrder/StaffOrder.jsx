@@ -19,7 +19,7 @@ const StaffOrder = ({ user }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [cart, setCart] = useState([]);
   const [noPhone, setNoPhone] = useState(false);
-  const defaultPhone = '0395842367';
+  const defaultPhone = '0912345679';
 
   
   // const fetchCart = async () => {
