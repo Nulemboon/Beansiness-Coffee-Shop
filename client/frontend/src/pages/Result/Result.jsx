@@ -13,6 +13,7 @@ const Result = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const navigate = useNavigate();
+    const [orderPlaced, setOrderPlaced] = useState(false);
 
     const [transactionDetails, setTransactionDetails] = useState(null);
     const transactionId = queryParams.get('transactionId');
@@ -36,7 +37,7 @@ const Result = () => {
     }, [transactionId, url]);
 
     useEffect(() => {
-        if (transactionDetails?.message === 'success') {
+        if (transactionDetails?.message === 'success' && !orderPlaced) {
             const placeOrder = async () => {
                 try {
                     const deliveryInfoId = localStorage.getItem('deliveryInfoId');
@@ -54,12 +55,16 @@ const Result = () => {
 
                     localStorage.removeItem('deliveryInfoId');
                     removeCookie('cart',{path:'/'});
+                    removeCookie('voucher_id',{path:'/'});
+
+                    setOrderPlaced(true);
                 } catch (error) {
                     console.error('Error placing order:', error);
                 }
             };
 
             placeOrder();
+        
         }
     }, [transactionDetails, transactionId, url]);
 

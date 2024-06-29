@@ -97,8 +97,8 @@ const DeliveryForm = () => {
 
     if (!selectedDeliveryInfo) {
       const newDeliveryInfo = {
-        receiver_name: formData.name,
-        phone_number: formData.phone,
+        receiverName: formData.name,
+        phoneNumber: formData.phone,
         address: formData.address,
       };
 

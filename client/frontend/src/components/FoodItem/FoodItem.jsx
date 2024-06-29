@@ -84,7 +84,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
     <div className='food-item' onClick={onClick}>
       <div className='food-item-img-container'>
         <img className='food-item-image' src={`${url}/images/${image}`} alt={name} />
-        {!cartItems[id] ? (
+        {/* {!cartItems[id] ? (
           <img
             className='add'
             onClick={handleAddToCartClick} 
@@ -97,7 +97,12 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
             <p>{cartItems[id]?.quantity || 0}</p> 
             <img src={assets.add_icon_green} onClick={handleAddToCartClick} alt="Add more to cart" />
           </div>
-        )}
+        )} */}
+        <div className="food-item-counter">
+            <img src={assets.remove_icon_red} onClick={handleRemoveFromCartClick} alt="Remove from cart" />
+            <p>{cartItems[id]?.quantity || 0}</p> 
+            <img src={assets.add_icon_green} onClick={handleAddToCartClick} alt="Add more to cart" />
+        </div>
       </div>
       <div className="food-item-info">
         <div className="food-item-name-rating">

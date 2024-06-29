@@ -44,8 +44,8 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    const totalPrice = getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0);
-    if (totalPrice > 20000) { // Ensure total price is more than the delivery fee
+    const totalPrice = Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0));
+    if (cart.length > 0) { // Ensure total price is more than the delivery fee
       setCookie('cart', cart, { path: '/' });
       setCookie('voucher_id', selectedVoucher ? selectedVoucher._id : '', { path: '/' });
       navigate('/deliveryform', { state: { amount: totalPrice, voucherCode: selectedVoucher ? selectedVoucher.name : '' } });
@@ -111,7 +111,8 @@ const Cart = () => {
             <hr />
             <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount} VND)` : 'No Voucher'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>{getTotalPrice() === 0 ? 0 : getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0)} VND</b></div>
+            <div className="cart-total-details"><b>Total</b><b>{getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0))} VND</b></div>
+            <div> <p style={{fontStyle: 'italic'}}>The minimum order amount is 20.000VND</p></div>
           </div>
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>

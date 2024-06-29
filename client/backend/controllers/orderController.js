@@ -247,7 +247,7 @@ class OrderController {
             // Find and update the order's status to "Approved"
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
-                { status: 'Reject' },
+                { status: 'Rejected' },
                 { new: true, runValidators: true }
             );
 

@@ -59,23 +59,23 @@ const PlaceOrder = () => {
     console.log("Placing order with data:", orderData);
     console.log("Using token:", token);
 
-    try {
-      const cart = cookies.cart || [];
-      let response = await axios.post(url + "/order", { orderData, cart }, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      console.log("Order response:", response.data);
-      if (response.data.success) {
-        const { session_url } = response.data;
-        window.location.replace(session_url);
-        removeCookie('cart', { path: '/' });
-      } else {
-        toast.error("Something went wrong");
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
-      toast.error("Failed to place order");
-    }
+    // try {
+    //   const cart = cookies.cart || [];
+    //   let response = await axios.post(url + "/order", { orderData, cart }, {
+    //     headers: { 'Authorization': `Bearer ${token}` }
+    //   });
+    //   console.log("Order response:", response.data);
+    //   if (response.data.success) {
+    //     const { session_url } = response.data;
+    //     window.location.replace(session_url);
+    //     removeCookie('cart', { path: '/' });
+    //   } else {
+    //     toast.error("Something went wrong");
+    //   }
+    // } catch (error) {
+    //   console.error("Error placing order:", error);
+    //   toast.error("Failed to place order");
+    // }
   };
 
   return (

@@ -34,17 +34,17 @@ const StoreContextProvider = (props) => {
     });
 
     if (token) {
-      try {
-        const response = await axios.post(
-          `${url}/cart`,
-          { product_id: itemId, quantity, size, toppings },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        console.log("Add to cart response:", response.data);
-        setCartItems(response.data.cart);
-      } catch (error) {
-        console.error("Error adding to cart:", error);
-      }
+      // try {
+      //   const response = await axios.post(
+      //     `${url}/cart`,
+      //     { product_id: itemId, quantity, size, toppings },
+      //     { headers: { Authorization: `Bearer ${token}` } }
+      //   );
+      //   console.log("Add to cart response:", response.data);
+      //   setCartItems(response.data.cart);
+      // } catch (error) {
+      //   console.error("Error adding to cart:", error);
+      // }
     }
   };
 
@@ -60,16 +60,16 @@ const StoreContextProvider = (props) => {
     });
 
     if (token) {
-      try {
-        const response = await axios.delete(`${url}/cart`, {
-          data: { product_id: itemId, size, toppings },
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log("Remove from cart response:", response.data);
-        setCartItems(response.data.cart);
-      } catch (error) {
-        console.error("Error removing from cart:", error);
-      }
+      // try {
+      //   const response = await axios.delete(`${url}/cart`, {
+      //     data: { product_id: itemId, size, toppings },
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   });
+      //   console.log("Remove from cart response:", response.data);
+      //   setCartItems(response.data.cart);
+      // } catch (error) {
+      //   console.error("Error removing from cart:", error);
+      // }
     }
   };
 

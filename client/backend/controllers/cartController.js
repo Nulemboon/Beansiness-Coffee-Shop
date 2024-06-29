@@ -5,14 +5,14 @@ const mongoose = require('mongoose');
 class CartController {
     async addToCart(req, res) {
         try {
-            const { productId, quantity, size, toppings } = req.body;
+            const { product_id, quantity, size, toppings } = req.body;
 
-            let cart = req.cookies.cart || [];
-
+            let cart = (req.cookies.cart) ? JSON.parse(req.cookies.cart) : [];
+            console.log(cart);
             // Validate product
-            const product = await ProductModel.findById(productId);
+            const product = await ProductModel.findById(product_id);
             if (!product) {
-                res.status(404).json({ message: `Product not found: ${productId}` });
+                res.status(404).json({ message: `Product not found: ${product_id}` });
                 return;
             }
 
@@ -30,7 +30,7 @@ class CartController {
             // Check if the item already exists in the cart
             const existingItemIndex = cart.findIndex(
                 (item) => {
-                    return item.productId == productId && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
+                    return item.product_id == product_id && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
                 }
             );
 
@@ -40,11 +40,11 @@ class CartController {
                 cart[existingItemIndex].quantity = newQuantity;
             } else {
                 // Add new item to cart
-                cart.push({ productId: productId, quantity: parseInt(quantity), size: size, toppings: validatedToppings });
+                cart.push({ product_id: product_id, quantity: parseInt(quantity), size: size, toppings: validatedToppings });
             }
 
             // Update cart cookie
-            res.cookie('cart', cart, { httpOnly: true });
+            // res.cookie('cart', cart, { httpOnly: true });
             res.status(200).json(cart);
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while adding to the cart: ' + error.message});
@@ -53,13 +53,13 @@ class CartController {
 
     async decreaseCartItem(req, res) {
         try {
-            const { productId, size, toppings } = req.body;
+            const { product_id, size, toppings } = req.body;
             let cart = req.cookies.cart || [];
 
             // Validate product
-            const product = await ProductModel.findById(productId);
+            const product = await ProductModel.findById(product_id);
             if (!product) {
-                res.status(404).json({ message: `Product not found: ${productId}` });
+                res.status(404).json({ message: `Product not found: ${product_id}` });
                 return;
             }
 
@@ -77,7 +77,7 @@ class CartController {
             // Check if the item already exists in the cart
             const existingItemIndex = cart.findIndex(
                 (item) => {
-                    return item.productId == productId && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
+                    return item.product_id == product_id && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
                 }
             );
 
@@ -104,13 +104,13 @@ class CartController {
 
     async removeFromCart(req, res) {
         try {
-            const { productId, size, toppings } = req.body;
+            const { product_id, size, toppings } = req.body;
             let cart = req.cookies.cart || [];
 
             // Validate product
-            const product = await ProductModel.findById(productId);
+            const product = await ProductModel.findById(product_id);
             if (!product) {
-                res.status(404).json({ message: `Product not found: ${productId}` });
+                res.status(404).json({ message: `Product not found: ${product_id}` });
                 return;
             }
 
@@ -128,12 +128,12 @@ class CartController {
             // Check if the item exists in the cart
             const itemIndex = cart.findIndex(
                 (item) => {
-                    return item.productId == productId && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
+                    return item.product_id == product_id && item.size == size && item.toppings.sort().toString() === validatedToppings.sort().toString();
                 }
             );
 
             if (itemIndex === -1) {
-                res.status(400).json({ message: `Item not found in cart: ${productId}` });
+                res.status(400).json({ message: `Item not found in cart: ${product_id}` });
                 return;
             }
 
@@ -142,7 +142,7 @@ class CartController {
 
             // Update cart cookie
             res.cookie('cart', cart, { httpOnly: true });
-            res.status(200).json({ message: `Item removed from cart: ${productId}`});
+            res.status(200).json({ message: `Item removed from cart: ${product_id}`});
         } catch (error) {
             res.status(500).json({ error: 'An error occurred while removing from the cart: ' + error.message});
         }
@@ -205,11 +205,11 @@ class CartController {
 
             for (const item of cart) {
                 var priceProduct = 0;
-                const product = await ProductModel.findById(item.productId);
+                const product = await ProductModel.findById(item.product_id);
                 
                 // Check if product exist
                 if (!product) {
-                    res.status(404).json({ message: `Product not found: ${item.productId}` });
+                    res.status(404).json({ message: `Product not found: ${item.product_id}` });
                     return;
                 }
 
