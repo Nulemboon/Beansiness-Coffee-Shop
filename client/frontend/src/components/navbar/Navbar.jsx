@@ -34,9 +34,8 @@ const Navbar = ({ setShowLogin }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
-    removeCookie('cart',{path:'/'});
-    removeCookie('voucher_id',{path:'/'});
-    // removeCookie('tok',{path:'/'});
+    removeCookie('cart', { path: '/' });
+    removeCookie('voucher_id', { path: '/' });
     navigate('/');
   };
 
@@ -54,7 +53,6 @@ const Navbar = ({ setShowLogin }) => {
         )}
       </ul>
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="Search" />
         {token && (
           <>
             <Link to='/cart' className='navbar-search-icon'>
@@ -64,8 +62,8 @@ const Navbar = ({ setShowLogin }) => {
             <div className='navbar-profile'>
               <img src={assets.profile_icon} alt="Profile" />
               <ul className='navbar-profile-dropdown'>
-              <Link to= '/userinfo'>
-                <li> <img src={assets.profile_icon} alt="Profile" /> <p>Profile</p></li>
+                <Link to='/userinfo'>
+                  <li> <img src={assets.profile_icon} alt="Profile" /> <p>Profile</p></li>
                 </Link>
                 <hr />
                 <Link to='/myorders'>
