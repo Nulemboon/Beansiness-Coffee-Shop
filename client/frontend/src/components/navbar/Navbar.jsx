@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import './Navbar.css';
+import './navbar.css';
 import { assets } from '../../assets/assets';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
@@ -9,6 +9,8 @@ const Navbar = ({ setShowLogin }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menu, setMenu] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     switch (location.pathname) {
@@ -28,6 +30,16 @@ const Navbar = ({ setShowLogin }) => {
         setMenu("");
     }
   }, [location.pathname]);
+
+  const handleSearchToggle = () => {
+    setShowSearch(!showSearch);
+    setSearchQuery(""); // Clear search query when toggling
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/search?query=${searchQuery}`);
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -49,7 +61,17 @@ const Navbar = ({ setShowLogin }) => {
         )}
       </ul>
       <div className="navbar-right">
-        <img src={assets.search_icon} alt="Search" />
+        {showSearch && (
+          <form onSubmit={handleSearchSubmit} className="search-form">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+            />
+          </form>
+        )}
         {token && (
           <>
             <Link to='/cart' className='navbar-search-icon'>
@@ -59,8 +81,8 @@ const Navbar = ({ setShowLogin }) => {
             <div className='navbar-profile'>
               <img src={assets.profile_icon} alt="Profile" />
               <ul className='navbar-profile-dropdown'>
-              <Link to= '/userinfo'>
-                <li> <img src={assets.profile_icon} alt="Profile" /> <p>Profile</p></li>
+                <Link to='/userinfo'>
+                  <li> <img src={assets.profile_icon} alt="Profile" /> <p>Profile</p></li>
                 </Link>
                 <hr />
                 <Link to='/myorders'>
