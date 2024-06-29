@@ -224,7 +224,38 @@ class AccountController {
             res.status(500).json({error: "Error when register account: " + error.message});
         }
     }
+    changePassword = async (req, res) => {
+        try {
+            const { currentPassword, newPassword } = req.body;
+            const userId = req.user.id; 
 
+            const account = await AccountModel.findById(userId);
+
+            if (!account) {
+                res.status(404).json({ message: 'Account not found' });
+                return;
+            }
+
+            const isMatch = await bcrypt.compare(currentPassword, account.password);
+
+            if (!isMatch) {
+                res.status(400).json({ message: 'Current password is incorrect' });
+                return;
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+            account.password = hashedNewPassword;
+            await account.save();
+
+            const token = this.createToken(account._id, 'Customer'); 
+
+            res.status(200).json({ success: true, token: token });
+        } catch (error) {
+            res.status(500).json({ error: 'Failed to change password: ' + error.message });
+        }
+    };
 }
 
 
