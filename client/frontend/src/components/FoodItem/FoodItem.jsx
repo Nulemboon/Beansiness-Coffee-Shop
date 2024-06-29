@@ -109,8 +109,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
           <p>{name}</p> <img src={assets.rating_starts} alt="Rating" />
         </div>
         <p className="food-item-desc">{desc}</p>
-        <p className="food-item-price">{price + ' VND'}</p>
-      </div>
+        <p className="food-item-price">{price.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>      </div>
       <AddToCartModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
