@@ -61,6 +61,11 @@ const Order = () => {
     return total + shippingFee;
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className='order add'>
       <h3>Order Page</h3>
@@ -72,19 +77,25 @@ const Order = () => {
               <p className='order-item-food'>
                 {order.order_items.map((item, idx) => (
                   <span key={idx}>
-                    {item.product_id.name} x {item.quantity} ({item.toppings.map((topping, i) => topping.name).join(', ')}){idx !== order.order_items.length - 1 ? ', ' : ''}
+                    {item.product_id.name} x {item.quantity} ({item.toppings.map(topping => topping.name).join(', ')}){idx !== order.order_items.length - 1 ? ', ' : ''}
                   </span>
                 ))}
               </p>
-              <p className='order-item-name'>{order.delivery_info.receiver_name}</p>
-              <div className='order-item-address'>
-                <p>{order.delivery_info.address}</p>
-              </div>
-              <p className='order-item-phone'>{order.delivery_info.phone_number}</p>
+              {order.shipping_fee !== 0 && (
+                <>
+                  <p className='order-item-name'>{order.delivery_info.receiver_name}</p>
+                  <div className='order-item-address'>
+                    <p>{order.delivery_info.address}</p>
+                  </div>
+                  <p className='order-item-phone'>{order.delivery_info.phone_number}</p>
+                </>
+              )}
             </div>
             <p>Items: {order.order_items.length}</p>
             <p>${calculateTotalAmount(order.order_items, order.shipping_fee).toFixed(2)}</p>
             <p style={getStatusStyle(order.status)}>{order.status}</p>
+            <p>{order.shipping_fee === 0 ? 'Offline Order' : `Online Order (Delivery Fee: $${order.shipping_fee})`}</p>
+            <p>Order Date: {formatDate(order.completed_at)}</p>
           </div>
         ))}
       </div>
