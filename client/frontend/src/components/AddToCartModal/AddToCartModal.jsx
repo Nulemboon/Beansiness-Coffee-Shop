@@ -31,8 +31,9 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
     <div className='modal-overlay' onClick={onClose}>
       <div className='modal-content' onClick={(e) => e.stopPropagation()}>
         <h2>Customize your order</h2>
+        <br></br>
         <div className='modal-field'>
-          <label>Quantity:</label>
+          <label id="label-quantity">Quantity:</label>
           <input
             type='number'
             value={quantity}
@@ -41,7 +42,7 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
           />
         </div>
         <div className='modal-field'>
-          <label>Size:</label>
+          <label id="label-size">Size: </label>
           <select value={size} onChange={(e) => setSize(e.target.value)}>
             <option value='S'>Small</option>
             <option value='M'>Medium</option>
@@ -49,10 +50,10 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
           </select>
         </div>
         <div className='modal-field'>
-          <label>Toppings:</label>
+          <label >Toppings:</label>
           <div className='toppings-options'>
             {toppings.map((topping) => (
-              <label key={topping._id}>
+              <label class="topping-label" key={topping._id}>
                 <input
                   type='checkbox'
                   value={topping.name}
@@ -65,7 +66,7 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
           </div>
         </div>
         <button className='add-to-cart-button' onClick={handleAddToCart}>Add to Cart</button>
-        <button className='cancel-button' onClick={onClose}>Cancel</button>
+        <button className='cancel1-button' onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

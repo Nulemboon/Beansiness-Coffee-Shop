@@ -99,6 +99,10 @@
     border-radius: 4px;
 }
 
+.cart-promocode-select {
+    margin-top: 10px;
+}
+
 @media(max-width:750px) {
     .cart-bottom {
         flex-direction: column-reverse;

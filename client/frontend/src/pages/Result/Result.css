@@ -12,7 +12,7 @@
     border-radius: 10px;
     padding: 20px;
     width: 50vw;
-    height: 50vh;
+    height: auto;
     background-color: #f0f0f0; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -55,7 +55,7 @@
 }
 
 .actions {
-    margin-top: auto;
+    margin-top: 20px;
 }
 
 .actions button {

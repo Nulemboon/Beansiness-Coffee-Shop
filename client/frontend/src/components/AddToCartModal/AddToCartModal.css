@@ -9,29 +9,54 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
     width: 300px;
     max-width: 90%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: relative; 
-    z-index: 1001; 
-  }
-  
-  .modal-field {
+    position: relative;
+    z-index: 1001;
+}
+
+.modal-field {
     margin-bottom: 15px;
-  }
-  
-  .toppings-options {
+}
+
+#label-quantity {
+    margin-right: 10px;
+}
+
+#label-size {
+    margin-right: 40px;
+}
+
+
+.modal-field input[type='number'] {
+    padding: 3px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-field .topping-label {
+    display: flex;
+    align-items: center;
+}
+
+.modal-field input[type='checkbox'] {
+    margin-top: 3px;
+}
+
+.toppings-options {
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
-  }
-  
-  .add-to-cart-button {
+}
+
+.add-to-cart-button {
     margin-right: 10px;
     padding: 8px 12px;
     background-color: #4CAF50;
@@ -39,22 +64,21 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .add-to-cart-button:hover {
+}
+
+.add-to-cart-button:hover {
     background-color: #45a049;
-  }
-  
-  .cancel1-button {
+}
+
+.cancel1-button {
     padding: 8px 12px;
-    background-color: #f44336; 
+    background-color: #f44336;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .cancel1-button:hover {
+}
+
+.cancel1-button:hover {
     background-color: #e57373;
-  }
-  
+}
