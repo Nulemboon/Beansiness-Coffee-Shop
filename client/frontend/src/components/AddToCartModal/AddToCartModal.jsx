@@ -17,14 +17,18 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
   };
 
   const handleAddToCart = () => {
-    const toppingCost = selectedToppings.reduce((total, toppingName) => {
-      const topping = toppings.find(t => t.name === toppingName);
+    const toppingCost = selectedToppings.reduce((total, toppingId) => {
+      const topping = toppings.find(t => t._id === toppingId);
       return total + (topping ? topping.price : 0);
     }, 0);
-    const totalPrice = price + toppingCost; 
+    const totalPrice = price + toppingCost;
 
-    onAddToCart(quantity, size, selectedToppings, totalPrice);
-    onClose(); 
+    const selectedToppingObjects = selectedToppings.map(toppingId => {
+      return toppings.find(t => t._id === toppingId);
+    });
+
+    onAddToCart(quantity, size, selectedToppingObjects, totalPrice);
+    onClose();
   };
 
   return (
@@ -50,17 +54,17 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
           </select>
         </div>
         <div className='modal-field'>
-          <label >Toppings:</label>
+          <label>Toppings:</label>
           <div className='toppings-options'>
             {toppings.map((topping) => (
-              <label class="topping-label" key={topping._id}>
+              <label className="topping-label" key={topping._id}>
                 <input
                   type='checkbox'
-                  value={topping.name}
+                  value={topping._id}
                   checked={selectedToppings.includes(topping._id)}
                   onChange={() => handleToppingChange(topping._id)}
                 />
-                {topping.name} (+{topping.price} VND)
+                {topping.name} (+{topping.price.toLocaleString('en-US', { style: 'currency', currency: 'VND' })})
               </label>
             ))}
           </div>
@@ -73,5 +77,3 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
 };
 
 export default AddToCartModal;
-
-

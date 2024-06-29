@@ -18,7 +18,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
     if (!token) {
       toast.error('Please sign in first to add items to your cart.', {
         position: 'top-right',
-        autoClose: 3000
+        autoClose: 3000 
       });
       return;
     }
@@ -28,7 +28,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
 
   const handleAddToCart = (quantity, size, selectedToppings, totalPrice) => {
     const currentCart = cookies.cart || [];
-    const productKey = `${id}_${size}_${selectedToppings.join('_')}`;
+    const productKey = `${id}_${size}_${selectedToppings.map(t => t._id).join('_')}`;
     const productIndex = currentCart.findIndex(item => item.key === productKey);
 
     if (productIndex > -1) {
@@ -53,9 +53,9 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
 
   const handleRemoveFromCartClick = (e) => {
     e.stopPropagation();
-
+    
     const currentCart = cookies.cart || [];
-    const productKey = `${id}_${cartItems[id]?.size}_${cartItems[id]?.toppings?.join('_')}`;
+    const productKey = `${id}_${cartItems[id]?.size}_${cartItems[id]?.toppings?.map(t => t._id).join('_')}`;
 
     const productIndex = currentCart.findIndex(item => item.key === productKey);
 
@@ -63,13 +63,13 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
       if (currentCart[productIndex].quantity > 1) {
         currentCart[productIndex].quantity -= 1;
       } else {
-        currentCart.splice(productIndex, 1);
+        currentCart.splice(productIndex, 1); 
       }
     }
 
     setCookie('cart', currentCart, { path: '/' });
-
-    setCartItems(prev => {
+    
+    setCartItems((prev) => {
       const updatedCart = { ...prev };
       if (updatedCart[id]?.quantity > 1) {
         updatedCart[id].quantity -= 1;
@@ -87,14 +87,14 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
         {!cartItems[id] ? (
           <img
             className='add'
-            onClick={handleAddToCartClick}
+            onClick={handleAddToCartClick} 
             src={assets.add_icon_white}
             alt="Add to cart"
           />
         ) : (
           <div className="food-item-counter">
             <img src={assets.remove_icon_red} onClick={handleRemoveFromCartClick} alt="Remove from cart" />
-            <p>{cartItems[id]?.quantity || 0}</p>
+            <p>{cartItems[id]?.quantity || 0}</p> 
             <img src={assets.add_icon_green} onClick={handleAddToCartClick} alt="Add more to cart" />
           </div>
         )}
@@ -111,7 +111,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
         onClose={() => setIsModalOpen(false)}
         onAddToCart={handleAddToCart}
         toppings={toppings}
-        price={price}
+        price={price} 
       />
     </div>
   );

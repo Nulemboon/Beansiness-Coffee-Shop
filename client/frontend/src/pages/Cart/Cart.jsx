@@ -25,7 +25,7 @@ const Cart = () => {
       try {
         const response = await axios.get(`${url}/account/current`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // assuming token is stored in localStorage
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         });
         setVouchers(response.data.vouchers.map(v => v.voucher_id));
@@ -45,7 +45,7 @@ const Cart = () => {
 
   const handleCheckout = () => {
     const totalPrice = Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0));
-    if (cart.length > 0) { // Ensure total price is more than the delivery fee
+    if (cart.length > 0) {
       setCookie('cart', cart, { path: '/' });
       setCookie('voucher_id', selectedVoucher ? selectedVoucher._id : '', { path: '/' });
       navigate('/deliveryform', { state: { amount: totalPrice, voucherCode: selectedVoucher ? selectedVoucher.name : '' } });
@@ -91,10 +91,15 @@ const Cart = () => {
             <div className="cart-items-title cart-items-item">
               <p>{item.name}</p> 
               <p>{item.size}</p>
-              <p>{(item.toppings || []).map(topping => topping.name).join(', ')}</p> 
-              <p>{item.price} VND</p>
+              <p>
+                {(item.toppings || []).map(topping => {
+                  console.log('Topping ID:', topping._id, 'Topping Name:', topping.name);
+                  return topping.name;
+                }).join(', ')}
+              </p>
+              <p>{item.price.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
               <div>{item.quantity}</div>
-              <p>{(item.price + (item.toppings || []).reduce((sum, topping) => sum + (topping.price || 0), 0)) * item.quantity} VND</p>
+              <p>{((item.price + (item.toppings || []).reduce((sum, topping) => sum + (topping.price || 0), 0)) * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
               <p className='cart-items-remove-icon' onClick={() => handleRemoveFromCart(index)}>x</p>
             </div>
             <hr />
@@ -105,13 +110,13 @@ const Cart = () => {
         <div className="cart-total">
           <h2 style={{ color: '#8B4513' }}>Cart Totals</h2>
           <div>
-            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice()} VND</p></div>
+            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice().toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : 20000} VND</p></div>
+            <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : (20000).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount} VND)` : 'No Voucher'}</p></div>
+            <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })})` : 'No Voucher'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>{getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0))} VND</b></div>
+            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0))).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</b></div>
             <div> <p style={{fontStyle: 'italic'}}>The minimum order amount is 20.000VND</p></div>
           </div>
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
@@ -130,7 +135,7 @@ const Cart = () => {
                 <option value=''>Select a voucher</option>
                 {vouchers.map(voucher => (
                   <option key={voucher._id} value={voucher._id}>
-                    {voucher.name} ({voucher.discount} VND off)
+                    {voucher.name} ({voucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })} off)
                   </option>
                 ))}
               </select>
