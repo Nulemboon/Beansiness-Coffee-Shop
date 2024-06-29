@@ -18,6 +18,8 @@ router.post('/approve/:id', authenticate, roleMiddleware(['Onsite','Admin']), or
 
 router.post('/reject/:id', authenticate, roleMiddleware(['Onsite','Admin']), orderController.rejectOrder);
 
+router.post('/ship/:id', authenticate, roleMiddleware(['Shipper','Admin']), orderController.shipOrder);
+
 router.post('/', authenticate, roleMiddleware(['Customer']), orderController.placeOrder);
 
 module.exports = router;

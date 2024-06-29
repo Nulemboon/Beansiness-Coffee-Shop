@@ -11,6 +11,10 @@ const OrderItemSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    size: {
+        type: String,
+        required: true
+    },
     order_id: {
         type: Schema.Types.ObjectId,
         ref: 'Order',

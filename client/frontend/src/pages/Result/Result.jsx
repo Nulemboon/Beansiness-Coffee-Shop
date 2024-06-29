@@ -5,7 +5,10 @@ import moment from 'moment';
 import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
+import { useCookies } from 'react-cookie';
+
 const Result = () => {
+    const [cookies, setCookie, removeCookie, remove] = useCookies(['cart']);
     const { url } = useContext(StoreContext);
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -50,6 +53,7 @@ const Result = () => {
                     });
 
                     localStorage.removeItem('deliveryInfoId');
+                    removeCookie('cart',{path:'/'});
                 } catch (error) {
                     console.error('Error placing order:', error);
                 }

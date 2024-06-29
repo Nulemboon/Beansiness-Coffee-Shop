@@ -3,8 +3,10 @@ import './Navbar.css';
 import { assets } from '../../assets/assets';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
+import { useCookies } from 'react-cookie';
 
 const Navbar = ({ setShowLogin }) => {
+  const [cookies, setCookie, removeCookie, remove] = useCookies(['cart']);
   const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,6 +34,9 @@ const Navbar = ({ setShowLogin }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setToken("");
+    removeCookie('cart',{path:'/'});
+    removeCookie('voucher_id',{path:'/'});
+    // removeCookie('tok',{path:'/'});
     navigate('/');
   };
 

@@ -4,6 +4,7 @@ const AccountModel = require('../models/AccountModel.js');
 const ProductModel = require('../models/ProductModel.js');
 const OrderItemModel = require('../models/OrderItemModel.js');
 
+const mongoose = require('mongoose');
 
 class OrderController {
     getAllOrders = async (req, res) => {
@@ -65,6 +66,7 @@ class OrderController {
                 const orderItem = new OrderItemModel({
                     product_id: product._id,
                     quantity: item.quantity,
+                    size: item.size,
                     order_id: null, // We'll set this after creating the order
                     toppings: item.toppings
                 });
@@ -143,6 +145,7 @@ class OrderController {
                 const orderItem = new OrderItemModel({
                     product_id: product._id,
                     quantity: item.quantity,
+                    size: item.size,
                     order_id: null, // We'll set this after creating the order
                     toppings: item.toppings
                 });
@@ -177,7 +180,7 @@ class OrderController {
             );
 
             // Optionally clear the cart
-            res.clearCookie('cart');
+            // res.clearCookie('cart');
 
             res.status(200).json({ message: 'Order placed successfully', order });
         } catch (error) {
@@ -205,7 +208,7 @@ class OrderController {
 
     approveOrder = async (req, res) => {
         try {
-            const { orderId } = req.params.id;
+            const orderId = req.params.id;
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -259,7 +262,33 @@ class OrderController {
         }
     };
 
+    shipOrder = async (req, res) => {
+        try {
+            const { orderId } = req.params.id;
 
+            // Validate orderId
+            if (!mongoose.Types.ObjectId.isValid(orderId)) {
+                res.status(400).json({ message: 'Invalid order ID' });
+                return;
+            }
+
+            // Find and update the order's status to "Approved"
+            const updatedOrder = await OrderModel.findByIdAndUpdate(
+                orderId,
+                { status: 'Shipping' },
+                { new: true, runValidators: true }
+            );
+
+            if (!updatedOrder) {
+                res.status(404).json({ message: 'Order not found' });
+                return;
+            }
+
+            res.status(200).json(updatedOrder);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to approve order: ' + error.message });
+        }
+    };
 }
 
 
