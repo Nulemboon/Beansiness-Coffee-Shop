@@ -121,3 +121,8 @@
   animation: modalSlideIn 0.5s ease-in-out forwards;
   transform: translateY(-20%);
 }
+.food-item-rating {
+  font-size: 16px;
+  color: #FFD700; 
+  margin-left: 8px;
+}
