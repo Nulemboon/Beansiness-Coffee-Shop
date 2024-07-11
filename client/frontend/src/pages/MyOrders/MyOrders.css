@@ -69,14 +69,15 @@
     cursor: pointer;
     color: #5a3e36;
     transition: background-color 0.3s ease;
+    width: 50px;
 }
 
 .my-orders button:hover {
     background-color: #A0522D;
     color: #fff;
+    transform: scale(1.08);
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
     .my-orders-order {
         grid-template-columns: 1fr 2fr 1fr;

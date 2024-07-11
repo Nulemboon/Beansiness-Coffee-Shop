@@ -100,7 +100,7 @@ const VoucherSite = () => {
             <div className="voucher-details">
               <h3>{voucher.name}</h3>
               <p>Description: {voucher.description}</p>
-              <p>Discount: {voucher.discount} VND</p>
+              <p>Discount: {voucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
               <p>Required Points: {voucher.required_points}</p>
               <p>You have: {userVouchers[voucher._id] || 0} vouchers</p>
               <button

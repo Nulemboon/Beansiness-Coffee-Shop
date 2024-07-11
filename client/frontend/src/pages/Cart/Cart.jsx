@@ -6,19 +6,19 @@ import { useCookies } from 'react-cookie';
 import { StoreContext } from '../../Context/StoreContext';
 
 const Cart = () => {
-    const navigate = useNavigate();
-    const { url } = useContext(StoreContext);
-    const [cart, setCart] = useState([]);
-    const [cookies, setCookie] = useCookies(['cart', 'voucher_id']);
-    const [vouchers, setVouchers] = useState([]);
-    const [selectedVoucher, setSelectedVoucher] = useState(null);
+  const navigate = useNavigate();
+  const { url } = useContext(StoreContext);
+  const [cart, setCart] = useState([]);
+  const [cookies, setCookie] = useCookies(['cart', 'voucher_id']);
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
 
-    useEffect(() => {
-        const currentCart = cookies.cart || [];
-        setCart(currentCart);
-        const savedVoucher = vouchers.find(v => v._id === cookies.voucher_id);
-        setSelectedVoucher(savedVoucher || null);
-    }, [cookies.cart, cookies.voucher_id, vouchers]);
+  useEffect(() => {
+    const currentCart = cookies.cart || [];
+    setCart(currentCart);
+    const savedVoucher = vouchers.find(v => v._id === cookies.voucher_id);
+    setSelectedVoucher(savedVoucher || null);
+  }, [cookies.cart, cookies.voucher_id, vouchers]);
 
   useEffect(() => {
     const fetchVouchers = async () => {
@@ -34,14 +34,14 @@ const Cart = () => {
       }
     };
 
-        fetchVouchers();
-    }, [url]);
+    fetchVouchers();
+  }, [url]);
 
-    const handleRemoveFromCart = (itemIndex) => {
-        const updatedCart = cart.filter((_, index) => index !== itemIndex);
-        setCart(updatedCart);
-        setCookie('cart', updatedCart, { path: '/' });
-    };
+  const handleRemoveFromCart = (itemIndex) => {
+    const updatedCart = cart.filter((_, index) => index !== itemIndex);
+    setCart(updatedCart);
+    setCookie('cart', updatedCart, { path: '/' });
+  };
 
   const handleCheckout = () => {
     const totalPrice = Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0));
@@ -54,23 +54,23 @@ const Cart = () => {
     }
   };
 
-    const getTotalPrice = () => {
-        return cart.reduce((total, item) => {
-            const toppingCost = (item.toppings || []).reduce((sum, topping) => {
-                return sum + (topping.price || 0);
-            }, 0);
-            return total + (item.price + toppingCost) * item.quantity;
-        }, 0);
-    };
+  const getTotalPrice = () => {
+    return cart.reduce((total, item) => {
+      const toppingCost = (item.toppings || []).reduce((sum, topping) => {
+        return sum + (topping.price || 0);
+      }, 0);
+      return total + (item.price + toppingCost) * item.quantity;
+    }, 0);
+  };
 
-    if (!cart.length) {
-        return (
-            <div>
-                <p>Your cart is empty.</p>
-                <Link to="/menupage" style={{ color: 'brown' }}>Explore our menu</Link>
-            </div>
-        );
-    }
+  if (!cart.length) {
+    return (
+      <div>
+        <p>Your cart is empty.</p>
+        <Link to="/menupage" style={{ color: 'brown' }}>Explore our menu</Link>
+      </div>
+    );
+  }
 
   return (
     <div className='cart'>
@@ -89,7 +89,7 @@ const Cart = () => {
         {cart.map((item, index) => (
           <div key={index}>
             <div className="cart-items-title cart-items-item">
-              <p>{item.name}</p> 
+              <p>{item.name}</p>
               <p>{item.size}</p>
               <p>
                 {(item.toppings || []).map(topping => {
@@ -117,7 +117,9 @@ const Cart = () => {
             <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })})` : 'No Voucher'}</p></div>
             <hr />
             <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0))).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</b></div>
-            <div> <p style={{fontStyle: 'italic'}}>The minimum order amount is 20.000VND</p></div>
+            <div>
+              <p style={{ fontStyle: 'italic' }}>The minimum order amount is {(20000).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
+            </div>
           </div>
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
@@ -125,8 +127,8 @@ const Cart = () => {
           <div>
             <p>If you have a voucher, select it here</p>
             <div className='cart-promocode-select'>
-              <select 
-                value={selectedVoucher ? selectedVoucher._id : ''} 
+              <select
+                value={selectedVoucher ? selectedVoucher._id : ''}
                 onChange={(e) => {
                   const selected = vouchers.find(v => v._id === e.target.value);
                   setSelectedVoucher(selected);

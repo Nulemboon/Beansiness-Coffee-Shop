@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import './FoodDisplay.css';
+import { Link } from 'react-router-dom';
 import FoodItem from '../FoodItem/FoodItem';
 import FoodDetailModal from '../FoodDetailModal/FoodDetailModal';
 import { StoreContext } from '../../Context/StoreContext';
@@ -74,6 +75,9 @@ const FoodDisplay = () => {
             {selectedItem && (
                 <FoodDetailModal item={selectedItem} onClose={handleCloseModal} />
             )}
+            <Link to="/menupage" className="explore-button">
+                Explore More
+            </Link>
         </div>
     );
 };

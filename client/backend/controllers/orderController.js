@@ -263,8 +263,7 @@ class OrderController {
 
     cancelOrder = async(req, res) => {
         try {
-            const { orderId } = req.params.id;
-
+            const { id: orderId } = req.params;
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
                 res.status(400).json({ message: 'Invalid order ID'});

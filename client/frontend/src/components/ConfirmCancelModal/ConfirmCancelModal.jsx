@@ -1,8 +1,10 @@
 import React from 'react';
 import './ConfirmCancelModal.css'; 
 
-const ConfirmCancelModal = ({ isOpen, onClose, onConfirm }) => {
+const ConfirmCancelModal = ({ isOpen, orderId, onClose, onConfirm }) => {
   if (!isOpen) return null;
+
+  console.log('Order ID to cancel:', orderId);
 
   return (
     <div className="confirm-cancel-modal-overlay" onClick={onClose}>

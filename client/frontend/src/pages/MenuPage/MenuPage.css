@@ -2,7 +2,9 @@
   padding: 20px;
   animation: fadeIn 1s ease-in-out;
 }
-
+.menu-page :hover{
+  transform: scale(1.009);
+}
 .menu-list {
   display: flex;
   flex-direction: column;

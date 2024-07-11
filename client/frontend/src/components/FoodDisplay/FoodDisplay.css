@@ -14,4 +14,30 @@
     gap: 30px;
     row-gap: 50px;
   }
-  
+  .food-display:hover {
+    transform: scale(1.05);
+  }
+  .food-display .explore-button {
+    background-color: #8B4513; 
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    display: inline-block; 
+    margin: 30px auto; 
+    max-width: 200px; 
+}
+
+
+.food-display .explore-button:hover {
+    background-color: #634019;
+    transform: scale(1.02)
+}
+
+.food-display .explore-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

@@ -33,6 +33,7 @@ const MyOrders = () => {
     }, [url]);
 
     const handleOpenConfirm = (orderId) => {
+        console.log('Order ID:', orderId);
         setOrderToCancel(orderId);
         setIsConfirmOpen(true);
     };
@@ -42,16 +43,22 @@ const MyOrders = () => {
         setOrderToCancel(null);
     };
 
-    const handleConfirmCancel = () => {
-        if (orderToCancel) {
-            setData(prevData =>
-                prevData.map(order =>
-                    order.id === orderToCancel ? { ...order, status: 'Cancelled' } : order
-                )
-            );
-            handleCloseConfirm();
+    const handleConfirmCancel = async () => {
+        console.log(orderToCancel); 
+        console.log(localStorage.getItem('token'));
+        try {
+            const response = await axios.post(`${url}/order/cancel/${orderToCancel}`, null, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            console.log('Order cancellation successful:', response.data);
+            setData(prevData => prevData.filter(order => order._id !== orderToCancel));
+            handleCloseConfirm(); 
+        } catch (error) {
+            console.error('Error cancelling order:', error);
+
         }
-    };
+    };  
+    
 
     const handleToggleOverlay = (index) => {
         setIsOverlayOpen(index);
@@ -80,8 +87,7 @@ const MyOrders = () => {
     }
 
     // Order status
-    const orderStatus = ['Shipping', 'Approved', 'Pending', 'Done', 'Rejected'];
-
+    const orderStatus = ['Shipping', 'Approved', 'Pending', 'Done', 'Rejected', 'Cancelled'];
     return (
         <div className='my-orders'>
             <h2>My Orders</h2>
@@ -100,10 +106,11 @@ const MyOrders = () => {
                                             ))}</p>
                                             <p><b>Status:</b> <span>&#x25cf;</span> {order.status}</p>
                                             <p><b>Completed At:</b> {order.completed_at ? new Date(order.completed_at).toLocaleString() : 'N/A'}</p>
-                                            {order.status === 'Pending' && (
-                                                <button onClick={() => handleOpenConfirm(order.id)}>Cancel</button>
-                                            )}
+                                           
                                         </div>
+                                        {order.status === 'Pending' && (
+                                                <button onClick={() => handleOpenConfirm(order._id)}>Cancel</button>
+                                            )}  
                                         {isOverlayOpen === index && (
                                             <MyOrderDetail order={order} onClose={closeOverlay} />
                                         )}
@@ -116,6 +123,7 @@ const MyOrders = () => {
             </div>
             <ConfirmCancelModal
                 isOpen={isConfirmOpen}
+                orderId={orderToCancel}
                 onClose={handleCloseConfirm}
                 onConfirm={handleConfirmCancel}
             />
