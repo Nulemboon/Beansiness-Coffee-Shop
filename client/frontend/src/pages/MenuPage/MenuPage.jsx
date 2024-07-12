@@ -117,7 +117,7 @@ const MenuPage = () => {
           isOpen={modalType === 'cart'}
           onClose={handleCloseModal}
           onAddToCart={handleAddToCart}
-          toppings={selectedItem.available_toppings} // Pass toppings to the AddToCartModal
+          toppings={selectedItem.available_toppings} 
           price={selectedItem.price}
         />
       )}

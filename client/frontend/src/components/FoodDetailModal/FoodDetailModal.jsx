@@ -8,14 +8,14 @@ const FoodDetailModal = ({ item, onClose }) => {
 
   const {
     name = "Unnamed Item",
-    image,
+    imageURL,
     description = "No description available",
     price = 0,
     category = "Uncategorized",
     available_toppings = [],
     reviews = [],
   } = item;
-
+  console.log('Item in Modal:', item); // Log item in the modal
   const [reviewDetails, setReviewDetails] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
 
@@ -48,8 +48,24 @@ const FoodDetailModal = ({ item, onClose }) => {
     <div className='modal-overlay'>
       <div className='modal-content' style={{ width: '550px' }}>
         <span className='close-button' onClick={onClose}>&times;</span>
-        <h2 style={{ color: '#6f4e37' }}>{name}</h2>
-        {image && <img src={image} alt={name} className='food-detail-image' />}
+        <h2 style={{ color: '#6f4e37', display: 'flex', alignItems: 'center' }}>
+  <span>{name}</span>
+  {imageURL && (
+    <img
+      src={`${url}/images/${imageURL}`}
+      alt={name}
+      className='food-detail-image'
+      style={{
+        width: '200px', 
+        height: 'auto',
+        marginLeft: '10px',
+        borderRadius: '10px',
+      }}
+    />
+  )}
+</h2>
+
+
         <p><strong style={{ color: '#6f4e37' }}>Description:</strong> {description}</p>
         <p><strong style={{ color: '#6f4e37' }}>Price:</strong> {price.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
         <p><strong style={{ color: '#6f4e37' }}>Category:</strong> {category}</p>

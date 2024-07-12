@@ -14,9 +14,7 @@
     gap: 30px;
     row-gap: 50px;
   }
-  .food-display:hover {
-    transform: scale(1.05);
-  }
+
   .food-display .explore-button {
     background-color: #8B4513; 
     color: #fff;

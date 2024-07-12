@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { assets } from '../../assets/assets';
 import { StoreContext } from '../../Context/StoreContext';
 
 const ReviewForm = ({ item, onClose }) => {
@@ -29,9 +30,19 @@ const ReviewForm = ({ item, onClose }) => {
   };
 
   console.log('Item:', item);
+  console.log(item.product_id.imageURL);
   return (
     <div className="review-form-container">
       <h3>Write a Review for {item.product_id.name}</h3>
+      {item.product_id.imageURL && (
+    <div className="product-image">
+      <img 
+        src={`${url}/images/${item.product_id.imageURL}`}
+        alt={item.product_id.name} 
+        style={{ width: '150px', height: 'auto', marginBottom: '10px', borderRadius: '10px'}} 
+      />
+    </div>
+  )}
       {error && <p className="error">{error}</p>}
       <form className="review-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -65,10 +76,10 @@ const ReviewForm = ({ item, onClose }) => {
           />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <button style={{ padding: '10px 20px', fontSize: '16px', color: '#fff', backgroundColor: '#6f4e37', border: 'none', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease' }} type="submit">
+          <button style={{ padding: '10px 20px', width: '145px',fontSize: '16px', color: '#fff', backgroundColor: '#6f4e37', border: 'none', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease' }} type="submit">
             Submit Review
           </button>
-          <button style={{ padding: '10px 20px', fontSize: '16px', color: '#6f4e37', backgroundColor: '#fff', border: '2px solid #6f4e37', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease, color 0.3s ease' }} type="button" onClick={onClose}>
+          <button style={{ padding: '10px 20px', width: '145px', fontSize: '16px', color: '#6f4e37', backgroundColor: '#fff', border: '2px solid #6f4e37', borderRadius: '5px', cursor: 'pointer', transition: 'background-color 0.3s ease, color 0.3s ease' }} type="button" onClick={onClose}>
             Cancel
           </button>
         </div>

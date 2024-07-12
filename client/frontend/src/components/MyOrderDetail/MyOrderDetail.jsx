@@ -51,7 +51,9 @@ const MyOrderDetail = ({ order, onClose }) => {
                                         {(item.product_id.price + (item.toppings || []).reduce((sum, topping) => sum + (topping.price || 0), 0)) * item.quantity} VND
                                     </p>
                                     {order.status === 'Done' && (
-                                        <button onClick={() => handleReviewClick(item)}>Write Review</button>
+                                        <button style={{ width: '100px' }} onClick={() => handleReviewClick(item)}>
+  Write Review
+</button>
                                     )}
                                 </div>
                                 <hr />
