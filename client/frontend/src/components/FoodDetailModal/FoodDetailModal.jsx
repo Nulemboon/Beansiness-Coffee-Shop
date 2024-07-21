@@ -60,6 +60,20 @@ const FoodDetailModal = ({ item, onClose }) => {
     }
   }
 
+  //Press esc for turning off the modal
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [onClose]);
+
   return (
     <div className='modal-overlay'>
       <div className='modal-content' style={{ width: '550px' }}>
