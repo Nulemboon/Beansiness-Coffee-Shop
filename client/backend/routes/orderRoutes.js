@@ -27,6 +27,8 @@ router.post('/cancel/:id', authenticate, roleMiddleware(['Customer']), orderCont
 
 router.post('/ship/:id', authenticate, roleMiddleware(['Shipper','Admin']), orderController.shipOrder);
 
+router.post('/done/:id', authenticate, roleMiddleware(['Shipper','Admin']), orderController.doneOrder);
+
 router.post('/', authenticate, roleMiddleware(['Customer']), orderController.placeOrder);
 
 module.exports = router;

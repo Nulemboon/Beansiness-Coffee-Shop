@@ -339,6 +339,32 @@ class OrderController {
             res.status(500).json({ error: 'Unable to ship order: ' + error.message });
         }
     };
+    doneOrder = async (req, res) => {
+        try {
+            const orderId  = req.params.id;
+
+            // Validate orderId
+            if (!mongoose.Types.ObjectId.isValid(orderId)) {
+                res.status(400).json({ message: 'Invalid order ID' });
+                return;
+            }
+
+            const updatedOrder = await OrderModel.findByIdAndUpdate(
+                orderId,
+                { status: 'Done' },
+                { new: true, runValidators: true }
+            );
+
+            if (!updatedOrder) {
+                res.status(404).json({ message: 'Order not found' });
+                return;
+            }
+
+            res.status(200).json(updatedOrder);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to done order: ' + error.message });
+        }
+    };
 }
 
 
