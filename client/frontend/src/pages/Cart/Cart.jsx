@@ -16,7 +16,7 @@ const Cart = () => {
   useEffect(() => {
     const currentCart = cookies.cart || [];
     setCart(currentCart);
-    const savedVoucher = vouchers.find(v => v._id === cookies.voucher_id);
+    const savedVoucher = vouchers?.find(v => v?._id === cookies.voucher_id);
     setSelectedVoucher(savedVoucher || null);
   }, [cookies.cart, cookies.voucher_id, vouchers]);
 
@@ -28,7 +28,8 @@ const Cart = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        setVouchers(response.data.vouchers.map(v => v.voucher_id));
+        const fetchedVouchers = response.data.vouchers?.map(v => v.voucher_id) || [];
+        setVouchers(fetchedVouchers);
       } catch (error) {
         console.error('Failed to fetch vouchers:', error);
       }
@@ -44,11 +45,11 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    const totalPrice = Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0));
+    const totalPrice = Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher?.discount || 0));
     if (cart.length > 0) {
       setCookie('cart', cart, { path: '/' });
       setCookie('voucher_id', selectedVoucher ? selectedVoucher._id : '', { path: '/' });
-      navigate('/deliveryform', { state: { amount: totalPrice, voucherCode: selectedVoucher ? selectedVoucher.name : '' } });
+      navigate('/deliveryform', { state: { amount: totalPrice, voucherCode: selectedVoucher?.name || '' } });
     } else {
       alert('Your cart is empty!');
     }
@@ -93,13 +94,13 @@ const Cart = () => {
               <p>{item.size}</p>
               <p>
                 {(item.toppings || []).map(topping => {
-                  console.log('Topping ID:', topping._id, 'Topping Name:', topping.name);
-                  return topping.name;
+                  console.log('Topping ID:', topping?._id, 'Topping Name:', topping?.name);
+                  return topping?.name;
                 }).join(', ')}
               </p>
-              <p>{item.price.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
+              <p>{item.price?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
               <div>{item.quantity}</div>
-              <p>{((item.price + (item.toppings || []).reduce((sum, topping) => sum + (topping.price || 0), 0)) * item.quantity).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
+              <p>{((item.price + (item.toppings || []).reduce((sum, topping) => sum + (topping.price || 0), 0)) * item.quantity)?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
               <p className='cart-items-remove-icon' onClick={() => handleRemoveFromCart(index)}>x</p>
             </div>
             <hr />
@@ -110,13 +111,13 @@ const Cart = () => {
         <div className="cart-total">
           <h2 style={{ color: '#8B4513' }}>Cart Totals</h2>
           <div>
-            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice().toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p></div>
+            <div className="cart-total-details"><p>Subtotal</p><p>{getTotalPrice()?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p></div>
             <hr />
             <div className="cart-total-details"><p>Delivery Fee</p><p>{getTotalPrice() === 0 ? 0 : (20000).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p></div>
             <hr />
-            <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })})` : 'No Voucher'}</p></div>
+            <div className="cart-total-details"><p>Voucher</p><p>{selectedVoucher ? `${selectedVoucher.name} (-${selectedVoucher.discount?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })})` : 'No Voucher'}</p></div>
             <hr />
-            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher ? selectedVoucher.discount : 0))).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</b></div>
+            <div className="cart-total-details"><b>Total</b><b>{(getTotalPrice() === 0 ? 0 : Math.max(20000, getTotalPrice() + 20000 - (selectedVoucher?.discount || 0)))?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</b></div>
             <div>
               <p style={{ fontStyle: 'italic' }}>The minimum order amount is {(20000).toLocaleString('en-US', { style: 'currency', currency: 'VND' })}</p>
             </div>
@@ -130,14 +131,14 @@ const Cart = () => {
               <select
                 value={selectedVoucher ? selectedVoucher._id : ''}
                 onChange={(e) => {
-                  const selected = vouchers.find(v => v._id === e.target.value);
+                  const selected = vouchers.find(v => v?._id === e.target.value);
                   setSelectedVoucher(selected);
                 }}
               >
                 <option value=''>Select a voucher</option>
                 {vouchers.map(voucher => (
-                  <option key={voucher._id} value={voucher._id}>
-                    {voucher.name} ({voucher.discount.toLocaleString('en-US', { style: 'currency', currency: 'VND' })} off)
+                  <option key={voucher?._id} value={voucher?._id}>
+                    {voucher?.name} ({voucher?.discount?.toLocaleString('en-US', { style: 'currency', currency: 'VND' })} off)
                   </option>
                 ))}
               </select>

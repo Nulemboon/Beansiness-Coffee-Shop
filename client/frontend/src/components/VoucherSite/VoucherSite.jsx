@@ -24,14 +24,14 @@ const VoucherSite = () => {
         const data = await response.json();
         setPoints(data.point);
         const voucherMap = data.vouchers.reduce((acc, v) => {
-          acc[v.voucher_id._id] = v.quantity;
+          if (v.voucher_id && v.voucher_id._id) {
+            acc[v.voucher_id._id] = v.quantity;
+          }
           return acc;
         }, {});
         setUserVouchers(voucherMap);
       } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+        throw new Error(error.message);
       }
     };
 
@@ -44,19 +44,27 @@ const VoucherSite = () => {
         const data = await response.json();
         setAllVouchers(data);
       } catch (error) {
+        throw new Error(error.message);
+      }
+    };
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await Promise.all([fetchUserVouchers(), fetchAllVouchers()]);
+      } catch (error) {
         setError(error.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserVouchers();
-    fetchAllVouchers();
+    fetchData();
   }, [url]);
 
   const handleExchange = async (voucherId) => {
     const selectedVoucher = allVouchers.find(v => v._id === voucherId);
-    if (points < selectedVoucher.required_points) {
+    if (!selectedVoucher || points < selectedVoucher.required_points) {
       setError('Not enough points to exchange for this voucher.');
       return;
     }
@@ -75,11 +83,11 @@ const VoucherSite = () => {
         throw new Error('Failed to exchange voucher.');
       }
 
-      setPoints(points - selectedVoucher.required_points);
-      setUserVouchers({
-        ...userVouchers,
-        [voucherId]: (userVouchers[voucherId] || 0) + 1,
-      });
+      setPoints(prevPoints => prevPoints - selectedVoucher.required_points);
+      setUserVouchers(prevUserVouchers => ({
+        ...prevUserVouchers,
+        [voucherId]: (prevUserVouchers[voucherId] || 0) + 1,
+      }));
     } catch (error) {
       setError(error.message);
     }
