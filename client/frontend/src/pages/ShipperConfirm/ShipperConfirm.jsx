@@ -7,9 +7,9 @@ import { toast } from 'react-toastify';
 const ShipperConfirm = () => {
   const [list, setList] = useState([]);
   const [shipping, setShipping] = useState([]);
-  const [completedOrders, setCompletedOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const { url } = useContext(StoreContext);
+  const [token, setToken] = useState('');
 
   const fetchList = async () => {
     try {
@@ -87,6 +87,7 @@ const ShipperConfirm = () => {
   };
 
   useEffect(() => {
+    setToken(localStorage.getItem("token"));
     fetchProducts();
     fetchList();
     fetchShipping();
