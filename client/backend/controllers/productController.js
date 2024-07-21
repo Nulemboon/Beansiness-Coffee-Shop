@@ -114,7 +114,7 @@ class ProductController {
 
             //Unlink image
             const product = await ProductModel.findById(productId);
-            fs.unlink(`uploads/${product.imageURL}`, () => { })
+            // fs.unlink(`uploads/${product.imageURL}`, () => { })
 
             // Delete product
             const deletedProduct = await ProductModel.findByIdAndDelete(productId);
