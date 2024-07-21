@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 const ShipperConfirm = () => {
   const [list, setList] = useState([]);
+  const [shipping, setShipping] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const { url } = useContext(StoreContext);
@@ -39,15 +40,23 @@ const ShipperConfirm = () => {
     }
   };
 
-  const handleAction = async (orderId, action) => {
-    if (action === 'reject') {
-      toast.error('You are not allowed to reject this order!');
-      return;
+  const fetchShipping = async () => {
+    try {
+      const response = await axios.get(`${url}/order/shippingbyid`);
+      if (response.data && Array.isArray(response.data)) {
+        setShipping(response.data);
+      } else {
+        toast.error("Failed to fetch shipping orders");
+      }
+    } catch (error) {
+      console.error('Error fetching shipping orders:', error);
+      toast.error("Failed to fetch shipping orders");
     }
+  };
 
+  const handleAction = async (orderId, action) => {
     try {
       const response = await axios.post(`${url}/order/ship/${orderId}`);
-      console.log(response);
       if (response.status === 200) {
         toast.success("Order confirmed successfully");
         fetchList(); // Refresh the list after confirmation
@@ -60,9 +69,25 @@ const ShipperConfirm = () => {
     }
   };
 
+  const handleDone = async (orderId) => {
+    try {
+      const response = await axios.post(`${url}/order/done/${orderId}`);
+      if (response.status === 200) {
+        toast.success("Order finished successfully");
+        fetchShipping(); // Refresh the list after confirmation
+      } else {
+        toast.error("Failed to finish order");
+      }
+    } catch (error) {
+      console.error(`Error finishing order:`, error);
+      toast.error(`Failed to finish order`);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchList();
+    fetchShipping();
   }, []);
 
   const getProductById = (productId) => {
@@ -95,59 +120,97 @@ const ShipperConfirm = () => {
   return (
     <div className='app-content'>
       <div className="order-list-container">
-        {list.length > 0 ? (
-          list.map((order) => (
-            <div key={order._id} className="order-container">
-              <div className="order-header">
-                <h3>Order ID: {order._id}</h3>
-                <p>Account: {order.account_id.name}</p>
-                <p>Phone: {order.account_id.phone}</p>
-                <p>Email: {order.account_id.email}</p>
-                <p>Shipping Address: {order.delivery_info.address}</p>
-                <p>Shipping Fee: {order.shipping_fee}đ</p>
-                <p>Total: {calculateTotal(order)}đ</p>
-                <p>Completed At: {new Date(order.completed_at).toLocaleString()}</p>
-              </div>
-              <div className="order-details">
-                <h4>Order Items:</h4>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Quantity</th>
-                      <th>Size</th>
-                      <th>Toppings</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {order.order_items.map((item) => {
-                      const product = getProductById(item.product_id);
-                      return (
-                        <tr key={item._id}>
-                          <td>{product ? product.name : 'Unknown Product'}</td>
-                          <td>{item.quantity}</td>
-                          <td>{item.size}</td>
-                          <td>{getToppingNames(product, item.toppings).join(', ') || 'None'}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-                <div className="button-container">
-                  {completedOrders.includes(order._id) ? (
-                    <button disabled>Completed</button>
-                  ) : (
-                    <>
-                      <button onClick={() => handleAction(order._id, 'reject')}>Reject</button>
-                      <button onClick={() => handleAction(order._id, 'confirm')}>Confirm</button>
-                    </>
-                  )}
+        {(shipping.length + list.length) > 0 ? (
+          <>
+            {shipping.map((order) => (
+              <div key={order._id} className="order-container">
+                <div className="order-header">
+                  <h3>Order ID: {order._id}</h3>
+                  <p>Account: {order.account_id.name}</p>
+                  <p>Phone: {order.account_id.phone}</p>
+                  <p>Email: {order.account_id.email}</p>
+                  <p>Shipping Address: {order.delivery_info.address}</p>
+                  <p>Shipping Fee: {order.shipping_fee}đ</p>
+                  <p>Total: {calculateTotal(order)}đ</p>
+                  <p>Completed At: {new Date(order.completed_at).toLocaleString()}</p>
+                </div>
+                <div className="order-details">
+                  <h4>Order Items:</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Toppings</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {order.order_items.map((item) => {
+                        const product = getProductById(item.product_id);
+                        return (
+                          <tr key={item._id}>
+                            <td>{product ? product.name : 'Unknown Product'}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.size}</td>
+                            <td>{getToppingNames(product, item.toppings).join(', ') || 'None'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="button-container">
+                    <button onClick={() => handleDone(order._id)}>Done</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+            {list.map((order) => (
+              <div key={order._id} className="order-container">
+                <div className="order-header">
+                  <h3>Order ID: {order._id}</h3>
+                  <p>Account: {order.account_id.name}</p>
+                  <p>Phone: {order.account_id.phone}</p>
+                  <p>Email: {order.account_id.email}</p>
+                  <p>Shipping Address: {order.delivery_info.address}</p>
+                  <p>Shipping Fee: {order.shipping_fee}đ</p>
+                  <p>Total: {calculateTotal(order)}đ</p>
+                  <p>Completed At: {new Date(order.completed_at).toLocaleString()}</p>
+                </div>
+                <div className="order-details">
+                  <h4>Order Items:</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Toppings</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {order.order_items.map((item) => {
+                        const product = getProductById(item.product_id);
+                        return (
+                          <tr key={item._id}>
+                            <td>{product ? product.name : 'Unknown Product'}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.size}</td>
+                            <td>{getToppingNames(product, item.toppings).join(', ') || 'None'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="button-container">
+                      <button onClick={() => handleAction(order._id, 'confirm')}>Confirm</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
         ) : (
-          <p>No Approved Order</p>
+          <p>No Approved and Shipping Order</p>
         )}
       </div>
     </div>
