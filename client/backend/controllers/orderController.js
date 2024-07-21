@@ -214,6 +214,14 @@ class OrderController {
             res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
         }
     }
+    getShippingOrdersById = async (req, res) => {
+        try {
+            const shippingOrder = await OrderModel.find({ status: 'Shipping', shipperId: req.user.id }).populate('account_id').populate('order_items').populate('delivery_info');
+            res.status(200).json(shippingOrder);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
+        }
+    }
     getRejectedOrders = async (req, res) => {
         try {
             const approveOrders = await OrderModel.find({ status: 'Rejected' }).populate('account_id').populate('order_items').populate('delivery_info');
@@ -313,6 +321,8 @@ class OrderController {
         }
     };
 
+
+
     shipOrder = async (req, res) => {
         try {
             const orderId  = req.params.id;
@@ -325,7 +335,9 @@ class OrderController {
 
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
-                { status: 'Shipping' },
+                { status: 'Shipping',
+                  shipperId: req.user.id,
+                 },
                 { new: true, runValidators: true }
             );
 
@@ -339,6 +351,7 @@ class OrderController {
             res.status(500).json({ error: 'Unable to ship order: ' + error.message });
         }
     };
+
     doneOrder = async (req, res) => {
         try {
             const orderId  = req.params.id;

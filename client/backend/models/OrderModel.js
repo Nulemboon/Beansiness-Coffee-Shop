@@ -15,6 +15,11 @@ const OrderSchema = new mongoose.Schema({
         // required: true
     },
 
+    shipper_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Staff',
+    },
+
     // Cart
     order_items: [{
         type: Schema.Types.ObjectId,
