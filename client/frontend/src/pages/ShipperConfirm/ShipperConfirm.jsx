@@ -42,7 +42,9 @@ const ShipperConfirm = () => {
 
   const fetchShipping = async () => {
     try {
-      const response = await axios.get(`${url}/order/shippingbyid`);
+      const response = await axios.get(`${url}/order/shippingbyid`,{
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.data && Array.isArray(response.data)) {
         setShipping(response.data);
       } else {

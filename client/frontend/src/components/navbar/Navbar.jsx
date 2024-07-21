@@ -43,14 +43,18 @@ const Navbar = ({ setShowLogin }) => {
     <div className='navbar'>
       <Link to='/'><img className='logo' src={assets.logo} alt="Logo" /></Link>
       <ul className="navbar-menu">
-        <Link to="/" onClick={() => setMenu("home")} className={`${menu === "home" ? "active" : ""}`}>home</Link>
-        <Link to="/menupage" onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>menu</Link>
-        <a href='#footer' onClick={() => setMenu("contact")} className={`${menu === "contact" ? "active" : ""}`}>contact us</a>
+        {localStorage.getItem('role') === "Customer" && (
+          <>
+            <Link to="/" onClick={() => setMenu("home")} className={`${menu === "home" ? "active" : ""}`}>home</Link>
+            <Link to="/menupage" onClick={() => setMenu("menu")} className={`${menu === "menu" ? "active" : ""}`}>menu</Link>
+            <a href='#footer' onClick={() => setMenu("contact")} className={`${menu === "contact" ? "active" : ""}`}>contact us</a>
+            {token && (
+              <Link to="/vouchersite" onClick={() => setMenu("myvouchers")} className={`${menu === "myvouchers" ? "active" : ""}`}>my vouchers</Link>
+            )}
+          </>
+      )}
         {localStorage.getItem('role') === "Shipper" && <Link to="/ship/order" onClick={() => setMenu("ship")} className={`${menu === "ship" ? "active" : ""}`}>shipment</Link>}
         {localStorage.getItem('role') === "Onsite" && <Link to="/staff/order" onClick={() => setMenu("staff")} className={`${menu === "staff" ? "active" : ""}`}>staff</Link>}
-        {token && (
-          <Link to="/vouchersite" onClick={() => setMenu("myvouchers")} className={`${menu === "myvouchers" ? "active" : ""}`}>my vouchers</Link>
-        )}
       </ul>
       <div className="navbar-right">
         {token && (
