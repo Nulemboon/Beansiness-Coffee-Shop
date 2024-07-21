@@ -206,6 +206,32 @@ class OrderController {
         }
     }
 
+    getShippingOrders = async (req, res) => {
+        try {
+            const approveOrders = await OrderModel.find({ status: 'Shipping' }).populate('account_id').populate('order_items').populate('delivery_info');
+            res.status(200).json(approveOrders);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
+        }
+    }
+    getRejectedOrders = async (req, res) => {
+        try {
+            const approveOrders = await OrderModel.find({ status: 'Rejected' }).populate('account_id').populate('order_items').populate('delivery_info');
+            res.status(200).json(approveOrders);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
+        }
+    }
+    getDoneOrders = async (req, res) => {
+        try {
+            const approveOrders = await OrderModel.find({ status: 'Done' }).populate('account_id').populate('order_items').populate('delivery_info');
+            res.status(200).json(approveOrders);
+        } catch (error) {
+            res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
+        }
+    }
+
+
     approveOrder = async (req, res) => {
         try {
             const orderId = req.params.id;
@@ -236,7 +262,7 @@ class OrderController {
 
     rejectOrder = async(req, res) => {
         try {
-            const { orderId } = req.params.id;
+            const  orderId  = req.params.id;
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -263,7 +289,7 @@ class OrderController {
 
     cancelOrder = async(req, res) => {
         try {
-            const { id: orderId } = req.params;
+            const  orderId  = req.params.id;
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {
                 res.status(400).json({ message: 'Invalid order ID'});
@@ -289,7 +315,7 @@ class OrderController {
 
     shipOrder = async (req, res) => {
         try {
-            const { orderId } = req.params.id;
+            const orderId  = req.params.id;
 
             // Validate orderId
             if (!mongoose.Types.ObjectId.isValid(orderId)) {

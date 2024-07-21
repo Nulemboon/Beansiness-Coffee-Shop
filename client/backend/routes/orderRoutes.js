@@ -8,6 +8,11 @@ router.get('/pending', orderController.getPendingOrders);
 
 router.get('/approved', orderController.getApprovedOrders); 
 
+router.get('/shipping', orderController.getShippingOrders); 
+router.get('/rejected', orderController.getRejectedOrders); 
+router.get('/done', orderController.getDoneOrders); 
+
+
 router.get('/:id', orderController.getOrderById);
 
 router.get('/', orderController.getAllOrders);
