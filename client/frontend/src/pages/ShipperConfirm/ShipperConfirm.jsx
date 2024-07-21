@@ -56,7 +56,7 @@ const ShipperConfirm = () => {
 
   const handleAction = async (orderId, action) => {
     try {
-      const response = await axios.post(`${url}/order/ship/${orderId}`);
+      const response = await axios.post(`${url}/order/ship/${orderId}`, { withCredentials: true });
       if (response.status === 200) {
         toast.success("Order confirmed successfully");
         fetchList(); // Refresh the list after confirmation
