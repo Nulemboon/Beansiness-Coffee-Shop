@@ -31,10 +31,10 @@ const AddToCartModal = ({ isOpen, onClose, onAddToCart, toppings, price }) => {
     onClose();
   };
 
+  
   return (
     <div className='modal-overlay' onClick={onClose}>
-      <div className='modal-content' onClick={(e) => e.stopPropagation()}>
-        <h2>Customize your order</h2>
+<div className='modal-content' onClick={(e) => e.stopPropagation()} style={{ height: '300px'}}>       
         <br></br>
         <div className='modal-field'>
           <label id="label-quantity">Quantity:</label>

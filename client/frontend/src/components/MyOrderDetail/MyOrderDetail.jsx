@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import './MyOrderDetail.css';
 import ReviewForm from '../../components/WriteReview/ReviewForm';
 
@@ -20,7 +20,18 @@ const MyOrderDetail = ({ order, onClose }) => {
     const closeReview = () => {
         setSelectedItem(null);
     };
-
+    useEffect(() => {
+        const handleEsc = (event) => {
+          if (event.key === 'Escape') {
+            onClose();
+          }
+        };
+        window.addEventListener('keydown', handleEsc);
+    
+        return () => {
+          window.removeEventListener('keydown', handleEsc);
+        };
+      }, [onClose]);
     return (
         <div className='modal-overlay' onClick={onClose}>
             <span className='close-button' onClick={onClose}>&times;</span>

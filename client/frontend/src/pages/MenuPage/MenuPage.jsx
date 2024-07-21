@@ -110,8 +110,7 @@ const MenuPage = () => {
         ))}
       </div>
       {selectedItem && modalType === 'detail' && (
-        <FoodDetailModal item={selectedItem} onClose={handleCloseModal} />
-      )}
+        <FoodDetailModal item={selectedItem} onClose={handleCloseModal} /> )}
       {selectedItem && modalType === 'cart' && (
         <AddToCartModal
           isOpen={modalType === 'cart'}
