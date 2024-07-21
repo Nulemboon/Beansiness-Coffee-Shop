@@ -6,6 +6,7 @@ import ConfirmCancelModal from '../../components/ConfirmCancelModal/ConfirmCance
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import MyOrderDetail from '../../components/MyOrderDetail/MyOrderDetail';
+import { toast } from 'react-toastify';
 
 const MyOrders = () => {
     const { url } = useContext(StoreContext);
@@ -41,6 +42,7 @@ const MyOrders = () => {
     const handleCloseConfirm = () => {
         setIsConfirmOpen(false);
         setOrderToCancel(null);
+        toast.success("Order cancelled");   
     };
 
     const handleConfirmCancel = async () => {

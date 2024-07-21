@@ -4,6 +4,7 @@ import './Cart.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { StoreContext } from '../../Context/StoreContext';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const Cart = () => {
     const updatedCart = cart.filter((_, index) => index !== itemIndex);
     setCart(updatedCart);
     setCookie('cart', updatedCart, { path: '/' });
+    toast.success("Removed from cart");
   };
 
   const handleCheckout = () => {
@@ -51,7 +53,7 @@ const Cart = () => {
       setCookie('voucher_id', selectedVoucher ? selectedVoucher._id : '', { path: '/' });
       navigate('/deliveryform', { state: { amount: totalPrice, voucherCode: selectedVoucher?.name || '' } });
     } else {
-      alert('Your cart is empty!');
+      toast.error('Your cart is empty!');
     }
   };
 

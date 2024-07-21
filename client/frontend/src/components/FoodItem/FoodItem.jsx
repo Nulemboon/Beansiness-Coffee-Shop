@@ -71,6 +71,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
         setCookie('cart', currentCart, { path: '/' });
         addToCart(id, quantity, size, selectedToppings);
         setIsModalOpen(false);
+        toast.success("Added to cart");
     };
 
     const handleRemoveFromCartClick = (e) => {
@@ -100,6 +101,7 @@ const FoodItem = ({ image, name, price, desc, id, toppings, onClick }) => {
             }
             return updatedCart;
         });
+        toast.success("Removed from cart");
     };
 
     return (

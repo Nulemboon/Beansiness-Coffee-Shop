@@ -6,8 +6,10 @@ import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
 import { useCookies } from 'react-cookie';
+import { toast } from 'react-toastify';
 
 const Result = () => {
+    toast.success("Transaction successfully");
     const [cookies, setCookie, removeCookie, remove] = useCookies(['cart']);
     const { url } = useContext(StoreContext);
     const location = useLocation();

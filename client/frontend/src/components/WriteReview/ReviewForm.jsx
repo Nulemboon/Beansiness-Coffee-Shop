@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../../Context/StoreContext';
+import { toast } from 'react-toastify';
 
 const ReviewForm = ({ item, onClose }) => {
   const { url } = useContext(StoreContext);
@@ -23,6 +24,7 @@ const ReviewForm = ({ item, onClose }) => {
       });
       console.log(response.data.message);
       onClose();
+      toast.success("Submitted your review");
     } catch (error) {
       console.error('Error submitting review:', error);
       setError(error.response?.data?.error || 'An error occurred while submitting your review.');
