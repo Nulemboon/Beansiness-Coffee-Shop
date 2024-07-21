@@ -44,19 +44,22 @@ const FoodDetailModal = ({ item, onClose }) => {
     fetchReviewDetails();
   }, [reviews, url]);
 
-  useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === 'Escape') {
-        onClose();
+  const handleRemoveReview = async (review) => {
+    try {
+      const response = await axios.delete(`${url}/product/delete-review/${review._id}`,
+        { withCredentials: true });
+      console.log(response);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message); // Show error message if adding fails
       }
-    };
-    window.addEventListener('keydown', handleEsc);
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      toast.error('Failed to delete review');
+    }
+  }
 
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [onClose]);
-  
   return (
     <div className='modal-overlay'>
       <div className='modal-content' style={{ width: '550px' }}>
