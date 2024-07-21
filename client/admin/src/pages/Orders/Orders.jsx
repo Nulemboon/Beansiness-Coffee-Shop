@@ -6,18 +6,56 @@ import { assets, url } from '../../assets/assets';
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [filterDay, setFilterDay] = useState('');
+  const [filterProductName, setFilterProductName] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
 
   const fetchAllOrders = async () => {
     try {
       const response = await axios.get(`${url}/order`);
       if (response.status === 200) {
-        setOrders(response.data.reverse());
+        const fetchedOrders = response.data.reverse();
+        setOrders(fetchedOrders);
+        setFilteredOrders(fetchedOrders);
       } else {
         toast.error("Error fetching orders");
       }
     } catch (error) {
       toast.error("An error occurred while fetching orders");
     }
+  };
+
+  useEffect(() => {
+    fetchAllOrders();
+  }, []);
+
+  useEffect(() => {
+    filterOrders();
+  }, [filterDay, filterProductName, filterStatus, orders]);
+
+  const filterOrders = () => {
+    let tempOrders = orders;
+
+    if (filterDay) {
+      tempOrders = tempOrders.filter(order => 
+        new Date(order.completed_at).toLocaleDateString() === new Date(filterDay).toLocaleDateString()
+      );
+    }
+
+    if (filterProductName) {
+      tempOrders = tempOrders.filter(order =>
+        order.order_items.some(item => 
+          item.product_id.name.toLowerCase().includes(filterProductName.toLowerCase())
+        )
+      );
+    }
+
+    if (filterStatus) {
+      tempOrders = tempOrders.filter(order => order.status === filterStatus);
+    }
+
+    setFilteredOrders(tempOrders);
   };
 
   const statusHandler = async (orderId, status) => {
@@ -34,17 +72,13 @@ const Order = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAllOrders();
-  }, []);
-
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'Delivered':
+      case 'Done':
         return { color: 'green' };
       case 'Cancelled':
         return { color: 'red' };
-      case 'Processing':
+      case 'Pending':
       default:
         return { color: 'grey' };
     }
@@ -69,8 +103,29 @@ const Order = () => {
   return (
     <div className='order add'>
       <h3>Order Page</h3>
+      <div className="filters">
+        <input
+          type="date"
+          value={filterDay}
+          onChange={e => setFilterDay(e.target.value)}
+          placeholder="Filter by day"
+        />
+        <input
+          type="text"
+          value={filterProductName}
+          onChange={e => setFilterProductName(e.target.value)}
+          placeholder="Filter by product name"
+        />
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <option value="">All</option>
+          <option value="Done">Done</option>
+          <option value="Cancelled">Cancelled</option>
+          <option value="Pending">Pending</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
       <div className="order-list">
-        {orders.map((order, index) => (
+        {filteredOrders.map((order, index) => (
           <div key={index} className='order-item'>
             <img src={assets.parcel_icon} alt="Parcel icon" />
             <div>
