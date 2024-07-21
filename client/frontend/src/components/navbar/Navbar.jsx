@@ -33,6 +33,7 @@ const Navbar = ({ setShowLogin }) => {
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.setItem("role", "Customer");
     setToken("");
     removeCookie('cart', { path: '/' });
     removeCookie('voucher_id', { path: '/' });

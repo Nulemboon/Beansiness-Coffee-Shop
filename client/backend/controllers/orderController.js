@@ -92,7 +92,7 @@ class OrderController {
                 shipping_fee: parseInt(shippingFee),
                 status: 'Pending', // Initial order status
                 transaction_id: transactionId,
-                voucherId: voucherId
+                voucherId: voucherId,
             });
 
             await order.save();
@@ -216,7 +216,7 @@ class OrderController {
     }
     getShippingOrdersById = async (req, res) => {
         try {
-            const shippingOrder = await OrderModel.find({ status: 'Shipping', shipperId: req.user.id }).populate('account_id').populate('order_items').populate('delivery_info');
+            const shippingOrder = await OrderModel.find({ status: 'Shipping', shipper_id: req.user.id }).populate('account_id').populate('order_items').populate('delivery_info');
             res.status(200).json(shippingOrder);
         } catch (error) {
             res.status(500).json({ error: 'Unable to fetch shipping orders: ' + error.message });
@@ -336,7 +336,7 @@ class OrderController {
             const updatedOrder = await OrderModel.findByIdAndUpdate(
                 orderId,
                 { status: 'Shipping',
-                  shipperId: req.user.id,
+                  shipper_id: req.user.id,
                  },
                 { new: true, runValidators: true }
             );

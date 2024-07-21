@@ -43,7 +43,9 @@ const ShipperConfirm = () => {
   const fetchShipping = async () => {
     try {
       const response = await axios.get(`${url}/order/shippingbyid`,{
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       if (response.data && Array.isArray(response.data)) {
         setShipping(response.data);
@@ -62,6 +64,7 @@ const ShipperConfirm = () => {
       if (response.status === 200) {
         toast.success("Order confirmed successfully");
         fetchList(); // Refresh the list after confirmation
+        fetchShipping();
       } else {
         toast.error("Failed to confirm order");
       }
